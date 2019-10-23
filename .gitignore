@@ -29,3 +29,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### ENVIROMENT VARIABLES ###
+.env
+
+### Database ###
+topic-service-database/data
+question-service-database/data
+account-service-database/data
+auth-service-database/data
