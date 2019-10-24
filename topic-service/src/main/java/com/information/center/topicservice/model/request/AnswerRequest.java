@@ -1,22 +1,19 @@
-package com.information.center.topicservice.model;
+package com.information.center.topicservice.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnswerDto {
+public class AnswerRequest {
 
     private String name;
 
-    private QuestionDto question;
+    private QuestionRequest question;
 
     private boolean isCorrect;
 

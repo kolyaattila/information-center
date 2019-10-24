@@ -1,4 +1,4 @@
-package com.information.center.topicservice.model.response;
+package com.information.center.topicservice.model.request;
 
 import com.information.center.topicservice.entity.Answer;
 import com.information.center.topicservice.entity.Topic;
@@ -8,23 +8,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionResponse {
-
-    private List<Answer> answers;
-
-    private String externalId;
+public class QuestionRequest {
 
     private String name;
 
+    private List<Answer> answers;
+
     private QuestionDifficulty questionDifficulty;
 
-    private TopicResponse topic;
+    private TopicRequest topic;
 }

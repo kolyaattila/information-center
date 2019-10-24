@@ -9,11 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnswerResponse {
+
+    private String externalId;
 
     private String name;
 
