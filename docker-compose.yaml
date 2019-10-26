@@ -3,63 +3,94 @@ version: '2.1'
 services:
   topic-service-database:
     container_name: topic-service-database
-    image: mysql:5.7
+    image: postgres:11.2
     restart: always
     environment:
-      MYSQL_DATABASE: ${TOPIC_SERVICE_DATABASE}
-      MYSQL_USER: ${TOPIC_SERVICE_USER}
-      MYSQL_PASSWORD: ${TOPIC_SERVICE_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${TOPIC_SERVICE-ROOT_PASSWORD}
+      - POSTGRES_PASSWORD=${TOPIC_SERVICE_DATABASE_PASSWORD}
+      - POSTGRES_USER=${TOPIC_SERVICE_DATABASE_USER}
+      - POSTGRES_DB=${TOPIC_SERVICE_DATABASE}
     ports:
-      # <Port exposed> : < MySQL Port running inside container>
-      - 3301:3306
+      - ${TOPIC_SERVICE_DATABASE_PORT}:5432
     volumes:
-      - ts-db:/mysql/var/lib/topic-service-database/data
+      - ts-db:/var/lib/postgresql/topic-service-database/data
+    networks:
+      - information-center-prod-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${TOPIC_SERVICE_DATABASE} -U ${TOPIC_SERVICE_DATABASE_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  topic-service:
+      build:
+        context: ./topic-service
+      networks:
+        - information-center-prod-network
+      ports:
+        - 8881:8080
+      environment:
+        - TOPIC_SERVICE_DATABASE
+        - TOPIC_SERVICE_DATABASE_USER
+        - TOPIC_SERVICE_DATABASE_PASSWORD
+        - TOPIC_SERVICE_DATABASE_PORT=5432
+        - TOPIC_SERVICE_DATABASE_HOST=topic-service-database
+      depends_on:
+        topic-service-database:
+          condition: service_healthy
+      links:
+        - topic-service-database
+
 
   question-service-database:
     container_name: question-service-database
-    image: mysql:5.7
+    image: postgres:11.2
     restart: always
     environment:
-      MYSQL_DATABASE: ${QUESTION_SERVICE_DATABASE}
-      MYSQL_USER: ${QUESTION_SERVICE_USER}
-      MYSQL_PASSWORD: ${QUESTION_SERVICE_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${QUESTION_SERVICE_ROOT_PASSWORD}
+      - POSTGRES_PASSWORD=${QUESTION_SERVICE_DATABASE_PASSWORD}
+      - POSTGRES_USER=${QUESTION_SERVICE_DATABASE_USER}
+      - POSTGRES_DB=${QUESTION_SERVICE_DATABASE}
     ports:
-      - 3302:3306
+      - 5442:5432
     volumes:
-      - qs-db:/mysql/var/lib/question-service-database/data
+      - qs-db:/var/lib/postgresql/question-service-database/data
+    networks:
+      - information-center-prod-network
 
   account-service-database:
     container_name: account-service-database
-    image: mysql:5.7
+    image: postgres:11.2
     restart: always
     environment:
-      MYSQL_DATABASE: ${ACCOUNT_SERVICE_DATABASE}
-      MYSQL_USER: ${ACCOUNT_SERVICE_USER}
-      MYSQL_PASSWORD: ${ACCOUNT_SERVICE_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${ACCOUNT_SERVICE_ROOT_PASSWORD}
+      - POSTGRES_PASSWORD=${ACCOUNT_SERVICE_DATABASE_PASSWORD}
+      - POSTGRES_USER=${ACCOUNT_SERVICE_DATABASE_USER}
+      - POSTGRES_DB=${ACCOUNT_SERVICE_DATABASE}
     ports:
-      - 3303:3306
+      - 5443:5432
     volumes:
-      - acs-db:/mysql/var/lib/account-service-database/data
+      - acs-db:/var/lib/postgresql/account-service-database/data
+    networks:
+      - information-center-prod-network
 
   auth-service-database:
     container_name: auth-service-database
-    image: mysql:5.7
+    image: postgres:11.2
     restart: always
     environment:
-      MYSQL_DATABASE: ${AUTH_SERVICE_DATABASE}
-      MYSQL_USER: ${AUTH_SERVICE_USER}
-      MYSQL_PASSWORD: ${AUTH_SERVICE_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${AUTH_SERVICE_ROOT_PASSWORD}
+      - POSTGRES_PASSWORD=${AUTH_SERVICE_DATABASE_PASSWORD}
+      - POSTGRES_USER=${AUTH_SERVICE_DATABASE_USER}
+      - POSTGRES_DB=${AUTH_SERVICE_DATABASE}
     ports:
-      - 3304:3306
+      - 5444:5432
     volumes:
-      - aus-db:/mysql/var/lib/auth-service-database/data
+      - aus-db:/var/lib/postgresql/auth-service-database/data
+    networks:
+      - information-center-prod-network
+
 
 volumes:
   ts-db:
   qs-db:
   acs-db:
   aus-db:
+networks:
+  information-center-prod-network:
