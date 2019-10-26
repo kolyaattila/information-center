@@ -16,6 +16,8 @@ public class AnswerDto {
 
     private String name;
 
+    private String externalId;
+
     private QuestionDto question;
 
     private boolean isCorrect;

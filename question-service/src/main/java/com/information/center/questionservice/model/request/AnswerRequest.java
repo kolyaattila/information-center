@@ -1,29 +1,24 @@
-package com.information.center.topicservice.entity;
+package com.information.center.questionservice.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Answer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+public class AnswerRequest {
+
 
     private String name;
 
     private String externalId;
 
-    @ManyToOne
-    @JoinColumn
-    private Question question;
+    private String questionExternalId;
 
     private boolean isCorrect;
+
+    private boolean checked;
 
     private String reason;
 }

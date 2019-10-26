@@ -37,7 +37,7 @@ public class TopicService {
     public void update(TopicResponse topicResponse) {
 
         var topic  = findById(topicResponse.getExternalId());
-        var topicPersistent = topicConverter.toEntity(topicResponse);
+        var topicPersistent = topicConverter.toEntity(topicResponse,topic.getId());
         topicPersistent.setExternalId(topic.getExternalId());
 
         topicRepository.save(topicPersistent);

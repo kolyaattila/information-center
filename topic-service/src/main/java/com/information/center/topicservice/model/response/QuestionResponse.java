@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 public class QuestionResponse {
 
-    private List<Answer> answers;
+    private List<AnswerResponse> answers;
 
     private String externalId;
 

@@ -19,7 +19,7 @@ public class QuestionDto {
 
     private String externalId;
 
-    private List<Answer> answers;
+    private List<AnswerDto> answers;
 
     private String name;
 

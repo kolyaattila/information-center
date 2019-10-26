@@ -14,7 +14,7 @@ public interface TopicConverter {
 
     TopicResponse toResponse(Topic topic);
 
-    Topic toEntity(TopicResponse topicResponse);
+    Topic toEntity(TopicResponse topicResponse,long id);
 
 
 

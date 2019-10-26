@@ -1,4 +1,4 @@
-package com.information.center.topicservice.entity;
+package com.information.center.questionservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,13 +15,11 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    private String name;
-
     private String externalId;
 
-    @ManyToOne
-    @JoinColumn
-    private Question question;
+    private String name;
+
+    private String questionExternalId;
 
     private boolean isCorrect;
 
