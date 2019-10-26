@@ -7,14 +7,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Question {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    
     private long id;
 
     private String externalId;
