@@ -1,21 +1,18 @@
 package com.information.center.questionservice.service;
 
 import com.information.center.questionservice.converter.AnswerConverter;
-import com.information.center.questionservice.converter.QuestionConverter;
 import com.information.center.questionservice.entity.Answer;
 import com.information.center.questionservice.model.request.AnswerRequest;
 import com.information.center.questionservice.model.response.AnswerResponse;
 import com.information.center.questionservice.repository.AnswerRepository;
-import exception.MicroserviceException;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-import java.util.function.Supplier;
+
+//import exception.MicroserviceException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,15 +24,15 @@ public class AnswerService {
 
     public AnswerResponse create(AnswerRequest answerRequest, String questionExternalId) {
 
-        var answer = answerConverter.toEntity(answerRequest);
+        Answer answer = answerConverter.toEntity(answerRequest);
         answer.setExternalId(UUID.randomUUID().toString());
         answer.setQuestionExternalId(questionExternalId);
         return answerConverter.toResponse(answerRepository.save(answer));
     }
 
     public void update(AnswerResponse answerResponse) {
-        var answer = findById(answerResponse.getExternalId());
-        var answerPersistent = answerConverter.toEntity(answerResponse, answer.getId());
+        Answer answer = findById(answerResponse.getExternalId());
+        Answer answerPersistent = answerConverter.toEntity(answerResponse, answer.getId());
         answerRepository.save(answerPersistent);
     }
 
@@ -49,17 +46,17 @@ public class AnswerService {
     }
 
     public void delete(String externalId) {
-        var answer = findById(externalId);
+        Answer answer = findById(externalId);
         answerRepository.delete(answer);
     }
 
-    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
-        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
-                "Cannot find " + item + " by id " + itemId);
-    }
+//    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
+//        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
+//                "Cannot find " + item + " by id " + itemId);
+//    }
 
     public Answer findById(String externalId) {
-        return answerRepository.findByExternalId(externalId)
-                .orElseThrow(throwNotFoundItem("answer", externalId));
+        return answerRepository.findByExternalId(externalId).get();
+//                .orElseThrow(throwNotFoundItem("answer", externalId));
     }
 }

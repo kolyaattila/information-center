@@ -21,25 +21,6 @@ services:
       timeout: 5s
       retries: 5
 
-  topic-service:
-      build:
-        context: ./topic-service
-      networks:
-        - information-center-prod-network
-      ports:
-        - 8881:8080
-      environment:
-        - TOPIC_SERVICE_DATABASE
-        - TOPIC_SERVICE_DATABASE_USER
-        - TOPIC_SERVICE_DATABASE_PASSWORD
-        - TOPIC_SERVICE_DATABASE_PORT=5432
-        - TOPIC_SERVICE_DATABASE_HOST=topic-service-database
-      depends_on:
-        topic-service-database:
-          condition: service_healthy
-      links:
-        - topic-service-database
-
   question-service-database:
     container_name: question-service-database
     image: postgres:11.2
@@ -49,7 +30,7 @@ services:
       - POSTGRES_USER=${QUESTION_SERVICE_DATABASE_USER}
       - POSTGRES_DB=${QUESTION_SERVICE_DATABASE}
     ports:
-      - ${QUESTION_SERVICE_DATABASE_PORT}:5432
+      - 5442:5432
     volumes:
       - qs-db:/var/lib/postgresql/question-service-database/data
     networks:
@@ -59,25 +40,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  question-service:
-    build:
-      context: ./question-service
-    networks:
-      - information-center-prod-network
-    ports:
-      - 8882:8080
-    environment:
-      - QUESTION_SERVICE_DATABASE
-      - QUESTION_SERVICE_DATABASE_USER
-      - QUESTION_SERVICE_DATABASE_PASSWORD
-      - QUESTION_SERVICE_DATABASE_PORT=5432
-      - QUESTION_SERVICE_DATABASE_HOST=question-service-database
-    depends_on:
-      question-service-database:
-        condition: service_healthy
-    links:
-      - question-service-database
 
   account-service-database:
     container_name: account-service-database

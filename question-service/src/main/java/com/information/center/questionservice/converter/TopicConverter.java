@@ -7,7 +7,6 @@ import com.information.center.questionservice.model.response.TopicResponse;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-
 public interface TopicConverter {
 
     TopicDto toDto(Topic topic);

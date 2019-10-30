@@ -1,0 +1,1 @@
+CREATE TYPE Difficulty AS ENUM ('HARD', 'EASY', 'MEDIUM');
