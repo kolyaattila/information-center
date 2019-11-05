@@ -4,12 +4,13 @@ import com.information.center.questionservice.model.request.QuestionRequest;
 import com.information.center.questionservice.model.response.QuestionResponse;
 import com.information.center.questionservice.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
 @RequiredArgsConstructor
+@RestController
 @RequestMapping("/question")
 public class QuestionController {
     private final QuestionService questionService;
@@ -23,7 +24,7 @@ public class QuestionController {
     @GetMapping("/questionsByTopic/{topicExternalId}")
     public Page<QuestionResponse> findQuestionsByTopicId(@PathVariable("topicExternalId") String topicExternalId,
                                                          Pageable pageable) {
-        return questionService.findQuestionsByTopicId(topicExternalId,pageable);
+        return questionService.findQuestionsByTopicId(topicExternalId, pageable);
     }
 
     @PostMapping("/validate")
@@ -53,3 +54,4 @@ public class QuestionController {
         questionService.delete(externalId);
     }
 }
+

@@ -6,9 +6,10 @@ import com.information.center.topicservice.model.TopicDto;
 import com.information.center.topicservice.model.request.TopicRequest;
 import com.information.center.topicservice.model.response.TopicResponse;
 import com.information.center.topicservice.repository.TopicRepository;
-import exception.MicroserviceException;
+//import exception.MicroserviceException;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -61,11 +62,12 @@ public class TopicService {
 
     private Topic findById(String externalId){
        return topicRepository.findByExternalId(externalId)
-                .orElseThrow(throwNotFoundItem("topic",externalId));
+               .get();
+//                .orElseThrow(throwNotFoundItem("topic",externalId));
     }
 
-    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
-        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
-                "Cannot find " + item + " by id " + itemId);
-    }
+//    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
+//        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
+//                "Cannot find " + item + " by id " + itemId);
+//    }
 }
