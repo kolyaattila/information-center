@@ -2,19 +2,16 @@ package com.information.center.topicservice.service;
 
 import com.information.center.topicservice.converter.TopicConverter;
 import com.information.center.topicservice.entity.Topic;
-import com.information.center.topicservice.model.TopicDto;
 import com.information.center.topicservice.model.request.TopicRequest;
 import com.information.center.topicservice.model.response.TopicResponse;
 import com.information.center.topicservice.repository.TopicRepository;
-//import exception.MicroserviceException;
+import exception.MicroserviceException;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -32,13 +29,13 @@ public class TopicService {
 
         topic.setExternalId(UUID.randomUUID().toString());
 
-       return topicConverter.toResponse(topicRepository.save(topic));
+        return topicConverter.toResponse(topicRepository.save(topic));
     }
 
     public void update(TopicResponse topicResponse) {
 
-        var topic  = findById(topicResponse.getExternalId());
-        var topicPersistent = topicConverter.toEntity(topicResponse,topic.getId());
+        var topic = findById(topicResponse.getExternalId());
+        var topicPersistent = topicConverter.toEntity(topicResponse, topic.getId());
         topicPersistent.setExternalId(topic.getExternalId());
 
         topicRepository.save(topicPersistent);
@@ -51,7 +48,7 @@ public class TopicService {
 
     public Page<TopicResponse> findAll(Pageable pageable) {
         return topicRepository.findAll(pageable)
-        .map(topicConverter::toResponse);
+                .map(topicConverter::toResponse);
     }
 
     public void delete(String externalId) {
@@ -60,14 +57,13 @@ public class TopicService {
         topicRepository.delete(topic);
     }
 
-    private Topic findById(String externalId){
-       return topicRepository.findByExternalId(externalId)
-               .get();
-//                .orElseThrow(throwNotFoundItem("topic",externalId));
+    private Topic findById(String externalId) {
+        return topicRepository.findByExternalId(externalId)
+                .orElseThrow(throwNotFoundItem("topic", externalId));
     }
 
-//    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
-//        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
-//                "Cannot find " + item + " by id " + itemId);
-//    }
+    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
+        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
+                "Cannot find " + item + " by id " + itemId);
+    }
 }

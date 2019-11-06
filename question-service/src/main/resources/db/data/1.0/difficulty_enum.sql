@@ -1,1 +1,1 @@
-CREATE TYPE Difficulty AS ENUM ('HARD', 'EASY', 'MEDIUM');
+CREATE TYPE "public"."Difficulty" AS ENUM ('HARD', 'EASY', 'MEDIUM');
