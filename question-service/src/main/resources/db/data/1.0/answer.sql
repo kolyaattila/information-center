@@ -1,4 +1,4 @@
-create table Answer(
+create table "public"."Answer" (
     id                bigserial constraint answer_pkey primary key,
     name              varchar(255) not null,
     created           timestamp,

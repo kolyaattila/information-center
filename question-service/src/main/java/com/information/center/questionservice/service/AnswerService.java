@@ -5,14 +5,15 @@ import com.information.center.questionservice.entity.Answer;
 import com.information.center.questionservice.model.request.AnswerRequest;
 import com.information.center.questionservice.model.response.AnswerResponse;
 import com.information.center.questionservice.repository.AnswerRepository;
+import exception.MicroserviceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-
-//import exception.MicroserviceException;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -50,13 +51,13 @@ public class AnswerService {
         answerRepository.delete(answer);
     }
 
-//    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
-//        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
-//                "Cannot find " + item + " by id " + itemId);
-//    }
+    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
+        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
+                "Cannot find " + item + " by id " + itemId);
+    }
 
     public Answer findById(String externalId) {
-        return answerRepository.findByExternalId(externalId).get();
-//                .orElseThrow(throwNotFoundItem("answer", externalId));
+        return answerRepository.findByExternalId(externalId)
+                .orElseThrow(throwNotFoundItem("answer", externalId));
     }
 }

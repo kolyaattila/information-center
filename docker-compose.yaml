@@ -99,6 +99,25 @@ services:
       timeout: 5s
       retries: 5
 
+  account-service:
+    build:
+      context: ./account-service
+    networks:
+      - information-center-prod-network
+    ports:
+      - 8882:8080
+    environment:
+      - ACCOUNT_SERVICE_DATABASE
+      - ACCOUNT_SERVICE_DATABASE_USER
+      - ACCOUNT_SERVICE_DATABASE_PASSWORD
+      - ACCOUNT_SERVICE_DATABASE_PORT=5432
+      - ACCOUNT_SERVICE_DATABASE_HOST=account-service-database
+    depends_on:
+      account-service-database:
+        condition: service_healthy
+    links:
+      - account-service-database
+
   auth-service-database:
     container_name: auth-service-database
     image: postgres:11.2
@@ -118,6 +137,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  auth-service:
+    build:
+      context: ./auth-service
+    networks:
+      - information-center-prod-network
+    ports:
+      - 8883:8080
+    environment:
+      - AUTH_SERVICE_DATABASE
+      - AUTH_SERVICE_DATABASE_USER
+      - AUTH_SERVICE_DATABASE_PASSWORD
+      - AUTH_SERVICE_DATABASE_PORT=5432
+      - AUTH_SERVICE_DATABASE_HOST=auth-service-database
+    depends_on:
+      auth-service-database:
+        condition: service_healthy
+    links:
+      - auth-service-database
 
 volumes:
   ts-db:

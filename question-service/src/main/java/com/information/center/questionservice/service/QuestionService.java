@@ -7,15 +7,16 @@ import com.information.center.questionservice.model.request.QuestionRequest;
 import com.information.center.questionservice.model.response.AnswerResponse;
 import com.information.center.questionservice.model.response.QuestionResponse;
 import com.information.center.questionservice.repository.QuestionRepository;
+import exception.MicroserviceException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-
-//import exception.MicroserviceException;
+import java.util.function.Supplier;
 
 @Service
 @AllArgsConstructor
@@ -75,14 +76,14 @@ public class QuestionService {
         questionRepository.delete(question);
     }
 
-//    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
-//        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
-//                "Cannot find " + item + " by id " + itemId);
-//    }
+    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
+        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
+                "Cannot find " + item + " by id " + itemId);
+    }
 
     public Question findById(String externalId) {
-        return questionRepository.findByExternalId(externalId).get();
-//                .orElseThrow(throwNotFoundItem("question", externalId));
+        return questionRepository.findByExternalId(externalId)
+                .orElseThrow(throwNotFoundItem("question", externalId));
     }
 
     public QuestionResponse validate(QuestionRequest questionRequest) {
@@ -90,8 +91,8 @@ public class QuestionService {
         List<AnswerRequest> answerRequests;
 
         QuestionRequest question = questionRepository.findByExternalId(questionRequest.getExternalId())
-                .map(questionConverter::toRequest).get();
-//                .orElseThrow(throwNotFoundItem("question", questionRequest.getExternalId()));
+                .map(questionConverter::toRequest)
+                .orElseThrow(throwNotFoundItem("question", questionRequest.getExternalId()));
 
         answerRequests = question.getAnswers();
         if (answerToBeSend.size() == answerRequests.size())
