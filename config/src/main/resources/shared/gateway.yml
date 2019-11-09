@@ -1,0 +1,33 @@
+zuul:
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+
+  routes:
+    auth-service:
+      path: /auth/**
+      serviceId: auth-service
+      stripPrefix: false
+      sensitiveHeaders:
+
+    account-service:
+      path: /accounts/**
+      serviceId: account-service
+      stripPrefix: false
+      sensitiveHeaders:
+
+    topic-service:
+      path: /topic/**
+      serviceId: topic-service
+      stripPrefix: false
+      sensitiveHeaders:
+
+    question-service:
+      path: /question/**,/answer/**
+      serviceId: question-service
+      stripPrefix: false
+      sensitiveHeaders:
+
+#server:
+#  port: 4000
