@@ -1,4 +1,4 @@
-create table "public"."User"
+create table public.User
 (
 	id bigserial not null constraint user_pkey primary key,
 	created timestamp,

@@ -30,7 +30,7 @@ services:
       - POSTGRES_USER=${QUESTION_SERVICE_DATABASE_USER}
       - POSTGRES_DB=${QUESTION_SERVICE_DATABASE}
     ports:
-      - 5442:5432
+      - ${QUESTION_SERVICE_DATABASE_PORT}:5432
     volumes:
       - qs-db:/var/lib/postgresql/question-service-database/data
     networks:
@@ -50,7 +50,7 @@ services:
       - POSTGRES_USER=${ACCOUNT_SERVICE_DATABASE_USER}
       - POSTGRES_DB=${ACCOUNT_SERVICE_DATABASE}
     ports:
-      - 5443:5432
+      - ${ACCOUNT_SERVICE_DATABASE_PORT}:5432
     volumes:
       - acs-db:/var/lib/postgresql/account-service-database/data
     networks:
@@ -70,7 +70,7 @@ services:
       - POSTGRES_USER=${AUTH_SERVICE_DATABASE_USER}
       - POSTGRES_DB=${AUTH_SERVICE_DATABASE}
     ports:
-      - 5444:5432
+      - ${AUTH_SERVICE_DATABASE_PORT}:5432
     volumes:
       - aus-db:/var/lib/postgresql/auth-service-database/data
     networks:

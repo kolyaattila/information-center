@@ -1,4 +1,4 @@
-create table "public"."Topic"
+create table public.Topic
 (
     id                bigserial constraint topic_pkey primary key,
     name              varchar(255) not null,

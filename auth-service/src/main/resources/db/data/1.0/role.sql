@@ -1,4 +1,4 @@
-create table "public"."Role"
+create table public.Role
 (
     id          bigserial constraint role_pkey primary key,
     description varchar(255),

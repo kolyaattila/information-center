@@ -27,7 +27,7 @@ public class AnswerService {
 
         Answer answer = answerConverter.toEntity(answerRequest);
         answer.setExternalId(UUID.randomUUID().toString());
-        answer.setQuestionExternalId(questionExternalId);
+        answer.setExternalId(questionExternalId);
         return answerConverter.toResponse(answerRepository.save(answer));
     }
 

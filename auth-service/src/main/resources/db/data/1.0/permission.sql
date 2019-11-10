@@ -1,4 +1,4 @@
-create table "public"."Permission"
+create table public.Permission
 (
 	id bigserial not null constraint permission_pkey primary key,
 	created timestamp,
