@@ -1,0 +1,112 @@
+version: '2.1'
+
+services:
+  topic-service-database:
+    container_name: topic-service-database
+    extends:
+      file: docker-compose.yaml
+      service: topic-service-database
+
+  question-service-database:
+    container_name: question-service-database
+    extends:
+      file: docker-compose.yaml
+      service: question-service-database
+
+  account-service-database:
+    container_name: account-service-database
+    extends:
+      file: docker-compose.yaml
+      service: account-service-database
+
+  auth-service-database:
+    container_name: auth-service-database
+    extends:
+      file: docker-compose.yaml
+      service: auth-service-database
+
+  config:
+    container_name: config
+    extends:
+      file: docker-compose.yaml
+      service: config
+
+  gateway:
+    extends:
+      file: docker-compose.yaml
+      service: gateway
+    container_name: gateway
+    depends_on:
+      config:
+        condition: service_healthy
+
+  monitoring:
+    extends:
+      file: docker-compose.yaml
+      service: monitoring
+    container_name: monitoring
+    depends_on:
+      config:
+        condition: service_healthy
+
+  registry:
+    extends:
+      file: docker-compose.yaml
+      service: registry
+    container_name: registry
+    depends_on:
+      config:
+        condition: service_healthy
+
+  topic-service:
+    extends:
+      file: docker-compose.yaml
+      service: topic-service
+    container_name: topic-service
+    depends_on:
+      topic-service-database:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+
+  question-service:
+    extends:
+      file: docker-compose.yaml
+      service: question-service
+    container_name: question-service
+    depends_on:
+      question-service-database:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+
+
+  account-service:
+    extends:
+      file: docker-compose.yaml
+      service: account-service
+    container_name: account-service
+    depends_on:
+      account-service-database:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+
+  auth-service:
+    extends:
+      file: docker-compose.yaml
+      service: auth-service
+    container_name: auth-service
+    depends_on:
+      auth-service-database:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+
+volumes:
+  ts-db:
+  qs-db:
+  acs-db:
+  aus-db:
+networks:
+  information-center-prod-network:
