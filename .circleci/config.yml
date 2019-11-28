@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8u222-jdk
+
+    working_directory: ~/information-center
+
+    steps:
+      # git pull
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - information-center-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: information-center-{{ checksum "pom.xml" }}
+
+      # package into a jar
+      - run: mvn clean package
