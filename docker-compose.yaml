@@ -27,7 +27,7 @@ services:
     restart: always
     container_name: gateway
     ports:
-      - 8880:8080
+      - 8880:8880
     logging:
       options:
         max-size: "10m"
@@ -59,7 +59,7 @@ services:
     networks:
       - information-center-prod-network
     ports:
-      - 8881:8080
+      - 8881:8881
     environment:
       - CONFIG_SERVICE_PASSWORD
       - TOPIC_SERVICE_DATABASE
@@ -100,7 +100,7 @@ services:
       - information-center-prod-network
     container_name: question-service
     ports:
-      - 8882:8080
+      - 8882:8882
     environment:
       - CONFIG_SERVICE_PASSWORD
       - QUESTION_SERVICE_DATABASE
@@ -141,7 +141,7 @@ services:
     networks:
       - information-center-prod-network
     ports:
-      - 8883:8080
+      - 8883:8883
     environment:
       - CONFIG_SERVICE_PASSWORD
       - ACCOUNT_SERVICE_DATABASE
@@ -182,7 +182,7 @@ services:
     networks:
       - information-center-prod-network
     ports:
-      - 8884:8080
+      - 8884:8884
     environment:
       - CONFIG_SERVICE_PASSWORD
       - AUTH_SERVICE_DATABASE
@@ -227,7 +227,7 @@ services:
       context: ./monitoring
     restart: always
     ports:
-      - 9000:8080
+      - 9000:9000
     logging:
       options:
         max-size: "10m"
