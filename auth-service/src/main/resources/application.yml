@@ -1,16 +1,4 @@
 spring:
-  cloud:
-    stream:
-      kafka:
-        binder:
-         brokers: localhost:9092
-      bindings:
-        greetings-in:
-          destination: greetings
-          contentType: application/json
-        greetings-out:
-          destination: greetings
-          contentType: application/json
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
