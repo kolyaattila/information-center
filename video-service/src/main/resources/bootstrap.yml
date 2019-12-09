@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 800MB
+      max-request-size: 800MB
   application:
     name: video-service
   cloud:

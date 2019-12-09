@@ -1,16 +1,20 @@
 spring:
-  cloud:
-    stream:
-      kafka:
-        binder:
-         brokers: localhost:9092
-      bindings:
-        greetings-in:
-          destination: greetings
-          contentType: application/json
-        greetings-out:
-          destination: greetings
-          contentType: application/json
+  servlet:
+    multipart:
+      max-file-size: 800MB
+      max-request-size: 800MB
+  #  cloud:
+#    stream:
+#      kafka:
+#        binder:
+#         brokers: localhost:9092
+#      bindings:
+#        greetings-in:
+#          destination: add-
+#          contentType: application/json
+#        greetings-out:
+#          destination: greetings
+#          contentType: application/json
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     username: root
@@ -28,3 +32,4 @@ spring:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
 server:
   port: 8088
+
