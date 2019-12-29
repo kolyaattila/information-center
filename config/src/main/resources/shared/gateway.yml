@@ -9,25 +9,31 @@ zuul:
       path: /auth/**
       serviceId: auth-service
       stripPrefix: false
-      sensitiveHeaders:
+
+    subscription-service:
+      path: /subscription/**
+      serviceId: account-service
+      stripPrefix: false
 
     account-service:
       path: /accounts/**
       serviceId: account-service
       stripPrefix: false
-      sensitiveHeaders:
 
     topic-service:
       path: /topic/**
       serviceId: topic-service
       stripPrefix: false
-      sensitiveHeaders:
 
     question-service:
-      path: /question/**,/answer/**
+      path: /question/**
       serviceId: question-service
       stripPrefix: false
-      sensitiveHeaders:
+
+    answer-service:
+      path: /answer/**
+      serviceId: question-service
+      stripPrefix: false
 
 server:
   port: 8880
