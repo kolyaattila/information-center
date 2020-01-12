@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: email-service
+  cloud:
+    config:
+      uri: http://${CONFIG_SERVICE_HOST}:8888
+      fail-fast: true
+      password: ${CONFIG_SERVICE_PASSWORD}
+      username: user
+
+
+

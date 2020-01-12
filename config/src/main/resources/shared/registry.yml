@@ -1,2 +1,8 @@
 server:
   port: 8761
+spring:
+  security:
+    user:
+      enabled: true
+      name: ${REGISTRY_USERNAME}
+      password: ${REGISTRY_PASSWORD}

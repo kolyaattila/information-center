@@ -1,8 +1,5 @@
 package com.information.center.accountservice.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.information.center.accountservice.converter.SubscriptionConverter;
 import com.information.center.accountservice.entity.SubscriptionEntity;
-import com.information.center.accountservice.exceptions.ServiceExceptions;
 import com.information.center.accountservice.model.SubscriptionRequest;
 import com.information.center.accountservice.service.SubscriptionService;
 import org.junit.Before;
@@ -60,8 +56,8 @@ public class SubscriptionControllerTest {
   @Test
   public void subscription_expectStatusOk() throws Exception {
     mockMvc.perform(post(URL_TEMPLATE)
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .content(asJSONString(subscriptionRequest)))
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content(asJSONString(subscriptionRequest)))
         .andExpect(status().isOk());
   }
 

@@ -35,5 +35,10 @@ zuul:
       serviceId: question-service
       stripPrefix: false
 
+    email-service:
+      path: /email-service/**
+      serviceId: email-service
+      stripPrefix: false
+
 server:
   port: 8880
