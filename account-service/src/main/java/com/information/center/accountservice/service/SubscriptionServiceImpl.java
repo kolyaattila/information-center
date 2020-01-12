@@ -1,8 +1,8 @@
 package com.information.center.accountservice.service;
 
 import com.information.center.accountservice.entity.SubscriptionEntity;
-import com.information.center.accountservice.exceptions.ServiceExceptions;
 import com.information.center.accountservice.repository.SubscriptionRepository;
+import exception.ServiceExceptions;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

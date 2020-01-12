@@ -20,6 +20,8 @@ services:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       CONFIG_SERVICE_HOST: config
       REGISTRY_SERVICE_HOST: registry
+      REGISTRY_USERNAME: $REGISTRY_USERNAME
+      REGISTRY_PASSWORD: $REGISTRY_PASSWORD
     networks:
       - information-center-prod-network
     build:
@@ -69,6 +71,8 @@ services:
       - TOPIC_SERVICE_DATABASE_HOST=topic-service-database
       - CONFIG_SERVICE_HOST=config
       - REGISTRY_SERVICE_HOST=registry
+      - REGISTRY_USERNAME
+      - REGISTRY_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -110,6 +114,8 @@ services:
       - QUESTION_SERVICE_DATABASE_HOST=question-service-database
       - CONFIG_SERVICE_HOST=config
       - REGISTRY_SERVICE_HOST=registry
+      - REGISTRY_USERNAME
+      - REGISTRY_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -151,6 +157,8 @@ services:
       - ACCOUNT_SERVICE_DATABASE_HOST=account-service-database
       - CONFIG_SERVICE_HOST=config
       - REGISTRY_SERVICE_HOST=registry
+      - REGISTRY_USERNAME
+      - REGISTRY_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -202,6 +210,8 @@ services:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       CONFIG_SERVICE_HOST: config
       REGISTRY_SERVICE_HOST: registry
+      REGISTRY_USERNAME: $REGISTRY_USERNAME
+      REGISTRY_PASSWORD: $REGISTRY_PASSWORD
     container_name: registry
     networks:
       - information-center-prod-network
@@ -220,6 +230,8 @@ services:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
       CONFIG_SERVICE_HOST: config
       REGISTRY_SERVICE_HOST: registry
+      REGISTRY_USERNAME: $REGISTRY_USERNAME
+      REGISTRY_PASSWORD: $REGISTRY_PASSWORD
     container_name: monitoring
     networks:
       - information-center-prod-network
@@ -232,6 +244,19 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+
+  information-center-web:
+    build:
+      context: ../information-center-web
+      args:
+        - API_ENDPOINT=${API_ENDPOINT}
+        - PRODUCTION_MODE=${PRODUCTION_MODE}
+        - ENVIRONMENT_FILE=${ENVIRONMENT_FILE}
+    networks:
+      - information-center-prod-network
+    ports:
+      - 80:80
+
 
 volumes:
   ts-db:
