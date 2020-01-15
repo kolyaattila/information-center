@@ -1,4 +1,4 @@
-package com.information.center.accountservice.exceptions;
+package exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,4 +28,19 @@ public final class RestExceptions extends Throwable {
       super(message);
     }
   }
+
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public static final class EmailSendException extends RuntimeException {
+
+    public EmailSendException() {
+      super();
+    }
+
+    public EmailSendException(String message) {
+      super(message);
+    }
+  }
+
+
+
 }

@@ -2,10 +2,10 @@ package com.information.center.accountservice.controller;
 
 import com.information.center.accountservice.converter.SubscriptionConverter;
 import com.information.center.accountservice.entity.SubscriptionEntity;
-import com.information.center.accountservice.exceptions.RestExceptions;
-import com.information.center.accountservice.exceptions.ServiceExceptions;
 import com.information.center.accountservice.model.SubscriptionRequest;
 import com.information.center.accountservice.service.SubscriptionService;
+import exception.RestExceptions;
+import exception.ServiceExceptions;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

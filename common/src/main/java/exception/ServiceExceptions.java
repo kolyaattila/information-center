@@ -1,4 +1,4 @@
-package com.information.center.accountservice.exceptions;
+package exception;
 
 public final class ServiceExceptions extends Throwable {
 

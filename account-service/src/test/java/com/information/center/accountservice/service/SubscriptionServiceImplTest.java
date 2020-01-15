@@ -5,8 +5,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.information.center.accountservice.entity.SubscriptionEntity;
-import com.information.center.accountservice.exceptions.ServiceExceptions;
 import com.information.center.accountservice.repository.SubscriptionRepository;
+import exception.ServiceExceptions;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +42,8 @@ public class SubscriptionServiceImplTest {
 
   @Test(expected = ServiceExceptions.InsertFailedException.class)
   public void subscription_ExpectInsertFailedException() {
-    when(subscriptionRepository.save(subscriptionEntity)).thenThrow(new ServiceExceptions.InsertFailedException());
+    when(subscriptionRepository.save(subscriptionEntity))
+        .thenThrow(new ServiceExceptions.InsertFailedException());
 
     subscriptionService.subscription(subscriptionEntity);
   }
