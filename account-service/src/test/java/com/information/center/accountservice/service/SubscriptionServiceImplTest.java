@@ -1,9 +1,11 @@
 package com.information.center.accountservice.service;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.information.center.accountservice.client.EmailServiceClient;
 import com.information.center.accountservice.entity.SubscriptionEntity;
 import com.information.center.accountservice.repository.SubscriptionRepository;
 import exception.ServiceExceptions;
@@ -20,6 +22,8 @@ public class SubscriptionServiceImplTest {
 
   @Mock
   private SubscriptionRepository subscriptionRepository;
+  @Mock
+  private EmailServiceClient emailServer;
   @InjectMocks
   private SubscriptionServiceImpl subscriptionService;
 
@@ -35,6 +39,8 @@ public class SubscriptionServiceImplTest {
 
   @Test
   public void subscription() {
+    when(subscriptionRepository.save(any())).then(it -> it.getArgument(0));
+
     subscriptionService.subscription(subscriptionEntity);
 
     verify(subscriptionRepository, times(1)).save(subscriptionEntity);
