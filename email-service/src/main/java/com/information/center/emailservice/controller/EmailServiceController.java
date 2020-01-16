@@ -24,7 +24,7 @@ public class EmailServiceController implements EmailServiceEndpoint {
       @Valid @RequestBody List<EmailSubscriptionRequest> emails) {
     emails.forEach(mail -> {
       try {
-        emailService.sendSimpleMessage(mail);
+        emailService.subscriptionEmail(mail);
       } catch (MessagingException e) {
         throw new EmailSendException(e.getMessage());
       }

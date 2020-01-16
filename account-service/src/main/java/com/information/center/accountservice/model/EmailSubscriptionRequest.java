@@ -1,4 +1,4 @@
-package com.information.center.emailservice.model;
+package com.information.center.accountservice.model;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;

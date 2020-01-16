@@ -42,3 +42,4 @@ zuul:
 
 server:
   port: 8880
+
