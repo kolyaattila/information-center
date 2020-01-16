@@ -8,7 +8,13 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 10000
+            timeoutInMilliseconds: 50000
+
+ribbon:
+  ReadTimeout: 40000
+  connection-timeout: 3000
+  eureka:
+    enabled: true
 
 eureka:
   instance:
