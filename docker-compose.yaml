@@ -1,10 +1,23 @@
 version: '2.1'
 
 services:
-  config:
-    restart: always
+  base-microservice:
+    build: .
     environment:
       CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
+      CONFIG_SERVICE_HOST: config
+      REGISTRY_SERVICE_HOST: registry
+      REGISTRY_USERNAME: $REGISTRY_USERNAME
+      REGISTRY_PASSWORD: $REGISTRY_PASSWORD
+      EMAIL_ADDRESS: $EMAIL_ADDRESS
+      EMAIL_PASSWORD: $EMAIL_PASSWORD
+      COMPANY_NAME: $COMPANY_NAME
+      COMPANY_SITE_URL: $COMPANY_SITE_URL
+
+  config:
+    extends:
+      service: base-microservice
+    restart: always
     build:
       context: ./config
     container_name: config
@@ -16,14 +29,12 @@ services:
         max-file: "10"
 
   gateway:
-    environment:
-      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-      CONFIG_SERVICE_HOST: config
-      REGISTRY_SERVICE_HOST: registry
-      REGISTRY_USERNAME: $REGISTRY_USERNAME
-      REGISTRY_PASSWORD: $REGISTRY_PASSWORD
+    extends:
+      service: base-microservice
     networks:
       - information-center-prod-network
+    environment:
+      ALLOWED_ORIGINS: $ALLOWED_ORIGINS
     build:
       context: ./gateway
     restart: always
@@ -54,6 +65,8 @@ services:
       retries: 5
 
   topic-service:
+    extends:
+      service: base-microservice
     restart: always
     build:
       context: ./topic-service
@@ -63,16 +76,11 @@ services:
     ports:
       - 8881:8881
     environment:
-      - CONFIG_SERVICE_PASSWORD
       - TOPIC_SERVICE_DATABASE
       - TOPIC_SERVICE_DATABASE_USER
       - TOPIC_SERVICE_DATABASE_PASSWORD
       - TOPIC_SERVICE_DATABASE_PORT=5432
       - TOPIC_SERVICE_DATABASE_HOST=topic-service-database
-      - CONFIG_SERVICE_HOST=config
-      - REGISTRY_SERVICE_HOST=registry
-      - REGISTRY_USERNAME
-      - REGISTRY_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -97,6 +105,8 @@ services:
       retries: 5
 
   question-service:
+    extends:
+      service: base-microservice
     restart: always
     build:
       context: ./question-service
@@ -106,16 +116,11 @@ services:
     ports:
       - 8882:8882
     environment:
-      - CONFIG_SERVICE_PASSWORD
       - QUESTION_SERVICE_DATABASE
       - QUESTION_SERVICE_DATABASE_USER
       - QUESTION_SERVICE_DATABASE_PASSWORD
       - QUESTION_SERVICE_DATABASE_PORT=5432
       - QUESTION_SERVICE_DATABASE_HOST=question-service-database
-      - CONFIG_SERVICE_HOST=config
-      - REGISTRY_SERVICE_HOST=registry
-      - REGISTRY_USERNAME
-      - REGISTRY_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -140,6 +145,8 @@ services:
       retries: 5
 
   account-service:
+    extends:
+      service: base-microservice
     restart: always
     container_name: account-service
     build:
@@ -149,16 +156,11 @@ services:
     ports:
       - 8883:8883
     environment:
-      - CONFIG_SERVICE_PASSWORD
       - ACCOUNT_SERVICE_DATABASE
       - ACCOUNT_SERVICE_DATABASE_USER
       - ACCOUNT_SERVICE_DATABASE_PASSWORD
       - ACCOUNT_SERVICE_DATABASE_PORT=5432
       - ACCOUNT_SERVICE_DATABASE_HOST=account-service-database
-      - CONFIG_SERVICE_HOST=config
-      - REGISTRY_SERVICE_HOST=registry
-      - REGISTRY_USERNAME
-      - REGISTRY_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -183,6 +185,8 @@ services:
       retries: 5
 
   auth-service:
+    extends:
+      service: base-microservice
     restart: always
     container_name: auth-service
     build:
@@ -192,26 +196,19 @@ services:
     ports:
       - 8884:8884
     environment:
-      - CONFIG_SERVICE_PASSWORD
       - AUTH_SERVICE_DATABASE
       - AUTH_SERVICE_DATABASE_USER
       - AUTH_SERVICE_DATABASE_PASSWORD
       - AUTH_SERVICE_DATABASE_PORT=5432
       - AUTH_SERVICE_DATABASE_HOST=auth-service-database
-      - CONFIG_SERVICE_HOST=config
-      - REGISTRY_SERVICE_HOST=registry
     logging:
       options:
         max-size: "10m"
         max-file: "10"
 
   registry:
-    environment:
-      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-      CONFIG_SERVICE_HOST: config
-      REGISTRY_SERVICE_HOST: registry
-      REGISTRY_USERNAME: $REGISTRY_USERNAME
-      REGISTRY_PASSWORD: $REGISTRY_PASSWORD
+    extends:
+      service: base-microservice
     container_name: registry
     networks:
       - information-center-prod-network
@@ -226,12 +223,8 @@ services:
         max-file: "10"
 
   monitoring:
-    environment:
-      CONFIG_SERVICE_PASSWORD: $CONFIG_SERVICE_PASSWORD
-      CONFIG_SERVICE_HOST: config
-      REGISTRY_SERVICE_HOST: registry
-      REGISTRY_USERNAME: $REGISTRY_USERNAME
-      REGISTRY_PASSWORD: $REGISTRY_PASSWORD
+    extends:
+      service: base-microservice
     container_name: monitoring
     networks:
       - information-center-prod-network
@@ -240,6 +233,25 @@ services:
     restart: always
     ports:
       - 9000:9000
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  email-service:
+    extends:
+      service: base-microservice
+    restart: always
+    container_name: email-service
+    build:
+      context: ./email-service
+    networks:
+      - information-center-prod-network
+    environment:
+      SUBSCRIPTION_CONFIRMATION_PATH: $SUBSCRIPTION_CONFIRMATION_PATH
+      UNSUBSCRIPTION_PATH: $UNSUBSCRIPTION_PATH
+    ports:
+      - 8885:8885
     logging:
       options:
         max-size: "10m"
