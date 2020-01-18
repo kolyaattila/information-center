@@ -3,10 +3,10 @@ package com.information.center.emailservice.controller;
 import com.information.center.emailservice.model.EmailSubscriptionRequest;
 import com.information.center.emailservice.service.EmailService;
 import exception.RestExceptions.EmailSendException;
-import java.util.List;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import model.WrapperValidList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class EmailServiceController implements EmailServiceEndpoint {
 
   @Override
   public ResponseEntity<?> sendSubscriptionEmail(
-      @Valid @RequestBody List<EmailSubscriptionRequest> emails) {
+      @Valid @RequestBody WrapperValidList<EmailSubscriptionRequest> emails) {
     emails.forEach(mail -> {
       try {
         emailService.subscriptionEmail(mail);

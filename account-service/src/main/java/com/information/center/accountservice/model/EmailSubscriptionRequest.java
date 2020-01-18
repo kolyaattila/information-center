@@ -26,4 +26,7 @@ public class EmailSubscriptionRequest {
   @NotNull
   private String lastName;
 
+  @NotNull
+  private String uid;
+
 }

@@ -61,6 +61,29 @@ public class SubscriptionControllerTest {
         .andExpect(status().isOk());
   }
 
+  @Test
+  public void subscriptionActivation_expectStatusOk() throws Exception {
+    mockMvc.perform(post(URL_TEMPLATE + "/activation")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content(asJSONString(335)))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  public void subscriptionActivation_expectStatusBadRequest() throws Exception {
+    mockMvc.perform(post(URL_TEMPLATE + "/activation")
+        .contentType(MediaType.APPLICATION_JSON_UTF8))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void unsubscription_expectStatusOk() throws Exception {
+    mockMvc.perform(post(URL_TEMPLATE + "/unsubscription")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content(asJSONString(3525)))
+        .andExpect(status().isOk());
+  }
+
   private <T> String asJSONString(T anObject) throws Exception {
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
