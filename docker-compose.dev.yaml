@@ -68,6 +68,12 @@ services:
       config:
         condition: service_healthy
 
+  rabbitmq:
+    extends:
+      file: docker-compose.yaml
+      service: rabbitmq
+    container_name: rabbitmq
+
 volumes:
   ts-db:
   qs-db:

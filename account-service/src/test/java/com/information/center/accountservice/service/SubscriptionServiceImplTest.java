@@ -20,6 +20,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class SubscriptionServiceImplTest {
@@ -45,6 +47,7 @@ public class SubscriptionServiceImplTest {
   public void subscription() {
     when(subscriptionRepository.save(any())).then(it -> it.getArgument(0));
     when(subscriptionRepository.existsByUid(anyString())).thenReturn(false);
+    when(emailServer.sendSubscriptionEmail(any())).thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
     subscriptionService.subscription(subscriptionEntity);
 
@@ -72,6 +75,7 @@ public class SubscriptionServiceImplTest {
   @Test
   public void subscription_getUidCallTwoTimes() {
     when(subscriptionRepository.existsByUid(anyString())).thenReturn(true).thenReturn(false);
+    when(emailServer.sendSubscriptionEmail(any())).thenReturn(new ResponseEntity<>(HttpStatus.OK));
     when(subscriptionRepository.findByEmail(subscriptionEntity.getEmail()))
         .thenReturn(Optional.empty());
     when(subscriptionRepository.save(any())).then(it -> it.getArgument(0));

@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -66,8 +67,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         .uid(entity.getUid())
         .build();
 
-    emailServer.sendSubscriptionEmail(Collections.singletonList(build));
-    logger.info("Subscription email has been sent.");
+    if (emailServer.sendSubscriptionEmail(Collections.singletonList(build)).getStatusCode()
+        == HttpStatus.OK) {
+      logger.info("Subscription email has been sent.");
+    }
   }
 
   private void findSubscription(String email) {

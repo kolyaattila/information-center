@@ -117,6 +117,12 @@ services:
       service: information-center-web
       file: docker-compose.yaml
 
+  rabbitmq:
+    extends:
+      file: docker-compose.yaml
+      service: rabbitmq
+    container_name: rabbitmq
+
 volumes:
   ts-db:
   qs-db:
