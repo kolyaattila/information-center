@@ -1,2 +1,6 @@
 server:
   port: 9000
+
+turbine:
+  clusterNameExpression: new String("default")
+  appConfig: account-service,email-service,auth-service,question-service,topic-service

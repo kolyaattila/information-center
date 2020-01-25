@@ -22,3 +22,16 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${REGISTRY_USERNAME}:${REGISTRY_PASSWORD}@${REGISTRY_SERVICE_HOST}:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
