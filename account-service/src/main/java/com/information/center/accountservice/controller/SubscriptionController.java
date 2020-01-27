@@ -7,6 +7,7 @@ import com.information.center.accountservice.service.SubscriptionService;
 import exception.RestExceptions;
 import exception.ServiceExceptions;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,26 @@ public class SubscriptionController implements SubscriptionEndpoint {
       throw new RestExceptions.BadRequest(e.getMessage());
     }
 
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<?> subscriptionActivation(@NotNull @RequestBody String uid) {
+    try {
+      subscriptionService.subscriptionActivation(uid);
+    } catch (ServiceExceptions.InconsistentDataException | ServiceExceptions.InsertFailedException e) {
+      throw new RestExceptions.BadRequest(e.getMessage());
+    }
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @Override
+  public ResponseEntity<?> unsubscribe(@NotNull String uid) {
+    try {
+      subscriptionService.unsubscription(uid);
+    } catch (ServiceExceptions.InconsistentDataException | ServiceExceptions.InsertFailedException e) {
+      throw new RestExceptions.BadRequest(e.getMessage());
+    }
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

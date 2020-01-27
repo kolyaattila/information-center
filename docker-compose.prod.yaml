@@ -103,10 +103,25 @@ services:
       config:
         condition: service_healthy
 
+  email-service:
+    extends:
+      file: docker-compose.yaml
+      service: email-service
+    container_name: email-service
+    depends_on:
+      config:
+        condition: service_healthy
+
   information-center-web:
     extends:
       service: information-center-web
       file: docker-compose.yaml
+
+  rabbitmq:
+    extends:
+      file: docker-compose.yaml
+      service: rabbitmq
+    container_name: rabbitmq
 
 volumes:
   ts-db:

@@ -66,7 +66,7 @@
         <p th:text="${'Te rugăm confirmă că '+ customerEmail + ' este adresa corectă la care doreşti să primeşti newsletter-ul nostru.'}"></p>
       </div>
       <div align="center">
-        <button class="button" th:href="@{'signature'}">Confirm</button>
+        <a th:href="${companyUrl + mailConfirmationAction + uid}"><button class="button">Confirm</button></a>
       </div>
     </td>
   </tr>
@@ -85,10 +85,10 @@
   </tr>
   <tr>
     <td class="footer">
-      <p>Daca vreti sa nu ma-i primiti aceste mesaje puteti sa va <a th:href="@{'signature'}">dezabonati</a>.
+      <p>Daca vreti sa nu ma-i primiti aceste mesaje puteti sa va
+        <a th:href="${companyUrl + unsubscriptionAction + uid}">dezabonati</a>.
       </p>
-      <p>&copy; 2020 Information-Center.com
-      <p>
+      <p th:text="${'&copy; 2020 '+companyName}"></p>
     </td>
   </tr>
 </table>

@@ -7,4 +7,8 @@ import org.springframework.stereotype.Service;
 public interface SubscriptionService {
 
   void subscription(SubscriptionEntity subscriptionEntity);
+
+  void subscriptionActivation(String uid);
+
+  void unsubscription(String uid);
 }

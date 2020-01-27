@@ -32,5 +32,11 @@ public class SubscriptionEntity {
 
   @Column(name = "unsubscription", nullable = false)
   private boolean unsubscription;
+
+  @Column(name = "email_validation", nullable = false)
+  private boolean emailValidation;
+
+  @Column(name = "uid", nullable = false, unique = true)
+  private String uid;
 }
 

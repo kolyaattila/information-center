@@ -9,4 +9,9 @@ import org.springframework.stereotype.Repository;
 public interface SubscriptionRepository extends CrudRepository<SubscriptionEntity, Long> {
 
   Optional<SubscriptionEntity> findByEmail(String email);
+
+  boolean existsByUid(String uid);
+
+  Optional<SubscriptionEntity> findByUid(String uid);
+
 }
