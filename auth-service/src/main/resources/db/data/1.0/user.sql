@@ -1,7 +1,11 @@
-create table public.User
+create table public.user
 (
 	id bigserial not null constraint user_pkey primary key,
-	created timestamp,
+	created timestamp DEFAULT CURRENT_DATE,
 	password varchar(255),
-	username varchar(255) constraint uk_permission_name unique
+	username varchar(255) constraint uk_user_username unique,
+	account_expired boolean not null,
+	account_locked boolean not null,
+	credentials_expired boolean not null,
+	enabled boolean not null DEFAULT true
 );

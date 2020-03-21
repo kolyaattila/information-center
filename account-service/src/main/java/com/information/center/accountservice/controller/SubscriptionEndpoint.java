@@ -3,6 +3,7 @@ package com.information.center.accountservice.controller;
 import com.information.center.accountservice.model.SubscriptionRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +18,8 @@ public interface SubscriptionEndpoint {
   ResponseEntity<?> subscription(@Valid @RequestBody SubscriptionRequest subscriptionRequest);
 
   @PostMapping("/activation")
-  ResponseEntity<?> subscriptionActivation(@NotNull @RequestBody String uid);
+  ResponseEntity<?> subscriptionActivation(@Valid @NotNull @RequestBody String uid);
 
   @PostMapping("/unsubscription")
-  ResponseEntity<?> unsubscribe(@NotNull @RequestBody String uid);
+  ResponseEntity<?> unsubscribe(@Valid @NotNull @RequestBody String uid);
 }
