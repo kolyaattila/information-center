@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: video_db_1.0
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: video.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

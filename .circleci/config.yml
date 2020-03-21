@@ -15,7 +15,8 @@ jobs:
           keys:
             - information-center-{{ checksum "pom.xml" }}
 
-      - run: mvn package dependency:go-offline
+      - run: mvn --projects common --also-make clean install
+      - run: mvn dependency:go-offline
 
       - save_cache:
           paths:
@@ -23,4 +24,9 @@ jobs:
           key: information-center-{{ checksum "pom.xml" }}
 
       # package into a jar
-      - run: mvn test
+      - run: mvn clean test
+      - run: mvn clean integration-test
+      #Codecov integration
+      - run:
+          name: Send to CodeCov
+          command: bash <(curl -s https://codecov.io/bash)

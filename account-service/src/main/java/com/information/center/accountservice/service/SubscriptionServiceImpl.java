@@ -90,7 +90,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
   private SubscriptionEntity getSubscriptionEntity(String uid) {
     return subscriptionRepository.findByUid(uid)
-        .orElseThrow(() -> new InconsistentDataException("Not found subscription with uid " + uid));
+        .orElseGet(() -> {throw new InconsistentDataException("Not found subscription with uid " + uid);});
   }
 
 }

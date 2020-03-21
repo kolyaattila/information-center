@@ -41,6 +41,17 @@ public final class RestExceptions extends Throwable {
     }
   }
 
+  @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
+  public static final class ServiceUnavailable extends RuntimeException {
+
+    public ServiceUnavailable() {
+      super();
+    }
+
+    public ServiceUnavailable(String message) {
+      super(message);
+    }
+  }
 
 
 }
