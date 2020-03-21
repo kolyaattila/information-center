@@ -21,4 +21,14 @@ public final class ServiceExceptions extends Throwable {
       super(message);
     }
   }
+
+  public static final class ServiceUnavailableException extends RuntimeException {
+
+    public ServiceUnavailableException() {
+    }
+
+    public ServiceUnavailableException(String message) {
+      super(message);
+    }
+  }
 }

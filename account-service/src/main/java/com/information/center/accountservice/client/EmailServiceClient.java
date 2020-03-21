@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient(name = "email-service", fallback = EmailServiceClientFallback.class)
 public interface EmailServiceClient {
 
-  @RequestMapping(method = RequestMethod.POST, value = "/email-service/sendemail", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+  @RequestMapping(method = RequestMethod.POST, value = "/email/sendemail", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
   ResponseEntity<?> sendSubscriptionEmail(@RequestBody List<EmailSubscriptionRequest> emails);
 
 }

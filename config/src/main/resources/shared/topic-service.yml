@@ -20,4 +20,15 @@ spring:
     change-log: classpath:db/changelog/db.changelog.master.yaml
 
 server:
+  servlet:
+    context-path: /topic
   port: 8881
+
+security:
+  oauth2:
+    client:
+      clientId: topic-service
+      clientSecret: ${TOPIC_SERVICE_PASSWORD}
+      accessTokenUri: http://auth-service:8884/auth/oauth/token
+      grant-type: client_credentials
+      scope: server

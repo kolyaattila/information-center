@@ -5,7 +5,6 @@ spring:
         native:
           search-locations: classpath:/shared
   profiles:
-    active: prod
     include: native
   security:
     user:

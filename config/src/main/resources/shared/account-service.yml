@@ -20,8 +20,19 @@ spring:
     change-log: classpath:db/changelog/db.changelog.master.yaml
 
 server:
+  servlet:
+    context-path: /account
   port: 8883
 
 feign:
   hystrix:
     enabled: true
+
+security:
+  oauth2:
+    client:
+      clientId: account-service
+      clientSecret: ${ACCOUNT_SERVICE_PASSWORD}
+      accessTokenUri: http://localhost:8884/auth/oauth/token  #for localhost
+      grant-type: client_credentials
+      scope: server

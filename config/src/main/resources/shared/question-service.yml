@@ -21,3 +21,12 @@ spring:
 
 server:
   port: 8882
+
+security:
+  oauth2:
+    client:
+      clientId: question-service
+      clientSecret: ${QUESTION_SERVICE_PASSWORD}
+      accessTokenUri: http://auth-service:8884/auth/oauth/token
+      grant-type: client_credentials
+      scope: server

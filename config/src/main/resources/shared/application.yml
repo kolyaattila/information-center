@@ -8,7 +8,7 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 50000
+            timeoutInMilliseconds: 500000
 
 ribbon:
   ReadTimeout: 40000
@@ -35,3 +35,9 @@ spring:
     port: 5672
     username: ${RABBITMQ_DEFAULT_USER}
     password: ${RABBITMQ_DEFAULT_PASS}
+
+
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8884/auth/user/current

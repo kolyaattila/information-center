@@ -1,5 +1,16 @@
 server:
+  servlet:
+    context-path: /email
   port: 8885
+
+security:
+  oauth2:
+    client:
+      clientId: email-service
+      clientSecret: ${EMAIL_SERVICE_PASSWORD}
+      accessTokenUri: http://auth-service:8884/auth/oauth/token
+      grant-type: client_credentials
+      scope: server
 
 spring:
   mail:
