@@ -36,7 +36,7 @@ public class PermissionService {
   }
 
   private ErrorResponse setAllRoles(Permission permission, PermissionRequest permissionRequest) {
-    ErrorResponse errorResponse = ErrorResponse.builder().message(Collections.emptyList()).build();
+    ErrorResponse errorResponse = ErrorResponse.builder().build();
     permissionRequest.getRoles().forEach(role -> {
       Optional<Role> byName = roleRepository.findByName(role);
       if (byName.isPresent()) {
@@ -79,7 +79,7 @@ public class PermissionService {
     try {
       permissionRepository.delete(permission);
     } catch (Exception e) {
-      throw new InconsistentDataException("Could not delete permission");
+      throw new InsertFailedException("Could not delete permission");
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.information.center.authservice.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,14 +33,14 @@ public class Role implements GrantedAuthority {
   private String description;
 
   @ManyToMany(mappedBy = "roles")
-  private List<User> users;
+  private List<User> users = new ArrayList<>();
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "role_permission",
       joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
-  private List<Permission> permissions;
+  private List<Permission> permissions = new ArrayList<>();
 
   @Override
   public String getAuthority() {

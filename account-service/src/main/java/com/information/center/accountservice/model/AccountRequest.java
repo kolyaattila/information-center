@@ -15,6 +15,7 @@ public class AccountRequest {
   public AccountRequest() {
   }
 
+  private String username;
   private String firstName;
   private String lastName;
   private Date birthday;
@@ -24,7 +25,8 @@ public class AccountRequest {
   @Override
   public String toString() {
     return "AccountRequest{" +
-        "firstName='" + firstName + '\'' +
+        "username='" + username + '\'' +
+        ", firstName='" + firstName + '\'' +
         ", lastName='" + lastName + '\'' +
         ", birthday=" + birthday +
         ", photo='" + photo + '\'' +

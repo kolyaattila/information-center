@@ -49,13 +49,14 @@ public class RoleService {
   }
 
   private ErrorResponse setAllUsers(Role role, RoleRequest roleRequest) {
-    ErrorResponse errorResponse = ErrorResponse.builder().message(Collections.emptyList()).build();
+    ErrorResponse errorResponse = ErrorResponse.builder().build();
     roleRequest.getUsernames().forEach(username -> {
       Optional<User> byUsername = userRepository.findByUsername(username);
       if (byUsername.isPresent()) {//dublicate user
         role.getUsers().add(byUsername.get());
       } else {
-        errorResponse.getMessage().add("User " + username + " not found");
+        errorResponse.with(ErrorResponse.builder()
+            .message(Collections.singletonList("User " + username + " not found")).build());
       }
     });
     return errorResponse;

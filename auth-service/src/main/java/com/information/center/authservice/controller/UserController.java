@@ -21,7 +21,6 @@ public class UserController implements UserEndpoint {
 
   private final UserService userService;
 
-
   @Override
   public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest userRequest) {
     try {

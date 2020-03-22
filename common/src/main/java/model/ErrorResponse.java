@@ -1,24 +1,37 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Tolerate;
 
 @Getter
 @Setter
 @Builder
 public class ErrorResponse {
 
-  List<String> message;
+  private List<String> message;
 
-  public ErrorResponse with(ErrorResponse errorResponse) {
-    if (message.isEmpty()) {
-      return errorResponse;
-    } else {
-      this.message.addAll(errorResponse.getMessage());
-      return this;
+  @Tolerate
+  public ErrorResponse() {
+    message = new ArrayList<>();
+  }
+
+
+  public void with(ErrorResponse errorResponse) {
+    if (errorResponse == null) {
+      return;
     }
+
+    if (this.message == null) {
+      this.message = new ArrayList<>();
+    }
+
+    this.message.addAll(errorResponse.getMessage());
   }
 
   public boolean hasErrors() {

@@ -1,5 +1,6 @@
 package com.information.center.authservice.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +55,7 @@ public class User implements UserDetails {
       name = "user_role",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-  private List<Role> roles;
+  private List<Role> roles = new ArrayList<>();
 
 
   @Override

@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 public interface AccountEndpoint {
 
   @GetMapping("/{name}")
-  AccountRequest getAccountByName(@PathVariable String name);
+  AccountRequest getAccountByUsername(@PathVariable String name);
 
-  @PostMapping
+  @PostMapping("/")
   AccountRequest saveCurrentAccount(@Valid @RequestBody CreateAccountRequest account);
 
 }

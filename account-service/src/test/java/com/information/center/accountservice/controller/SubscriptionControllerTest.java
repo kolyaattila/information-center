@@ -115,15 +115,15 @@ public class SubscriptionControllerTest {
         .andExpect(status().isOk());
   }
 
-//  @Test
-//  public void unsubscription_isBadRequest() throws Exception {
-//    doThrow(InsertFailedException.class).when(subscriptionService).unsubscription("3525");
-//
-//    mockMvc.perform(post(URL_TEMPLATE + "/unsubscription")
-//        .contentType(MediaType.APPLICATION_JSON_UTF8)
-//        .content(asJSONString(3525)))
-//        .andExpect(status().isBadRequest());
-//  }
+  @Test
+  public void unsubscription_isBadRequest() throws Exception {
+    doThrow(InsertFailedException.class).when(subscriptionService).unsubscription("3525");
+
+    mockMvc.perform(post(URL_TEMPLATE + "/unsubscription")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content(asJSONString(3525)))
+        .andExpect(status().isBadRequest());
+  }
 
   private <T> String asJSONString(T anObject) throws Exception {
     ObjectMapper mapper = new ObjectMapper();

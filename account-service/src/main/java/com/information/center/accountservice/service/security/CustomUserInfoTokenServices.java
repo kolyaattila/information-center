@@ -1,5 +1,12 @@
 package com.information.center.accountservice.service.security;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -17,23 +24,17 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
-import java.util.*;
-
 public class CustomUserInfoTokenServices implements ResourceServerTokenServices {
 
-  protected final Log logger = LogFactory.getLog(getClass());
+  private final Log logger = LogFactory.getLog(getClass());
 
   private static final String[] PRINCIPAL_KEYS = new String[]{"user", "username",
       "userid", "user_id", "login", "id", "name"};
 
   private final String userInfoEndpointUrl;
-
   private final String clientId;
-
   private OAuth2RestOperations restTemplate;
-
   private String tokenType = DefaultOAuth2AccessToken.BEARER_TYPE;
-
   private AuthoritiesExtractor authoritiesExtractor = new FixedAuthoritiesExtractor();
 
   public CustomUserInfoTokenServices(String userInfoEndpointUrl, String clientId) {

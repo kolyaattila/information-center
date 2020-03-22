@@ -22,9 +22,9 @@ public class AccountController implements AccountEndpoint {
   private final AccountService accountService;
 
   @Override
-  public AccountRequest getAccountByName(@PathVariable String name) {
+  public AccountRequest getAccountByUsername(@PathVariable String name) {
     try {
-      return accountService.findByName(name);
+      return accountService.findByUsername(name);
     } catch (InconsistentDataException e) {
       throw new BadRequest(e.getMessage());
     }
@@ -33,7 +33,7 @@ public class AccountController implements AccountEndpoint {
   @Override
   public AccountRequest saveCurrentAccount(@Valid @RequestBody CreateAccountRequest account) {
     try {
-      return accountService.saveChanges(account);
+      return accountService.save(account);
     } catch (InsertFailedException | InconsistentDataException e) {
       throw new BadRequest(e.getMessage());
     } catch (ServiceUnavailableException e) {

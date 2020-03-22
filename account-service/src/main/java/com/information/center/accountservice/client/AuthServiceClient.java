@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(name = "auth-service")
+@FeignClient(name = "auth-service", fallback = AuthServiceClientFallBack.class)
 public interface AuthServiceClient {
 
   @RequestMapping(method = RequestMethod.POST, value = "/auth/user", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

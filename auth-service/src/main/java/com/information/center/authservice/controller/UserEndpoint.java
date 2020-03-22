@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
-@PreAuthorize("#oauth2.hasScope('server')")
+//@PreAuthorize("#oauth2.hasScope('server')")
 public interface UserEndpoint {
 
   @PostMapping

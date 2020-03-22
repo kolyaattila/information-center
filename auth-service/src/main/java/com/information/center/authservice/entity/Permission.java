@@ -1,6 +1,7 @@
 package com.information.center.authservice.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -33,5 +34,5 @@ public class Permission implements Serializable {
   private Date created;
 
   @ManyToMany(mappedBy = "permissions")
-  private List<Role> roleEntities;
+  private List<Role> roleEntities = new ArrayList<>();
 }

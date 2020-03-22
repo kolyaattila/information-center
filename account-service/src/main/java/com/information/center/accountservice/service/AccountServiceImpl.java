@@ -29,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
 
 
   @Override
-  public AccountRequest findByName(String username) {
+  public AccountRequest findByUsername(String username) {
     Account account = accountRepository.findByUsername(username).orElseGet(() -> {
       throw new InconsistentDataException("Account not found");
     });
@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
   }
 
   @Override
-  public AccountRequest saveChanges(CreateAccountRequest createAccountRequest) {
+  public AccountRequest save(CreateAccountRequest createAccountRequest) {
     Account account;
     if (!accountRepository.findByUsername(createAccountRequest.getUsername()).isPresent()) {
       account = saveAccount(createAccountRequest);
@@ -50,9 +50,7 @@ public class AccountServiceImpl implements AccountService {
 
   /**
    * The createUser can succeed and saveAccount can fail, that means you will have the user created
-   * but the account not.
-   * 1. One solution would to save a default account with user's username
-   * 2.
+   * but the account not. One solution would be to save a default account with user's username
    */
   private Account saveAccount(CreateAccountRequest createAccountRequest) {
     createUser(createAccountRequest);
@@ -61,8 +59,16 @@ public class AccountServiceImpl implements AccountService {
     try {
       return accountRepository.save(account);
     } catch (Exception e) {
+      saveDefaultAccountWithUserName(account);
       throw new InsertFailedException("Error inserting account");
     }
+  }
+
+  private void saveDefaultAccountWithUserName(Account account) {
+    Account defaultAccount = new Account();
+    defaultAccount.setUsername(account.getUsername());
+    defaultAccount.setUid(account.getUid());
+    accountRepository.save(defaultAccount);
   }
 
   private void createUser(CreateAccountRequest createAccountRequest) {
