@@ -107,6 +107,24 @@ services:
       timeout: 5s
       retries: 5
 
+  video-service-database:
+    container_name: video-service-database
+    image: postgres:11.2
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${VIDEO_SERVICE_DATABASE_PASSWORD}
+      - POSTGRES_USER=${VIDEO_SERVICE_DATABASE_USER}
+      - POSTGRES_DB=${VIDEO_SERVICE_DATABASE}
+    volumes:
+      - qs-db:/var/lib/postgresql/video-service-database/data
+    networks:
+      - information-center-prod-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${VIDEO_SERVICE_DATABASE} -U ${VIDEO_SERVICE_DATABASE_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   question-service:
     extends:
       service: base-microservice
@@ -124,6 +142,31 @@ services:
       - QUESTION_SERVICE_DATABASE_PASSWORD
       - QUESTION_SERVICE_DATABASE_PORT=5432
       - QUESTION_SERVICE_DATABASE_HOST=question-service-database
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
+  video-service:
+    extends:
+      service: base-microservice
+    restart: always
+    build:
+      context: ./video-service
+    networks:
+      - information-center-prod-network
+    container_name: video-service
+
+    ports:
+      - 8886:8886
+    environment:
+      - VIDEO_SERVICE_DATABASE
+      - VIDEO_SERVICE_DATABASE_USER
+      - VIDEO_SERVICE_DATABASE_PASSWORD
+      - VIDEO_SERVICE_DATABASE_PORT=5432
+      - VIDEO_SERVICE_DATABASE_HOST=video-service-database
+    volumes:
+      - vs-video:/videos
     logging:
       options:
         max-size: "10m"
@@ -290,6 +333,7 @@ services:
 
 
 volumes:
+  vs-video:
   ts-db:
   qs-db:
   acs-db:

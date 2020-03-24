@@ -26,18 +26,18 @@ import org.springframework.stereotype.Service;
 public class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "external_id",nullable = false)
     private String externalId;
 
-  @OneToMany(
-      mappedBy = "question",
-      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<Answer> answers;
+    @OneToMany(
+            mappedBy = "question",
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private List<Answer> answers;
 
-   @Column(name = "name",nullable = false)
+    @Column(name = "name",nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)

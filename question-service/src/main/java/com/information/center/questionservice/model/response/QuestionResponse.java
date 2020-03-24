@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -16,9 +18,12 @@ public class QuestionResponse {
 
     private String externalId;
 
+    private String topicExternalId;
+
     private String name;
 
     private QuestionDifficulty questionDifficulty;
 
-    private String topicExternalId;
+    private Date startDate;
+
 }

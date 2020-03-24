@@ -13,6 +13,12 @@ services:
       file: docker-compose.yaml
       service: question-service-database
 
+  video-service-database:
+    container_name: video-service-database
+    extends:
+      file: docker-compose.yaml
+      service: video-service-database
+
   account-service-database:
     container_name: account-service-database
     extends:
@@ -48,7 +54,7 @@ services:
     depends_on:
       config:
         condition: service_healthy
-
+#
   registry:
     extends:
       file: docker-compose.yaml
@@ -76,6 +82,17 @@ services:
     container_name: question-service
     depends_on:
       question-service-database:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+
+  video-service:
+    extends:
+      file: docker-compose.yaml
+      service: video-service
+    container_name: video-service
+    depends_on:
+      video-service-database:
         condition: service_healthy
       config:
         condition: service_healthy
@@ -124,6 +141,7 @@ services:
     container_name: rabbitmq
 
 volumes:
+  vs-video:
   ts-db:
   qs-db:
   acs-db:

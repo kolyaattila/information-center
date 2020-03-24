@@ -66,4 +66,9 @@ public class TopicService {
         return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
                 "Cannot find " + item + " by id " + itemId);
     }
+
+    public String getNameById(String externalId) {
+ var topic= topicRepository.findTopicByExternalId(externalId).orElseThrow(throwNotFoundItem("topic",externalId));
+ return topic.getName();
+    }
 }

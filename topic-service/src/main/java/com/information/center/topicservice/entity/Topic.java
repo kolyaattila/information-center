@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 public class Topic {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "external_id")

@@ -1,6 +1,8 @@
 spring:
   application:
     name: question-service
+  profiles:
+    active: prod
   cloud:
     config:
       uri: http://${CONFIG_SERVICE_HOST}:8888

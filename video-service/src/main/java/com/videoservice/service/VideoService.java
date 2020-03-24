@@ -8,15 +8,23 @@ import com.videoservice.model.VideoRequest;
 import com.videoservice.model.VideoResponse;
 import com.videoservice.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,19 +41,13 @@ public class VideoService {
     public VideoResponse create(VideoRequest videoRequest) throws IOException {
         Video video = videoConverter.toEntity(videoRequest);
         video.setExternalId(UUID.randomUUID().toString());
-        String rootDirectory = "";
-        String partialPath = rootDirectory + videoRequest.getChapter();
-        String path = partialPath + "/" + video.getExternalId();
+        String rootDirectory = "videos/";
+        String path = rootDirectory + videoRequest.getChapter();
+        createFolder(path);
         video.setPath(path);
-
         if (videoRequest.getFile() != null) {
-
-            boolean bool = createFolder(path);
-            if (!bool) {
-                //TOdO throw exception in else statement...
-                new Exception();
-            }
-            saveVideo(videoRequest.getFile(),path);
+            createFolder(path);
+            saveVideo(videoRequest.getFile(), path, video.getExternalId());
         }
         return videoConverter.toResponse(videoRepository.save(video));
     }
@@ -54,29 +56,37 @@ public class VideoService {
 
         Video video = findById(videoDto.getExternalId());
         Video videoPersistent = videoConverter.toEntity(videoDto);
-        String rootDirectory = "";
-        String path = ""+videoDto.getChapter()+"/"+videoDto.getExternalId();
+        String videoExternalId = video.getExternalId();
+        String rootDirectory = "videos/";
+        String path = rootDirectory + videoDto.getChapter();
         videoPersistent.setId(video.getId());
         videoPersistent.setPath(path);
-        if(videoDto.getChapter() != video.getChapter()){
-            File f1 = new File(rootDirectory+video.getChapter());
-            File f2 = new File(rootDirectory+videoDto.getChapter());
-            boolean b = f1.renameTo(f2);
-            //TODO THROW exception if b is not true...
+        File videoOldName = new File(rootDirectory + "/" + video.getChapter() + "/" + videoExternalId + ".mp4");
+
+        if (!videoDto.getChapter().equals(video.getChapter())) {
+            File chapterFolder = new File(path);
+            createFolder(chapterFolder.getPath());
         }
-        if (videoDto.getFile() != null) {
-            File file = new File(path+".mp4");
-            if (file.exists()) {
-                file.delete();
-               saveVideo(videoDto.getFile(),path);
-            }
+        if (videoDto.getFile().getBytes().length != 0) {
+            videoOldName.delete();
+            File file = new File(path + "/" + videoExternalId + ".mp4");
+            saveVideo(videoDto.getFile(), path, video.getExternalId());
+        } else {
+            File videoNewName = new File(rootDirectory + "/" + videoDto.getChapter() + "/" + videoExternalId + ".mp4");
+            renameFile(videoOldName, videoNewName);
         }
+        if (!video.getChapter().equals(videoDto.getChapter()))
+            deleteIfEmpty(new File(video.getPath()));
         videoRepository.save(videoPersistent);
+    }
+
+    private void renameFile(File f1, File f2) {
+        f1.renameTo(f2);
     }
 
     public void delete(String externalId) {
         Video video = findById(externalId);
-        File file = new File(video.getPath()+".mp4");
+        File file = new File(video.getPath() + "/" + video.getExternalId() + ".mp4");
         if (file.exists()) {
             file.delete();
         }
@@ -94,14 +104,24 @@ public class VideoService {
                 .orElseThrow(throwNotFoundItem("video", externalId));
     }
 
-    private Boolean createFolder(String path) {
+    private void createFolder(String path) {
         File file = new File(path);
-        boolean bool = file.mkdir();
-        return bool;
+        if (!file.exists()) {
+            boolean bool = file.mkdir();
+            if (!bool)
+                throw new MicroserviceException(HttpStatus.BAD_REQUEST, "can't create directory on path " + path);
+        }
     }
 
-    private void saveVideo(MultipartFile file,String path) throws IOException {
-        File convertFile = new File(path+".mp4");
+    private void deleteIfEmpty(File file) throws IOException {
+        if (Objects.requireNonNull(file.list()).length == 0)
+            file.delete();
+    }
+
+
+    private void saveVideo(MultipartFile file, String path, String externalId) throws IOException {
+        File convertFile = new File(path + "/" + externalId + ".mp4");
+
         convertFile.createNewFile();
 
         try (FileOutputStream fout = new FileOutputStream(convertFile)) {
@@ -109,6 +129,20 @@ public class VideoService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ResponseEntity<UrlResource> getFullVideo(String externalId) throws MalformedURLException {
+
+        var videoDetails = videoRepository.findByExternalId(externalId).orElseThrow(throwNotFoundItem("video", externalId));
+        File file = new File(videoDetails.getChapter() + "/" + videoDetails.getExternalId() + "/" + videoDetails.getExternalId());
+        UrlResource video = new UrlResource("file:///" + file.getAbsolutePath() + ".mp4");
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(video);
+    }
+
+    public List<VideoResponse> findByChapter(String chapter) {
+        return videoRepository.findAllByChapter(chapter).stream().map(videoConverter::toResponse).collect(Collectors.toList());
     }
 }
 

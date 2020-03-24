@@ -2,24 +2,30 @@ package com.information.center.questionservice.service;
 
 import com.information.center.questionservice.converter.QuestionConverter;
 import com.information.center.questionservice.entity.Question;
+import com.information.center.questionservice.model.QuestionListDetails;
 import com.information.center.questionservice.model.request.AnswerRequest;
 import com.information.center.questionservice.model.request.QuestionRequest;
 import com.information.center.questionservice.model.response.AnswerResponse;
 import com.information.center.questionservice.model.response.QuestionResponse;
+import com.information.center.questionservice.model.response.QuestionResponsePage;
 import com.information.center.questionservice.repository.QuestionRepository;
 import exception.MicroserviceException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.var;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
@@ -28,20 +34,35 @@ public class QuestionService {
 
     private final AnswerService answerService;
 
+    private final RestTemplate template;
+
+    private static final String ORGANISATION_ENDPOINT = "/topic/internal/";
+
+    @Value("${endpoints.topic:http://localhost:8881}")
+    private String equipmentEndpoint;
+
+    String getTopicNameByExternalId(String topicId) {
+        return template.getForObject(
+                equipmentEndpoint + ORGANISATION_ENDPOINT + topicId,
+                String.class);
+    }
+
     public QuestionResponse create(QuestionRequest questionRequest, String topicExternalId) {
 
         String questionExternalId = UUID.randomUUID().toString();
 
-        for (AnswerRequest answerRequest : questionRequest.getAnswers()) {
-            answerRequest.setQuestionExternalId(questionExternalId);
-            answerRequest.setExternalId(UUID.randomUUID().toString());
-        }
+
         Question question = questionConverter.toEntity(questionRequest);
         question.setExternalId(questionExternalId);
         question.setTopicExternalId(topicExternalId);
+        question.setAnswers(null);
+        var questionFromDb = questionConverter.toResponse(questionRepository.save(question));
+        for (AnswerRequest answerRequest : questionRequest.getAnswers()) {
+            answerService.create(answerRequest, questionExternalId);
+        }
 
 
-        return questionConverter.toResponse(questionRepository.save(question));
+        return questionFromDb;
     }
 
     public void update(QuestionResponse questionResponse) {
@@ -60,8 +81,8 @@ public class QuestionService {
 
     }
 
-    public Page<QuestionResponse> findAll(Pageable pageable) {
-        return questionRepository.findAll(pageable)
+    public QuestionResponsePage findAll(Pageable pageable){
+        Page<QuestionResponse> questionPage = questionRepository.findAll(pageable)
                 .map(question -> {
                     QuestionResponse response = questionConverter.toResponse(question);
                     for (AnswerResponse answer : response.getAnswers()) {
@@ -69,6 +90,10 @@ public class QuestionService {
                     }
                     return response;
                 });
+        var questionResponsePage = new QuestionResponsePage();
+        questionResponsePage.setQuestionResponses(questionPage);
+        questionResponsePage.setStartDate(new Date());
+        return questionResponsePage;
     }
 
     public void delete(String externalId) {
@@ -86,25 +111,9 @@ public class QuestionService {
                 .orElseThrow(throwNotFoundItem("question", externalId));
     }
 
-    public QuestionResponse validate(QuestionRequest questionRequest) {
-        List<AnswerRequest> answerToBeSend = questionRequest.getAnswers();
-        List<AnswerRequest> answerRequests;
-
-        QuestionRequest question = questionRepository.findByExternalId(questionRequest.getExternalId())
-                .map(questionConverter::toRequest)
-                .orElseThrow(throwNotFoundItem("question", questionRequest.getExternalId()));
-
-        answerRequests = question.getAnswers();
-        if (answerToBeSend.size() == answerRequests.size())
-            for (int i = 0; i < answerToBeSend.size(); i++) {
-                answerToBeSend.get(i).setCorrect(answerRequests.get(i).isCorrect());
-            }
-        questionRequest.setAnswers(answerToBeSend);
-        return questionConverter.toResponse(questionRequest);
-    }
-
-    public Page<QuestionResponse> findQuestionsByTopicId(String topicExternalId, Pageable pageable) {
-        return questionRepository.findQuestionsByTopicExternalId(topicExternalId, pageable)
+    public QuestionListDetails findQuestionsByTopicId(String topicExternalId, Pageable pageable) {
+        var questionDetails = new QuestionListDetails();
+        Page<QuestionResponse> questions = questionRepository.findQuestionsByTopicExternalId(topicExternalId, pageable)
                 .map(question -> {
 
                     QuestionResponse response = questionConverter.toResponse(question);
@@ -113,5 +122,11 @@ public class QuestionService {
                     }
                     return response;
                 });
+        questionDetails.setQuestionResponseList(questions);
+        questionDetails.setStartDate(new Date());
+
+        questionDetails.setTopicName(getTopicNameByExternalId(topicExternalId));
+        return questionDetails;
+
     }
 }

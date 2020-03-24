@@ -21,6 +21,10 @@ public class TopicController {
 
         return topicService.create(topicResponse);
     }
+    @GetMapping("/internal/{externalId}")
+    public String getNameById(@PathVariable("externalId")String externalId){
+       return topicService.getNameById(externalId);
+    }
 
     @PutMapping
     public void update(@RequestBody TopicResponse topicResponse) {
@@ -31,7 +35,6 @@ public class TopicController {
     public TopicResponse findByExternalId(@PathVariable("externalId") String externalId) {
         return topicService.findByExternalId(externalId);
     }
-
     @GetMapping
     public Page<TopicResponse> findAll(Pageable pageable) {
         return topicService.findAll(pageable);

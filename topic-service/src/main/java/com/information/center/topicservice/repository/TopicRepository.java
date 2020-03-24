@@ -13,4 +13,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
   Optional<Topic> findByExternalId(String externalId);
 
   Page<Topic> findAll(Pageable pageable);
+
+  Optional<Topic> findTopicByExternalId(String externalId);
 }

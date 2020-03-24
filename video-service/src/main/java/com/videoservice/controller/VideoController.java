@@ -4,14 +4,17 @@ import com.videoservice.model.VideoDto;
 import com.videoservice.model.VideoRequest;
 import com.videoservice.model.VideoResponse;
 import com.videoservice.service.VideoService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("video")
@@ -20,14 +23,14 @@ public class VideoController {
 
     private final VideoService videoService;
 
-    @GetMapping("/{externalId}")
-   public VideoResponse findById(@PathVariable("externalId") String externalId){
+    @GetMapping("/{externalId}/details")
+    public VideoResponse findById(@PathVariable("externalId") String externalId) {
         return videoService.findByExternalId(externalId);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public VideoResponse create(VideoRequest videoRequest) throws IOException {
-       return videoService.create(videoRequest);
+        return videoService.create(videoRequest);
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -36,9 +39,18 @@ public class VideoController {
     }
 
     @DeleteMapping("/{externalId}")
-    public void delete(@PathVariable("externalId") String externalId){
+    public void delete(@PathVariable("externalId") String externalId) {
         videoService.delete(externalId);
     }
 
+    @GetMapping("/{externalId}")
+    public ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId")String externalId) throws MalformedURLException {
+       return videoService.getFullVideo(externalId);
+
+    }
+    @GetMapping("/{chapter}/byChapter")
+    public List<VideoResponse> findAllByChapter(@PathVariable("chapter") String chapter) {
+        return videoService.findByChapter(chapter);
+    }
 
 }
