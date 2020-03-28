@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /email
+    context-path: /email-service
   port: 8885
 
 security:

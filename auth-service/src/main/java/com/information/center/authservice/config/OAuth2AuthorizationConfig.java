@@ -61,6 +61,12 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         .withClient("email-service")
         .secret(env.getProperty("EMAIL_SERVICE_PASSWORD"))
         .authorizedGrantTypes("client_credentials", "refresh_token")
+        .scopes("server")
+
+        .and()
+        .withClient("video-service")
+        .secret(env.getProperty("VIDEO_SERVICE_PASSWORD"))
+        .authorizedGrantTypes("client_credentials", "refresh_token")
         .scopes("server");
     // @formatter:on
   }
@@ -80,4 +86,6 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         .checkTokenAccess("isAuthenticated()")
         .passwordEncoder(NoOpPasswordEncoder.getInstance());
   }
+
+
 }

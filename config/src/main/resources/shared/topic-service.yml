@@ -21,7 +21,7 @@ spring:
 
 server:
   servlet:
-    context-path: /topic
+    context-path: /topic-service
   port: 8881
 
 security:

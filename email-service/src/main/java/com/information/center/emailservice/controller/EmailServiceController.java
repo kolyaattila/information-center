@@ -3,6 +3,7 @@ package com.information.center.emailservice.controller;
 import com.information.center.emailservice.model.EmailSubscriptionRequest;
 import com.information.center.emailservice.service.EmailService;
 import exception.RestExceptions.EmailSendException;
+import java.security.Principal;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class EmailServiceController implements EmailServiceEndpoint {
 
   @Override
   public ResponseEntity<?> sendSubscriptionEmail(
-      @Valid @RequestBody WrapperValidList<EmailSubscriptionRequest> emails) {
+      @Valid @RequestBody WrapperValidList<EmailSubscriptionRequest> emails, Principal principal) {
     emails.forEach(mail -> {
       try {
         emailService.subscriptionEmail(mail);

@@ -24,10 +24,34 @@ eureka:
       defaultZone: http://${REGISTRY_USERNAME}:${REGISTRY_PASSWORD}@${REGISTRY_SERVICE_HOST}:8761/eureka
 
 management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    httptrace:
+      enabled: true
+    info:
+      enabled: true
+    loggers:
+      enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    refresh:
+      enabled: true
   endpoints:
     web:
       exposure:
-        include: "*"
+        include:
+          - health
+          - httptrace
+          - info
+          - loggers
+          - metrics
+          - prometheus
+          - refresh
+    enabled-by-default: false
 
 spring:
   rabbitmq:

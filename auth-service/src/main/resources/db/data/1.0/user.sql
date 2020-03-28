@@ -7,5 +7,5 @@ create table public.user
 	account_expired boolean not null,
 	account_locked boolean not null,
 	credentials_expired boolean not null,
-	enabled boolean not null
+	enabled boolean not null DEFAULT true
 );

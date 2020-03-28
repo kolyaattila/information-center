@@ -11,28 +11,18 @@ zuul:
       serviceId: auth-service
       stripPrefix: false
 
-    subscription-service:
-      path: /subscription/**
-      serviceId: account-service
-      stripPrefix: false
-
     account-service:
-      path: /accounts/**
+      path: /account/**
       serviceId: account-service
       stripPrefix: false
 
     topic-service:
-      path: /topic/**
+      path: /topic-service/**
       serviceId: topic-service
       stripPrefix: false
 
     question-service:
-      path: /question/**
-      serviceId: question-service
-      stripPrefix: false
-
-    answer-service:
-      path: /answer/**
+      path: /question-service/**
       serviceId: question-service
       stripPrefix: false
 

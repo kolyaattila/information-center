@@ -25,8 +25,10 @@ public class UserService {
   public void createUser(UserRequest userRequest) {
     checkUniqueUsername(userRequest);
     encryptPassword(userRequest);
+    User user = userConverter.toUser(userRequest);
+    user.setEnabled(true);
     try {
-      userRepository.save(userConverter.toUser(userRequest));
+      userRepository.save(user);
     } catch (Exception e) {
       throw new InsertFailedException("Error inserting user");
     }
