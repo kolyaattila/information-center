@@ -1,6 +1,6 @@
 package com.information.center.videoservice.service;
 
-import com.information.center.videoservice.entity.Video;
+import com.information.center.videoservice.entity.VideoEntity;
 import com.information.center.videoservice.model.VideoDto;
 import com.information.center.videoservice.model.VideoRequest;
 import com.information.center.videoservice.model.VideoResponse;
@@ -17,5 +17,5 @@ public interface VideoService {
 
   void delete(String externalId);
 
-  Video findById(String externalId);
+  VideoEntity findById(String externalId);
 }

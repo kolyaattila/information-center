@@ -1,11 +1,11 @@
 package com.information.center.videoservice.service;
 
 import com.information.center.videoservice.converter.VideoConverter;
+import com.information.center.videoservice.entity.VideoEntity;
 import com.information.center.videoservice.model.VideoDto;
-import com.information.center.videoservice.repository.VideoRepository;
-import com.information.center.videoservice.entity.Video;
 import com.information.center.videoservice.model.VideoRequest;
 import com.information.center.videoservice.model.VideoResponse;
+import com.information.center.videoservice.repository.VideoRepository;
 import exception.ServiceExceptions.InconsistentDataException;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -29,14 +29,14 @@ public class VideoServiceImpl implements VideoService {
   @Override
   public VideoResponse create(VideoRequest videoRequest) {
     var video = videoConverter.toEntity(videoRequest);
-    video.setExternalId(UUID.randomUUID().toString());
+    video.setUid(UUID.randomUUID().toString());
     return videoConverter.toResponse(videoRepository.save(video));
   }
 
   @Override
   public void update(VideoDto videoDto) {
 
-    var video = findById(videoDto.getExternalId());
+    var video = findById(videoDto.getUid());
     var videoPersistent = videoConverter.toEntity(videoDto);
     videoPersistent.setId(video.getId());
     videoRepository.save(videoPersistent);
@@ -49,9 +49,9 @@ public class VideoServiceImpl implements VideoService {
   }
 
   @Override
-  public Video findById(String externalId) {
+  public VideoEntity findById(String externalId) {
 
-    return videoRepository.findByExternalId(externalId)
+    return videoRepository.findByUid(externalId)
         .orElseThrow(throwNotFoundItem("video", externalId));
   }
 

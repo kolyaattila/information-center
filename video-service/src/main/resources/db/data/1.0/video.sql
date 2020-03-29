@@ -6,5 +6,5 @@ create table public.video (
     path              varchar(255) not null,
     description       varchar(255) not null,
     topic_id          varchar(255) not null,
-    chapter_id        varchar(255) not null,
+    chapter_id        varchar(255) not null
 );

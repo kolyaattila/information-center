@@ -1,13 +1,21 @@
 package com.information.center.videoservice.model;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Tolerate;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class VideoDto {
 
-    private String externalId;
+    @Tolerate
+    public VideoDto() {
+    }
+
+    private String uid;
 
     private String path;
 
@@ -15,5 +23,5 @@ public class VideoDto {
 
     private String description;
 
-    private String chapter;
+    private String chapterId;
 }
