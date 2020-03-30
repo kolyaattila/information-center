@@ -27,4 +27,14 @@ public class SubscriptionRequest {
   @NotNull
   @Length(min = 3, max = 255)
   private String lastName;
+
+
+  @Override
+  public String toString() {
+    return "SubscriptionRequest{" +
+        "email='" + email + '\'' +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        '}';
+  }
 }

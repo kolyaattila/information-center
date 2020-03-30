@@ -7,51 +7,55 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
-@RequiredArgsConstructor
-@RestController
-@RequestMapping("/question")
-public class QuestionController {
-    private final QuestionService questionService;
+@Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class QuestionController implements QuestionEndpoint {
 
-    @PostMapping("/topic/{topicExternalId}")
-    public QuestionResponse create(@RequestBody QuestionRequest questionRequest, @PathVariable("topicExternalId") String topicExternalId) {
+  private final QuestionService questionService;
 
-        return questionService.create(questionRequest, topicExternalId);
-    }
+  @Override
+  public QuestionResponse create(@RequestBody QuestionRequest questionRequest,
+      @PathVariable("topicExternalId") String topicExternalId) {
 
-    @GetMapping("/questionsByTopic/{topicExternalId}")
-    public Page<QuestionResponse> findQuestionsByTopicId(@PathVariable("topicExternalId") String topicExternalId,
-                                                         Pageable pageable) {
-        return questionService.findQuestionsByTopicId(topicExternalId, pageable);
-    }
+    return questionService.create(questionRequest, topicExternalId);
+  }
 
-    @PostMapping("/validate")
-    public QuestionResponse validate(@RequestBody QuestionRequest questionRequest) {
+  @Override
+  public Page<QuestionResponse> findQuestionsByTopicId(
+      @PathVariable("topicExternalId") String topicExternalId,
+      Pageable pageable) {
+    return questionService.findQuestionsByTopicId(topicExternalId, pageable);
+  }
 
-        return questionService.validate(questionRequest);
-    }
+  @Override
+  public QuestionResponse validate(@RequestBody QuestionRequest questionRequest) {
 
-    @PutMapping
-    public void update(@RequestBody QuestionResponse questionResponse) {
-        questionService.update(questionResponse);
-    }
+    return questionService.validate(questionRequest);
+  }
 
-    @GetMapping("/{externalId}")
-    public QuestionResponse findByExternalId(@PathVariable("externalId") String externalId) {
-        return questionService.findByExternalId(externalId);
-    }
+  @Override
+  public void update(@RequestBody QuestionRequest questionRequest) {
+    questionService.update(questionRequest);
+  }
 
-    @GetMapping
-    public Page<QuestionResponse> findAll(Pageable pageable) {
-        return questionService.findAll(pageable);
-    }
+  @Override
+  public QuestionResponse findByExternalId(@PathVariable("externalId") String externalId) {
+    return questionService.findByExternalId(externalId);
+  }
 
-    @DeleteMapping("/{externalId}")
-    public void delete(@PathVariable("externalId") String externalId) {
+  @Override
+  public Page<QuestionResponse> findAll(Pageable pageable) {
+    return questionService.findAll(pageable);
+  }
 
-        questionService.delete(externalId);
-    }
+  @Override
+  public void delete(@PathVariable("externalId") String externalId) {
+
+    questionService.delete(externalId);
+  }
 }
 

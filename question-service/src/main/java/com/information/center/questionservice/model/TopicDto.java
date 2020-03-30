@@ -1,15 +1,18 @@
 package com.information.center.questionservice.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Tolerate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class TopicDto {
 
-    private String externalId;
+  @Tolerate
+  public TopicDto() {
+  }
 
-    private String name;
+  private String externalId;
+
+  private String name;
 }
