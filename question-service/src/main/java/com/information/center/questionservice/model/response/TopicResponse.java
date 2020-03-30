@@ -1,16 +1,19 @@
 package com.information.center.questionservice.model.response;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Tolerate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class TopicResponse {
 
-    private String name;
+  @Tolerate
+  public TopicResponse() {
+  }
 
-    private String externalId;
+  private String name;
+
+  private String externalId;
 
 }

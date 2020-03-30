@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name = "Topic")
 @Getter
 @Setter
-public class Topic {
+public class TopicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

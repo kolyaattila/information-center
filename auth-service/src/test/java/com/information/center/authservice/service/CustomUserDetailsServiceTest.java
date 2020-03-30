@@ -3,7 +3,7 @@ package com.information.center.authservice.service;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import com.information.center.authservice.entity.User;
+import com.information.center.authservice.entity.UserEntity;
 import com.information.center.authservice.repository.UserRepository;
 import java.util.Optional;
 import org.junit.Before;
@@ -24,11 +24,11 @@ public class CustomUserDetailsServiceTest {
 
   @Mock
   private UserRepository userRepository;
-  private User user;
+  private UserEntity user;
 
   @Before
   public void setUp() {
-    user = new User();
+    user = new UserEntity();
   }
 
   @Test

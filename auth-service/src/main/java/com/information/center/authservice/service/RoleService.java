@@ -1,8 +1,8 @@
 package com.information.center.authservice.service;
 
 import com.information.center.authservice.convert.RoleConverter;
-import com.information.center.authservice.entity.Role;
-import com.information.center.authservice.entity.User;
+import com.information.center.authservice.entity.RoleEntity;
+import com.information.center.authservice.entity.UserEntity;
 import com.information.center.authservice.model.RoleRequest;
 import com.information.center.authservice.repository.RoleRepository;
 import com.information.center.authservice.repository.UserRepository;
@@ -26,7 +26,7 @@ public class RoleService {
 
   public ErrorResponse saveRole(RoleRequest roleRequest) {
     checkIfRoleAlreadyExist(roleRequest);
-    Role role = roleConverter.toRole(roleRequest);
+    RoleEntity role = roleConverter.toRole(roleRequest);
     ErrorResponse errorResponse = setAllUsers(role, roleRequest);
     try {
       roleRepository.save(role);
@@ -37,7 +37,7 @@ public class RoleService {
   }
 
   public ErrorResponse updateRole(RoleRequest roleRequest) {
-    Role role = getRole(roleRequest);
+    RoleEntity role = getRole(roleRequest);
     role.setDescription(roleRequest.getDescription());
     ErrorResponse errorResponse = setAllUsers(role, roleRequest);
     try {
@@ -48,11 +48,11 @@ public class RoleService {
     }
   }
 
-  private ErrorResponse setAllUsers(Role role, RoleRequest roleRequest) {
+  private ErrorResponse setAllUsers(RoleEntity role, RoleRequest roleRequest) {
     ErrorResponse errorResponse = ErrorResponse.builder().build();
     roleRequest.getUsernames().forEach(username -> {
-      Optional<User> byUsername = userRepository.findByUsername(username);
-      if (byUsername.isPresent()) {//dublicate user
+      Optional<UserEntity> byUsername = userRepository.findByUsername(username);
+      if (byUsername.isPresent()) {
         role.getUsers().add(byUsername.get());
       } else {
         errorResponse.with(ErrorResponse.builder()
@@ -68,7 +68,7 @@ public class RoleService {
     }
   }
 
-  private Role getRole(RoleRequest roleRequest) {
+  private RoleEntity getRole(RoleRequest roleRequest) {
     return roleRepository.findByName(roleRequest.getName()).orElseGet(() -> {
       throw new InconsistentDataException("Role not exist");
     });

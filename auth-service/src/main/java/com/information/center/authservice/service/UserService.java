@@ -3,7 +3,7 @@ package com.information.center.authservice.service;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 import com.information.center.authservice.convert.UserConverter;
-import com.information.center.authservice.entity.User;
+import com.information.center.authservice.entity.UserEntity;
 import com.information.center.authservice.model.PasswordUpdateRequest;
 import com.information.center.authservice.model.UserRequest;
 import com.information.center.authservice.repository.UserRepository;
@@ -25,7 +25,7 @@ public class UserService {
   public void createUser(UserRequest userRequest) {
     checkUniqueUsername(userRequest);
     encryptPassword(userRequest);
-    User user = userConverter.toUser(userRequest);
+    UserEntity user = userConverter.toUser(userRequest);
     user.setEnabled(true);
     try {
       userRepository.save(user);
@@ -37,7 +37,7 @@ public class UserService {
   public void updatePassword(PasswordUpdateRequest passwordUpdateRequest) {
     encryptPasswords(passwordUpdateRequest);
     checkIfPasswordsAreDifferent(passwordUpdateRequest);
-    User user = getUser(passwordUpdateRequest);
+    UserEntity user = getUser(passwordUpdateRequest);
     user.setPassword(passwordUpdateRequest.getPassword());
     try {
       userRepository.save(user);
@@ -53,7 +53,7 @@ public class UserService {
     }
   }
 
-  private User getUser(PasswordUpdateRequest passwordUpdateRequest) {
+  private UserEntity getUser(PasswordUpdateRequest passwordUpdateRequest) {
     return userRepository.findByUsernameAndPassword(passwordUpdateRequest.getUsername(),
         passwordUpdateRequest.getOldPassword()).orElseGet(() -> {
       throw new InconsistentDataException("Wrong password");

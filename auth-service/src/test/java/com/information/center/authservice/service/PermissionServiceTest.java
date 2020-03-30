@@ -6,8 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.information.center.authservice.convert.PermissionConverter;
-import com.information.center.authservice.entity.Permission;
-import com.information.center.authservice.entity.Role;
+import com.information.center.authservice.entity.PermissionEntity;
+import com.information.center.authservice.entity.RoleEntity;
 import com.information.center.authservice.model.PermissionRequest;
 import com.information.center.authservice.repository.PermissionRepository;
 import com.information.center.authservice.repository.RoleRepository;
@@ -40,9 +40,9 @@ public class PermissionServiceTest {
   @InjectMocks
   private PermissionService permissionService;
   private PermissionRequest permissionRequest;
-  private Permission permission;
-  private Role roleAdmin;
-  private Role roleUser;
+  private PermissionEntity permission;
+  private RoleEntity roleAdmin;
+  private RoleEntity roleUser;
 
 
   @Before
@@ -52,12 +52,12 @@ public class PermissionServiceTest {
         .roles(Arrays.asList(ROLE_ADMIN, ROLE_USER))
         .build();
 
-    permission = new Permission();
+    permission = new PermissionEntity();
 
-    roleAdmin = new Role();
+    roleAdmin = new RoleEntity();
     roleAdmin.setName(ROLE_ADMIN);
 
-    roleUser = new Role();
+    roleUser = new RoleEntity();
     roleUser.setName(ROLE_USER);
   }
 

@@ -4,47 +4,42 @@ import com.information.center.questionservice.model.request.AnswerRequest;
 import com.information.center.questionservice.model.response.AnswerResponse;
 import com.information.center.questionservice.service.AnswerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/answer")
-@RequiredArgsConstructor
-public class AnswerController {
+@Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class AnswerController implements AnswerEndpoint {
 
   private final AnswerService answerService;
 
-  @PostMapping("/question/{questionExternalId}")
+  @Override
   public AnswerResponse create(@RequestBody AnswerRequest answerRequest,
       @PathVariable("questionExternalId") String questionExternalId) {
 
     return answerService.create(answerRequest, questionExternalId);
   }
 
-  @PutMapping
-  public void update(@RequestBody AnswerResponse answerResponse) {
-    answerService.update(answerResponse);
+  @Override
+  public void update(@RequestBody AnswerRequest answerRequest) {
+    answerService.update(answerRequest);
   }
 
-  @GetMapping("/{externalId}")
+  @Override
   public AnswerResponse findByExternalId(@PathVariable("externalId") String externalId) {
     return answerService.findByExternalId(externalId);
   }
 
-  @GetMapping
+  @Override
   public Page<AnswerResponse> findAll(Pageable pageable) {
     return answerService.findAll(pageable);
   }
 
-  @DeleteMapping("/{externalId}")
+  @Override
   public void delete(@PathVariable("externalId") String externalId) {
 
     answerService.delete(externalId);

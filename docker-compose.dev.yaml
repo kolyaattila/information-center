@@ -1,21 +1,21 @@
 version: '2.1'
 
 services:
-#  topic-service-database:
-#    container_name: topic-service-database
-#    extends:
-#      file: docker-compose.yaml
-#      service: topic-service-database
-#    ports:
-#      - ${TOPIC_SERVICE_DATABASE_PORT}:5432
+  topic-service-database:
+    container_name: topic-service-database
+    extends:
+      file: docker-compose.yaml
+      service: topic-service-database
+    ports:
+      - ${TOPIC_SERVICE_DATABASE_PORT}:5432
 
-#  question-service-database:
-#    container_name: question-service-database
-#    extends:
-#      file: docker-compose.yaml
-#      service: question-service-database
-#    ports:
-#      - ${QUESTION_SERVICE_DATABASE_PORT}:5432
+  question-service-database:
+    container_name: question-service-database
+    extends:
+      file: docker-compose.yaml
+      service: question-service-database
+    ports:
+      - ${QUESTION_SERVICE_DATABASE_PORT}:5432
 
   account-service-database:
     container_name: account-service-database
@@ -33,13 +33,13 @@ services:
     ports:
       - ${AUTH_SERVICE_DATABASE_PORT}:5432
 
-#  video-service-database:
-#    container_name: video-service-database
-#    extends:
-#      file: docker-compose.yaml
-#      service: video-service-database
-#    ports:
-#      - ${VIDEO_SERVICE_DATABASE_PORT}:5432
+  video-service-database:
+    container_name: video-service-database
+    extends:
+      file: docker-compose.yaml
+      service: video-service-database
+    ports:
+      - ${VIDEO_SERVICE_DATABASE_PORT}:5432
 
   config:
     container_name: config
@@ -58,14 +58,14 @@ services:
       config:
         condition: service_healthy
 
-#  monitoring:
-#    extends:
-#      file: docker-compose.yaml
-#      service: monitoring
-#    container_name: monitoring
-#    depends_on:
-#      config:
-#        condition: service_healthy
+  monitoring:
+    extends:
+      file: docker-compose.yaml
+      service: monitoring
+    container_name: monitoring
+    depends_on:
+      config:
+        condition: service_healthy
 
   registry:
     extends:

@@ -1,8 +1,8 @@
 package com.information.center.accountservice.config;
 
-
 import com.information.center.accountservice.service.security.CustomUserInfoTokenServices;
 import feign.RequestInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,17 +18,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
-
 @Configuration
 @EnableResourceServer
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
   private final ResourceServerProperties sso;
-
-  @Autowired
-  public ResourceServerConfig(ResourceServerProperties sso) {
-    this.sso = sso;
-  }
 
   @Bean
   @ConfigurationProperties(prefix = "security.oauth2.client")

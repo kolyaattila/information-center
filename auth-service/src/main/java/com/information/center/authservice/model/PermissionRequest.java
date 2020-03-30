@@ -2,12 +2,12 @@ package com.information.center.authservice.model;
 
 import java.util.List;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
 
-@Getter
-@Setter
+@Data
 @Builder
 public class PermissionRequest {
 

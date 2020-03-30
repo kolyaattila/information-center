@@ -1,6 +1,5 @@
 package com.information.center.authservice;
 
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;

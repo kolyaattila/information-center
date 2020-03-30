@@ -86,6 +86,4 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         .checkTokenAccess("isAuthenticated()")
         .passwordEncoder(NoOpPasswordEncoder.getInstance());
   }
-
-
 }

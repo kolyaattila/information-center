@@ -12,7 +12,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 public class ThymeleafConfig {
 
   @Bean
-  public SpringTemplateEngine springTemplateEngine() {
+  public SpringTemplateEngine templateEngine() {
     SpringTemplateEngine templateEngine = new SpringTemplateEngine();
     templateEngine.addTemplateResolver(htmlTemplateResolver());
     return templateEngine;
@@ -26,7 +26,5 @@ public class ThymeleafConfig {
     emailTemplateResolver.setTemplateMode(TemplateMode.HTML);
     emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
     return emailTemplateResolver;
-
-
   }
 }

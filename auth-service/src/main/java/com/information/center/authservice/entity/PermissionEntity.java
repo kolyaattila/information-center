@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "permission")
-public class Permission implements Serializable {
+public class PermissionEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +34,5 @@ public class Permission implements Serializable {
   private Date created;
 
   @ManyToMany(mappedBy = "permissions")
-  private List<Role> roleEntities = new ArrayList<>();
+  private List<RoleEntity> roleEntities = new ArrayList<>();
 }

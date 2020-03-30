@@ -5,8 +5,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.information.center.authservice.convert.RoleConverter;
-import com.information.center.authservice.entity.Role;
-import com.information.center.authservice.entity.User;
+import com.information.center.authservice.entity.RoleEntity;
+import com.information.center.authservice.entity.UserEntity;
 import com.information.center.authservice.model.RoleRequest;
 import com.information.center.authservice.repository.RoleRepository;
 import com.information.center.authservice.repository.UserRepository;
@@ -38,9 +38,9 @@ public class RoleServiceTest {
   @InjectMocks
   private RoleService roleService;
   private RoleRequest roleRequest;
-  private Role role;
-  private User user1;
-  private User user2;
+  private RoleEntity role;
+  private UserEntity user1;
+  private UserEntity user2;
 
   @Before
   public void setUp() {
@@ -48,9 +48,9 @@ public class RoleServiceTest {
         .name(ROLE_NAME)
         .usernames(Arrays.asList(USERNAME_1, USERNAME_2))
         .build();
-    role = new Role();
-    user1 = new User();
-    user2 = new User();
+    role = new RoleEntity();
+    user1 = new UserEntity();
+    user2 = new UserEntity();
   }
 
   @Test(expected = InconsistentDataException.class)

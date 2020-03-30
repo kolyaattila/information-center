@@ -20,7 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Getter
 @Setter
 @Table(name = "role")
-public class Role implements GrantedAuthority {
+public class RoleEntity implements GrantedAuthority {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,14 +33,14 @@ public class Role implements GrantedAuthority {
   private String description;
 
   @ManyToMany(mappedBy = "roles")
-  private List<User> users = new ArrayList<>();
+  private List<UserEntity> users = new ArrayList<>();
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "role_permission",
       joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
-  private List<Permission> permissions = new ArrayList<>();
+  private List<PermissionEntity> permissions = new ArrayList<>();
 
   @Override
   public String getAuthority() {

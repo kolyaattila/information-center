@@ -4,60 +4,55 @@ import com.information.center.questionservice.model.request.QuestionRequest;
 import com.information.center.questionservice.model.response.QuestionResponse;
 import com.information.center.questionservice.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RequiredArgsConstructor
-@RestController
-@RequestMapping("/question")
-public class QuestionController {
+@Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class QuestionController implements QuestionEndpoint {
 
   private final QuestionService questionService;
 
-  @PostMapping("/topic/{topicExternalId}")
+  @Override
   public QuestionResponse create(@RequestBody QuestionRequest questionRequest,
       @PathVariable("topicExternalId") String topicExternalId) {
 
     return questionService.create(questionRequest, topicExternalId);
   }
 
-  @GetMapping("/questionsByTopic/{topicExternalId}")
+  @Override
   public Page<QuestionResponse> findQuestionsByTopicId(
       @PathVariable("topicExternalId") String topicExternalId,
       Pageable pageable) {
     return questionService.findQuestionsByTopicId(topicExternalId, pageable);
   }
 
-  @PostMapping("/validate")
+  @Override
   public QuestionResponse validate(@RequestBody QuestionRequest questionRequest) {
 
     return questionService.validate(questionRequest);
   }
 
-  @PutMapping
-  public void update(@RequestBody QuestionResponse questionResponse) {
-    questionService.update(questionResponse);
+  @Override
+  public void update(@RequestBody QuestionRequest questionRequest) {
+    questionService.update(questionRequest);
   }
 
-  @GetMapping("/{externalId}")
+  @Override
   public QuestionResponse findByExternalId(@PathVariable("externalId") String externalId) {
     return questionService.findByExternalId(externalId);
   }
 
-  @GetMapping
+  @Override
   public Page<QuestionResponse> findAll(Pageable pageable) {
     return questionService.findAll(pageable);
   }
 
-  @DeleteMapping("/{externalId}")
+  @Override
   public void delete(@PathVariable("externalId") String externalId) {
 
     questionService.delete(externalId);

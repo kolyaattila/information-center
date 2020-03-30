@@ -1,14 +1,17 @@
 package com.information.center.questionservice.model.request;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Tolerate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class TopicRequest {
 
-    private String name;
+  @Tolerate
+  public TopicRequest() {
+  }
+
+  private String name;
 
 }

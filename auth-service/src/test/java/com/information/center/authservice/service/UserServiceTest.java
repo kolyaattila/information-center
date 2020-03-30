@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.information.center.authservice.convert.UserConverter;
-import com.information.center.authservice.entity.User;
+import com.information.center.authservice.entity.UserEntity;
 import com.information.center.authservice.model.PasswordUpdateRequest;
 import com.information.center.authservice.model.UserRequest;
 import com.information.center.authservice.repository.UserRepository;
@@ -27,7 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserServiceTest {
 
   public static final String USERNAME = "username";
-  private final ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+  private final ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
   @Mock
   private UserConverter userConverter;
   @Mock
@@ -37,7 +37,7 @@ public class UserServiceTest {
   @InjectMocks
   private UserService userService;
   private UserRequest userRequest;
-  private User user;
+  private UserEntity user;
   private PasswordUpdateRequest passwordUpdateRequest;
 
   @Before
@@ -46,7 +46,7 @@ public class UserServiceTest {
         .password("password")
         .username(USERNAME)
         .build();
-    user = new User();
+    user = new UserEntity();
     passwordUpdateRequest = PasswordUpdateRequest.builder()
         .oldPassword("oldPassword")
         .password("password")
@@ -122,7 +122,7 @@ public class UserServiceTest {
     userService.updatePassword(passwordUpdateRequest);
 
     verify(userRepository).save(captor.capture());
-    User userCaptor = captor.getValue();
+    UserEntity userCaptor = captor.getValue();
     assertEquals("passwordEncoded", userCaptor.getPassword());
   }
 

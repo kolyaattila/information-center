@@ -4,7 +4,6 @@ package com.information.center.accountservice.controller;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import com.information.center.accountservice.entity.Account;
 import com.information.center.accountservice.model.AccountRequest;
 import com.information.center.accountservice.model.CreateAccountRequest;
 import com.information.center.accountservice.service.AccountService;
@@ -17,14 +16,12 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
-
 
 
   @InjectMocks
@@ -78,6 +75,12 @@ public class AccountControllerTest {
     AccountRequest response = accountController.saveCurrentAccount(createAccountRequest);
 
     assertEquals(accountRequest, response);
+    assertEquals(accountRequest.getBirthday(), response.getBirthday());
+    assertEquals(accountRequest.getFirstName(), response.getFirstName());
+    assertEquals(accountRequest.getLastName(), response.getLastName());
+    assertEquals(accountRequest.getPhoto(), response.getPhoto());
+    assertEquals(accountRequest.getUid(), response.getUid());
+    assertEquals(accountRequest.getUsername(), response.getUsername());
   }
 
   @Test(expected = ServiceUnavailable.class)

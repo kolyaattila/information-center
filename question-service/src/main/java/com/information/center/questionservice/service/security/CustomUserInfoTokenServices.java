@@ -1,5 +1,7 @@
 package com.information.center.questionservice.service.security;
 
+import static org.springframework.security.oauth2.common.OAuth2AccessToken.BEARER_TYPE;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.FixedAuthoritiesExtractor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.OAuth2RestOperations;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -28,13 +29,13 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
 
   private final Log logger = LogFactory.getLog(getClass());
 
-  private static final String[] PRINCIPAL_KEYS = new String[]{"user", "username",
-      "userid", "user_id", "login", "id", "name"};
+  private static final String[] PRINCIPAL_KEYS =
+      new String[]{"user", "username", "userid", "user_id", "login", "id", "name"};
 
   private final String userInfoEndpointUrl;
   private final String clientId;
   private OAuth2RestOperations restTemplate;
-  private String tokenType = DefaultOAuth2AccessToken.BEARER_TYPE;
+  private String tokenType = BEARER_TYPE;
   private AuthoritiesExtractor authoritiesExtractor = new FixedAuthoritiesExtractor();
 
   public CustomUserInfoTokenServices(String userInfoEndpointUrl, String clientId) {
@@ -55,8 +56,12 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
   }
 
   @Override
-  public OAuth2Authentication loadAuthentication(String accessToken)
-      throws AuthenticationException, InvalidTokenException {
+  public OAuth2AccessToken readAccessToken(String accessToken) {
+    throw new UnsupportedOperationException("Not supported: read access token");
+  }
+
+  @Override
+  public OAuth2Authentication loadAuthentication(String accessToken) {
     Map<String, Object> map = getMap(this.userInfoEndpointUrl, accessToken);
     if (map.containsKey("error")) {
       this.logger.debug("userinfo returned error: " + map.get("error"));
@@ -85,46 +90,46 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
     return "unknown";
   }
 
-  @SuppressWarnings({"unchecked"})
   private OAuth2Request getRequest(Map<String, Object> map) {
     Map<String, Object> request = (Map<String, Object>) map.get("oauth2Request");
 
-    String clientId = (String) request.get("clientId");
-    Set<String> scope = new LinkedHashSet<>(request.containsKey("scope") ?
-        (Collection<String>) request.get("scope") : Collections.<String>emptySet());
+    String clientIdValue = (String) request.get("clientId");
+    Set<String> scope = new LinkedHashSet<>(
+        request.containsKey("scope") ?
+            (Collection<String>) request.get("scope") : Collections.emptySet());
 
-    return new OAuth2Request(null, clientId, null, true, new HashSet<>(scope),
+    return new OAuth2Request(null, clientIdValue, null, true, new HashSet<>(scope),
         null, null, null, null);
   }
 
-  @Override
-  public OAuth2AccessToken readAccessToken(String accessToken) {
-    throw new UnsupportedOperationException("Not supported: read access token");
-  }
-
-  @SuppressWarnings({"unchecked"})
   private Map<String, Object> getMap(String path, String accessToken) {
     this.logger.debug("Getting user info from: " + path);
     try {
-      OAuth2RestOperations restTemplate = this.restTemplate;
-      if (restTemplate == null) {
-        BaseOAuth2ProtectedResourceDetails resource = new BaseOAuth2ProtectedResourceDetails();
-        resource.setClientId(this.clientId);
-        restTemplate = new OAuth2RestTemplate(resource);
-      }
-      OAuth2AccessToken existingToken = restTemplate.getOAuth2ClientContext().getAccessToken();
-
-      if (existingToken == null || !accessToken.equals(existingToken.getValue())) {
-        DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(
-            accessToken);
-        token.setTokenType(this.tokenType);
-        restTemplate.getOAuth2ClientContext().setAccessToken(token);
-      }
-
-      return restTemplate.getForEntity(path, Map.class).getBody();
+      OAuth2RestOperations oAuth2RestOperations = getOAuth2RestOperations();
+      setNewToken(accessToken, oAuth2RestOperations);
+      return oAuth2RestOperations.getForEntity(path, Map.class).getBody();
     } catch (Exception ex) {
       this.logger.info("Could not fetch user details: " + ex.getClass() + ", " + ex.getMessage());
       return Collections.<String, Object>singletonMap("error", "Could not fetch user details");
     }
+  }
+
+  private void setNewToken(String accessToken, OAuth2RestOperations restTemplate) {
+    OAuth2AccessToken existingToken = restTemplate.getOAuth2ClientContext().getAccessToken();
+
+    if (existingToken == null || !accessToken.equals(existingToken.getValue())) {
+      DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(accessToken);
+      token.setTokenType(this.tokenType);
+      restTemplate.getOAuth2ClientContext().setAccessToken(token);
+    }
+  }
+
+  private OAuth2RestOperations getOAuth2RestOperations() {
+    if (restTemplate == null) {
+      BaseOAuth2ProtectedResourceDetails resource = new BaseOAuth2ProtectedResourceDetails();
+      resource.setClientId(this.clientId);
+      return new OAuth2RestTemplate(resource);
+    }
+    return restTemplate;
   }
 }

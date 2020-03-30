@@ -1,24 +1,26 @@
 package com.information.center.questionservice.model.request;
 
 import com.information.center.questionservice.entity.QuestionDifficulty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
+import lombok.Builder;
+import lombok.Data;
+import lombok.experimental.Tolerate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class QuestionRequest {
 
-    private String name;
+  @Tolerate
+  public QuestionRequest() {
+  }
 
-    private String externalId;
+  private String name;
 
-    private List<AnswerRequest> answers;
+  private String externalId;
 
-    private QuestionDifficulty questionDifficulty;
+  private List<AnswerRequest> answers;
 
-    private String topicExternalId;
+  private QuestionDifficulty questionDifficulty;
+
+  private String topicExternalId;
 }

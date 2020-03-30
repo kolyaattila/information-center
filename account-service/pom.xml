@@ -138,21 +138,41 @@
             <goals>
               <goal>report</goal>
             </goals>
+            <configuration>
+              <excludes>
+                <exclude>*ConverterImpl</exclude>
+                <exclude>*Entity</exclude>
+                <exclude>*Application</exclude>
+                <exclude>*Config</exclude>
+              </excludes>
+            </configuration>
           </execution>
           <execution>
-            <id>jacoco-check</id>
+            <id>check</id>
+            <phase>test</phase>
             <goals>
               <goal>check</goal>
             </goals>
             <configuration>
               <rules>
                 <rule>
-                  <element>PACKAGE</element>
+                  <element>CLASS</element>
+                  <excludes>
+                    <exclude>*ConverterImpl</exclude>
+                    <exclude>*Entity</exclude>
+                    <exclude>*Application</exclude>
+                    <exclude>*Config</exclude>
+                  </excludes>
                   <limits>
+                    <limit>
+                      <counter>CLASS</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.60</minimum>
+                    </limit>
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.9</minimum>
+                      <minimum>0.50</minimum>
                     </limit>
                   </limits>
                 </rule>

@@ -18,9 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-//import org.thymeleaf.spring4.SpringTemplateEngine;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -47,7 +46,7 @@ public class EmailService {
   private String unsubscriptionPath;
 
   private final JavaMailSender emailSender;
-  private final SpringTemplateEngine templateEngine;
+  private final ITemplateEngine templateEngine;
 
   public void subscriptionEmail(EmailSubscriptionRequest mail) throws MessagingException {
     MimeMessage message = emailSender.createMimeMessage();

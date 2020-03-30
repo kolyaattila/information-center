@@ -2,7 +2,7 @@ package com.information.center.accountservice.service;
 
 import com.information.center.accountservice.client.AuthServiceClient;
 import com.information.center.accountservice.converter.AccountConverter;
-import com.information.center.accountservice.entity.Account;
+import com.information.center.accountservice.entity.AccountEntity;
 import com.information.center.accountservice.model.AccountRequest;
 import com.information.center.accountservice.model.CreateAccountRequest;
 import com.information.center.accountservice.repository.AccountRepository;
@@ -30,7 +30,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public AccountRequest findByUsername(String username) {
-    Account account = accountRepository.findByUsername(username).orElseGet(() -> {
+    AccountEntity account = accountRepository.findByUsername(username).orElseGet(() -> {
       throw new InconsistentDataException("Account not found");
     });
     return accountConverter.toAccountRequest(account);
@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
   @Override
   public AccountRequest save(CreateAccountRequest createAccountRequest) {
-    Account account;
+    AccountEntity account;
     if (!accountRepository.findByUsername(createAccountRequest.getUsername()).isPresent()) {
       account = saveAccount(createAccountRequest);
     } else {
@@ -52,9 +52,9 @@ public class AccountServiceImpl implements AccountService {
    * The createUser can succeed and saveAccount can fail, that means you will have the user created
    * but the account not. One solution would be to save a default account with user's username
    */
-  private Account saveAccount(CreateAccountRequest createAccountRequest) {
+  private AccountEntity saveAccount(CreateAccountRequest createAccountRequest) {
     createUser(createAccountRequest);
-    Account account = accountConverter.toAccount(createAccountRequest);
+    AccountEntity account = accountConverter.toAccount(createAccountRequest);
     account.setUid(getUid());
     try {
       return accountRepository.save(account);
@@ -64,8 +64,8 @@ public class AccountServiceImpl implements AccountService {
     }
   }
 
-  private void saveDefaultAccountWithUserName(Account account) {
-    Account defaultAccount = new Account();
+  private void saveDefaultAccountWithUserName(AccountEntity account) {
+    AccountEntity defaultAccount = new AccountEntity();
     defaultAccount.setUsername(account.getUsername());
     defaultAccount.setUid(account.getUid());
     accountRepository.save(defaultAccount);
@@ -79,8 +79,8 @@ public class AccountServiceImpl implements AccountService {
     }
   }
 
-  private Account updateAccount(CreateAccountRequest createAccountRequest, String username) {
-    Account account = accountConverter.toAccount(createAccountRequest);
+  private AccountEntity updateAccount(CreateAccountRequest createAccountRequest, String username) {
+    AccountEntity account = accountConverter.toAccount(createAccountRequest);
     copyPersistentData(account, username);
     try {
       return accountRepository.save(account);
@@ -89,8 +89,8 @@ public class AccountServiceImpl implements AccountService {
     }
   }
 
-  private void copyPersistentData(Account account, String username) {
-    Account oldAccount = getAccount(username);
+  private void copyPersistentData(AccountEntity account, String username) {
+    AccountEntity oldAccount = getAccount(username);
 
     account.setUid(oldAccount.getUid());
     account.setCreated(oldAccount.getCreated());
@@ -98,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
     account.setUsername(oldAccount.getUsername());
   }
 
-  private Account getAccount(String uid) {
+  private AccountEntity getAccount(String uid) {
     return accountRepository.findByUid(uid).orElseGet(() -> {
       throw new InconsistentDataException("Account not found");
     });

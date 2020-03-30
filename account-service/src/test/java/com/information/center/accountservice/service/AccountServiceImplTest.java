@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 
 import com.information.center.accountservice.client.AuthServiceClient;
 import com.information.center.accountservice.converter.AccountConverter;
-import com.information.center.accountservice.entity.Account;
+import com.information.center.accountservice.entity.AccountEntity;
 import com.information.center.accountservice.model.AccountRequest;
 import com.information.center.accountservice.model.CreateAccountRequest;
 import com.information.center.accountservice.repository.AccountRepository;
@@ -42,7 +42,7 @@ public class AccountServiceImplTest {
   private static final String LAST_NAME = "lastName";
   private static final String UID = "uid";
   private static final String FIRST_NAME = "firstName";
-  private final ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
+  private final ArgumentCaptor<AccountEntity> captor = ArgumentCaptor.forClass(AccountEntity.class);
   @InjectMocks
   private AccountServiceImpl accountService;
   @Mock
@@ -55,7 +55,7 @@ public class AccountServiceImplTest {
   public final OutputCapture outputCapture = new OutputCapture();
   private AccountRequest accountRequest;
   private CreateAccountRequest createAccountRequest;
-  private Account account;
+  private AccountEntity account;
 
   @Before
   public void setUp() {
@@ -76,7 +76,7 @@ public class AccountServiceImplTest {
         .birthday(new Date())
         .build();
 
-    account = new Account();
+    account = new AccountEntity();
     account.setUsername(USERNAME);
   }
 
@@ -151,7 +151,7 @@ public class AccountServiceImplTest {
       outputCapture.expect(containsString(
           String.format("Auth-service response with %s", new ResponseEntity<>(HttpStatus.OK))));
       verify(accountRepository, times(2)).save(captor.capture());
-      Account accountCaptor = captor.getValue();
+      AccountEntity accountCaptor = captor.getValue();
       assertEquals(USERNAME, accountCaptor.getUsername());
       assertFalse(accountCaptor.getUid().isEmpty());
     }

@@ -1,8 +1,8 @@
 package com.information.center.authservice.service;
 
 import com.information.center.authservice.convert.PermissionConverter;
-import com.information.center.authservice.entity.Permission;
-import com.information.center.authservice.entity.Role;
+import com.information.center.authservice.entity.PermissionEntity;
+import com.information.center.authservice.entity.RoleEntity;
 import com.information.center.authservice.model.PermissionRequest;
 import com.information.center.authservice.repository.PermissionRepository;
 import com.information.center.authservice.repository.RoleRepository;
@@ -25,7 +25,7 @@ public class PermissionService {
 
   public ErrorResponse createPermission(PermissionRequest permissionRequest) {
     checkIfAlreadyExist(permissionRequest);
-    Permission permission = permissionConverter.toPermission(permissionRequest);
+    PermissionEntity permission = permissionConverter.toPermission(permissionRequest);
     ErrorResponse errorResponse = setAllRoles(permission, permissionRequest);
     try {
       permissionRepository.save(permission);
@@ -35,10 +35,11 @@ public class PermissionService {
     }
   }
 
-  private ErrorResponse setAllRoles(Permission permission, PermissionRequest permissionRequest) {
+  private ErrorResponse setAllRoles(PermissionEntity permission,
+      PermissionRequest permissionRequest) {
     ErrorResponse errorResponse = ErrorResponse.builder().build();
     permissionRequest.getRoles().forEach(role -> {
-      Optional<Role> byName = roleRepository.findByName(role);
+      Optional<RoleEntity> byName = roleRepository.findByName(role);
       if (byName.isPresent()) {
         permission.getRoleEntities().add(byName.get());
       } else {
@@ -57,7 +58,7 @@ public class PermissionService {
   }
 
   public ErrorResponse updatePermission(PermissionRequest permissionRequest) {
-    Permission permission = getPermission(permissionRequest.getName());
+    PermissionEntity permission = getPermission(permissionRequest.getName());
     ErrorResponse errorResponse = setAllRoles(permission, permissionRequest);
     permission.setDescription(permissionRequest.getDescription());
     try {
@@ -68,14 +69,14 @@ public class PermissionService {
     }
   }
 
-  private Permission getPermission(String permission) {
+  private PermissionEntity getPermission(String permission) {
     return permissionRepository.findByName(permission).orElseGet(() -> {
       throw new InconsistentDataException("Permission not found");
     });
   }
 
   public void deletePermission(PermissionRequest permissionRequest) {
-    Permission permission = getPermission(permissionRequest.getName());
+    PermissionEntity permission = getPermission(permissionRequest.getName());
     try {
       permissionRepository.delete(permission);
     } catch (Exception e) {
