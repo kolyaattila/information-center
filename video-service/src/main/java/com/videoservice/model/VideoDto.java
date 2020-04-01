@@ -19,4 +19,6 @@ public class VideoDto {
     private String description;
 
     private String chapter;
+
+    private String topicId;
 }

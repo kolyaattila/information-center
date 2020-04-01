@@ -48,9 +48,9 @@ public class VideoController {
        return videoService.getFullVideo(externalId);
 
     }
-    @GetMapping("/{chapter}/byChapter")
-    public List<VideoResponse> findAllByChapter(@PathVariable("chapter") String chapter) {
-        return videoService.findByChapter(chapter);
+    @GetMapping("/{topicId}/byChapter")
+    public List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId) {
+        return videoService.findAllByTopicId(topicId);
     }
 
 }

@@ -134,15 +134,15 @@ public class VideoService {
     public ResponseEntity<UrlResource> getFullVideo(String externalId) throws MalformedURLException {
 
         var videoDetails = videoRepository.findByExternalId(externalId).orElseThrow(throwNotFoundItem("video", externalId));
-        File file = new File(videoDetails.getChapter() + "/" + videoDetails.getExternalId() + "/" + videoDetails.getExternalId());
+        File file = new File(videoDetails.getPath() + "/" + videoDetails.getExternalId());
         UrlResource video = new UrlResource("file:///" + file.getAbsolutePath() + ".mp4");
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(video);
     }
 
-    public List<VideoResponse> findByChapter(String chapter) {
-        return videoRepository.findAllByChapter(chapter).stream().map(videoConverter::toResponse).collect(Collectors.toList());
+    public List<VideoResponse> findAllByTopicId(String topicId) {
+        return videoRepository.findAllByTopicId(topicId).stream().map(videoConverter::toResponse).collect(Collectors.toList());
     }
 }
 

@@ -10,6 +10,6 @@ public interface VideoRepository extends JpaRepository<Video, Long > {
 
     Optional<Video> findByExternalId(String externalId);
 
-    List<Video> findAllByChapter(String chapter);
+    List<Video> findAllByTopicId(String topicId);
 
 }

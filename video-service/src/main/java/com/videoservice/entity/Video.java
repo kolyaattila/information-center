@@ -27,5 +27,5 @@ public class Video {
 
     private String chapter;
 
-    private long topicId;
+    private String topicId;
 }
