@@ -37,7 +37,7 @@ public class SubscriptionController implements SubscriptionEndpoint {
   }
 
   @Override
-  public ResponseEntity<?> subscriptionActivation(@NotNull @RequestBody String uid) {
+  public ResponseEntity<?> subscriptionActivation(@Valid @NotNull @RequestBody String uid) {
     try {
       subscriptionService.subscriptionActivation(uid);
     } catch (ServiceExceptions.InconsistentDataException | ServiceExceptions.InsertFailedException e) {
@@ -47,7 +47,7 @@ public class SubscriptionController implements SubscriptionEndpoint {
   }
 
   @Override
-  public ResponseEntity<?> unsubscribe(@NotNull String uid) {
+  public ResponseEntity<?> unsubscribe(@Valid @NotNull @RequestBody String uid) {
     try {
       subscriptionService.unsubscription(uid);
     } catch (ServiceExceptions.InconsistentDataException | ServiceExceptions.InsertFailedException e) {

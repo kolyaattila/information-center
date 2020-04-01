@@ -29,4 +29,13 @@ public class EmailSubscriptionRequest {
   @NotNull
   private String uid;
 
+  @Override
+  public String toString() {
+    return "EmailSubscriptionRequest{" +
+        "to='" + to + '\'' +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", uid='" + uid + '\'' +
+        '}';
+  }
 }
