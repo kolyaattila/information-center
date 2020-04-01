@@ -1,24 +1,26 @@
 package com.information.center.questionservice.model.request;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.experimental.Tolerate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class AnswerRequest {
 
+  @Tolerate
+  public AnswerRequest() {
+  }
 
-    private String name;
+  private String name;
 
-    private String externalId;
+  private String externalId;
 
-    private String questionExternalId;
+  private String questionExternalId;
 
-    private boolean isCorrect;
+  private boolean isCorrect;
 
-    private boolean checked;
+  private boolean checked;
 
-    private String reason;
+  private String reason;
 }

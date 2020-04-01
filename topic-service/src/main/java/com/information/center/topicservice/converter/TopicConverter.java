@@ -1,5 +1,6 @@
 package com.information.center.topicservice.converter;
-import com.information.center.topicservice.entity.Topic;
+
+import com.information.center.topicservice.entity.TopicEntity;
 import com.information.center.topicservice.model.TopicDto;
 import com.information.center.topicservice.model.request.TopicRequest;
 import com.information.center.topicservice.model.response.TopicResponse;
@@ -8,14 +9,12 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface TopicConverter {
 
-    TopicDto toDto(Topic topic);
+  TopicDto toDto(TopicEntity topic);
 
-    Topic toEntity(TopicRequest topicRequest);
+  TopicEntity toEntity(TopicRequest topicRequest);
 
-    TopicResponse toResponse(Topic topic);
+  TopicResponse toResponse(TopicEntity topic);
 
-    Topic toEntity(TopicResponse topicResponse,long id);
-
-
+  TopicEntity toEntity(TopicResponse topicResponse, long id);
 
 }

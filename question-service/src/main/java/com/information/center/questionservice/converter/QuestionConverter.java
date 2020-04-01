@@ -1,6 +1,6 @@
 package com.information.center.questionservice.converter;
 
-import com.information.center.questionservice.entity.Question;
+import com.information.center.questionservice.entity.QuestionEntity;
 import com.information.center.questionservice.model.request.QuestionRequest;
 import com.information.center.questionservice.model.response.QuestionResponse;
 import org.mapstruct.Mapper;
@@ -8,13 +8,13 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface QuestionConverter {
 
-    Question toEntity(QuestionRequest questionRequest);
+  QuestionEntity toEntity(QuestionRequest questionRequest);
 
-    QuestionResponse toResponse(Question question);
+  QuestionResponse toResponse(QuestionEntity question);
 
-    Question toEntity(QuestionResponse questionResponse, long id);
+  QuestionEntity toEntity(QuestionRequest questionRequest, long id);
 
-    QuestionRequest toRequest(Question question);
+  QuestionRequest toRequest(QuestionEntity question);
 
-    QuestionResponse toResponse(QuestionRequest questionRequest);
+  QuestionResponse toResponse(QuestionRequest questionRequest);
 }

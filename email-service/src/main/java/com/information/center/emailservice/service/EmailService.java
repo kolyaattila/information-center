@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.spring4.SpringTemplateEngine;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -35,18 +35,18 @@ public class EmailService {
   private static final String NAME = "companyName";
 
   @Value("${EMAIL_ADDRESS}")
-  private String COMPANY_EMAIL;
+  private String companyEmail;
   @Value("${COMPANY_NAME}")
-  private String COMPANY_NAME;
+  private String companyName;
   @Value("${COMPANY_SITE_URL}")
-  private String COMPANY_SITE_URL;
+  private String companySiteUrl;
   @Value("${SUBSCRIPTION_CONFIRMATION_PATH}")
-  private String SUBSCRIPTION_CONFIRMATION_PATH;
+  private String subscriptionConfirmationPath;
   @Value("${UNSUBSCRIPTION_PATH}")
-  private String UNSUBSCRIPTION_PATH;
+  private String unsubscriptionPath;
 
   private final JavaMailSender emailSender;
-  private final SpringTemplateEngine templateEngine;
+  private final ITemplateEngine templateEngine;
 
   public void subscriptionEmail(EmailSubscriptionRequest mail) throws MessagingException {
     MimeMessage message = emailSender.createMimeMessage();
@@ -61,23 +61,23 @@ public class EmailService {
     helper.setTo(mail.getTo());
     helper.setText(html, true);
     helper.setSubject(SUBSCRIPTION_EMAIL_SUBJECT);
-    helper.setFrom(COMPANY_EMAIL);
+    helper.setFrom(companyEmail);
 
     emailSender.send(message);
   }
 
-  Map<String, Object> getModelsForSubscriptionEmail(EmailSubscriptionRequest mail) {
+  private Map<String, Object> getModelsForSubscriptionEmail(EmailSubscriptionRequest mail) {
     Map<String, Object> map = new HashMap<>();
     map.put(CUSTOMER_NAME, mail.getFirstName() + " " + mail.getLastName());
     map.put(LOCATION, COMPANY_LOCATION);
-    map.put(SIGNATURE, COMPANY_SITE_URL);
-    map.put(NAME, COMPANY_NAME);
+    map.put(SIGNATURE, companySiteUrl);
+    map.put(NAME, companyName);
     map.put(CUSTOMER_EMAIL, mail.getTo());
     map.put("logo", getLogo());
-    map.put("companyUrl", COMPANY_SITE_URL);
+    map.put("companyUrl", companySiteUrl);
     map.put("uid", mail.getUid());
-    map.put("unsubscriptionAction", UNSUBSCRIPTION_PATH);
-    map.put("mailConfirmationAction", SUBSCRIPTION_CONFIRMATION_PATH);
+    map.put("unsubscriptionAction", unsubscriptionPath);
+    map.put("mailConfirmationAction", subscriptionConfirmationPath);
     return map;
   }
 

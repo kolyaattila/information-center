@@ -84,6 +84,7 @@ services:
       - TOPIC_SERVICE_DATABASE_PASSWORD
       - TOPIC_SERVICE_DATABASE_PORT=5432
       - TOPIC_SERVICE_DATABASE_HOST=topic-service-database
+      - TOPIC_SERVICE_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -124,6 +125,7 @@ services:
       - QUESTION_SERVICE_DATABASE_PASSWORD
       - QUESTION_SERVICE_DATABASE_PORT=5432
       - QUESTION_SERVICE_DATABASE_HOST=question-service-database
+      - QUESTION_SERVICE_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -164,6 +166,7 @@ services:
       - ACCOUNT_SERVICE_DATABASE_PASSWORD
       - ACCOUNT_SERVICE_DATABASE_PORT=5432
       - ACCOUNT_SERVICE_DATABASE_HOST=account-service-database
+      - ACCOUNT_SERVICE_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -204,6 +207,11 @@ services:
       - AUTH_SERVICE_DATABASE_PASSWORD
       - AUTH_SERVICE_DATABASE_PORT=5432
       - AUTH_SERVICE_DATABASE_HOST=auth-service-database
+      - QUESTION_SERVICE_PASSWORD
+      - TOPIC_SERVICE_PASSWORD
+      - EMAIL_SERVICE_PASSWORD
+      - ACCOUNT_SERVICE_PASSWORD
+      - VIDEO_SERVICE_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -253,6 +261,7 @@ services:
     environment:
       SUBSCRIPTION_CONFIRMATION_PATH: $SUBSCRIPTION_CONFIRMATION_PATH
       UNSUBSCRIPTION_PATH: $UNSUBSCRIPTION_PATH
+      EMAIL_SERVICE_PASSWORD: $EMAIL_SERVICE_PASSWORD
     ports:
       - 8885:8885
     logging:
@@ -288,11 +297,53 @@ services:
         max-size: "10m"
         max-file: "10"
 
+  video-service-database:
+    container_name: video-service-database
+    image: postgres:11.2
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${VIDEO_SERVICE_DATABASE_PASSWORD}
+      - POSTGRES_USER=${VIDEO_SERVICE_DATABASE_USER}
+      - POSTGRES_DB=${VIDEO_SERVICE_DATABASE}
+    volumes:
+      - vs-db:/var/lib/postgresql/video-service-database/data
+    networks:
+      - information-center-prod-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${VIDEO_SERVICE_DATABASE} -U ${VIDEO_SERVICE_DATABASE_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  video-service:
+    extends:
+      service: base-microservice
+    restart: always
+    container_name: video-service
+    build:
+      context: ./video-service
+    networks:
+      - information-center-prod-network
+    ports:
+      - 8886:8886
+    environment:
+      - VIDEO_SERVICE_DATABASE
+      - VIDEO_SERVICE_DATABASE_USER
+      - VIDEO_SERVICE_DATABASE_PASSWORD
+      - VIDEO_SERVICE_DATABASE_PORT=5434
+      - VIDEO_SERVICE_DATABASE_HOST=video-service-database
+      - VIDEO_SERVICE_PASSWORD
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "10"
+
 
 volumes:
   ts-db:
   qs-db:
   acs-db:
   aus-db:
+  vs-db:
 networks:
   information-center-prod-network:
