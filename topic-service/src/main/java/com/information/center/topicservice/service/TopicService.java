@@ -1,7 +1,7 @@
 package com.information.center.topicservice.service;
 
 import com.information.center.topicservice.converter.TopicConverter;
-import com.information.center.topicservice.entity.Topic;
+import com.information.center.topicservice.entity.TopicEntity;
 import com.information.center.topicservice.model.request.TopicRequest;
 import com.information.center.topicservice.model.response.TopicResponse;
 import com.information.center.topicservice.repository.TopicRepository;
@@ -57,7 +57,7 @@ public class TopicService {
         topicRepository.delete(topic);
     }
 
-    private Topic findById(String externalId) {
+    private TopicEntity findById(String externalId) {
         return topicRepository.findByExternalId(externalId)
                 .orElseThrow(throwNotFoundItem("topic", externalId));
     }
@@ -68,7 +68,7 @@ public class TopicService {
     }
 
     public String getNameById(String externalId) {
- var topic= topicRepository.findTopicByExternalId(externalId).orElseThrow(throwNotFoundItem("topic",externalId));
- return topic.getName();
+        var topic = topicRepository.findTopicByExternalId(externalId).orElseThrow(throwNotFoundItem("topic", externalId));
+        return topic.getName();
     }
 }

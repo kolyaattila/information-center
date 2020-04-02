@@ -12,13 +12,6 @@ services:
     extends:
       file: docker-compose.yaml
       service: question-service-database
-
-  video-service-database:
-    container_name: video-service-database
-    extends:
-      file: docker-compose.yaml
-      service: video-service-database
-
   account-service-database:
     container_name: account-service-database
     extends:
@@ -30,7 +23,6 @@ services:
     extends:
       file: docker-compose.yaml
       service: auth-service-database
-
   video-service-database:
     container_name: video-service-database
     extends:
@@ -91,18 +83,6 @@ services:
         condition: service_healthy
       config:
         condition: service_healthy
-
-  video-service:
-    extends:
-      file: docker-compose.yaml
-      service: video-service
-    container_name: video-service
-    depends_on:
-      video-service-database:
-        condition: service_healthy
-      config:
-        condition: service_healthy
-
 
   account-service:
     extends:

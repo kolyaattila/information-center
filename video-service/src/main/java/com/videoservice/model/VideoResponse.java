@@ -1,17 +1,15 @@
-package com.information.center.videoservice.model;
+package com.videoservice.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Tolerate;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VideoResponse {
-
-    @Tolerate
-    public VideoResponse() {
-    }
 
     private String externalId;
 

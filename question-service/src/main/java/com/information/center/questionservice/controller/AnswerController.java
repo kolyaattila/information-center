@@ -22,8 +22,8 @@ public class AnswerController {
     }
 
     @PutMapping
-    public void update(@RequestBody AnswerResponse answerResponse) {
-        answerService.update(answerResponse);
+    public void update(@RequestBody AnswerRequest answerRequest) {
+        answerService.update(answerRequest);
     }
 
     @GetMapping("/{externalId}")

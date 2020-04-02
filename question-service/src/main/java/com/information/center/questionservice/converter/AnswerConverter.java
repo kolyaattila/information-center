@@ -13,4 +13,6 @@ public interface AnswerConverter {
   AnswerResponse toResponse(AnswerEntity answer);
 
   AnswerEntity toEntity(AnswerRequest answerRequest, long id);
+
+  AnswerEntity toEntity(AnswerResponse answerRequest, long id);
 }

@@ -38,7 +38,7 @@ public class QuestionEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "difficulty", nullable = false)
-  private QuestionDifficulty questionDifficulty;
+  private String questionDifficulty;
 
   @Column(name = "topic_id", nullable = false)
   private String topicExternalId;

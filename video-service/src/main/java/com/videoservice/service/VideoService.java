@@ -1,12 +1,12 @@
 package com.videoservice.service;
 
-import com.videoservice.config.MicroserviceException;
 import com.videoservice.converter.VideoConverter;
 import com.videoservice.entity.Video;
 import com.videoservice.model.VideoDto;
 import com.videoservice.model.VideoRequest;
 import com.videoservice.model.VideoResponse;
 import com.videoservice.repository.VideoRepository;
+import exception.MicroserviceException;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.springframework.core.io.UrlResource;

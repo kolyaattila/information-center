@@ -20,7 +20,7 @@ public class QuestionRequest {
 
   private List<AnswerRequest> answers;
 
-  private QuestionDifficulty questionDifficulty;
+  private String questionDifficulty;
 
   private String topicExternalId;
 }

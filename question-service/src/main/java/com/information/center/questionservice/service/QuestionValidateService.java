@@ -37,9 +37,7 @@ public class QuestionValidateService {
         });
         var questionValidated = questionConverter.toResponse(questionRequest);
         questionValidated.setEndDate(new Date());
-        //Todo we might have multiple topics for different questions...
 
-//        questionValidated.setTopicName(getTopicById(questionRequest.getQuestionResponses().stream().findFirst().get().getTopicExternalId()));
         questionValidated.setTotalTime(crunchifyTimeDiff.dateDifference(questionRequest.getStartDate(), new Date()));
         return questionValidated;
     }

@@ -6,12 +6,10 @@ import com.videoservice.model.VideoResponse;
 import com.videoservice.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -44,10 +42,11 @@ public class VideoController {
     }
 
     @GetMapping("/{externalId}")
-    public ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId")String externalId) throws MalformedURLException {
-       return videoService.getFullVideo(externalId);
+    public ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId") String externalId) throws MalformedURLException {
+        return videoService.getFullVideo(externalId);
 
     }
+
     @GetMapping("/{topicId}/byChapter")
     public List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId) {
         return videoService.findAllByTopicId(topicId);
