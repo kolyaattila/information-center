@@ -1,6 +1,5 @@
 package com.information.center.topicservice.service;
 
-
 import com.information.center.topicservice.converter.TopicConverter;
 import com.information.center.topicservice.entity.TopicEntity;
 import com.information.center.topicservice.model.request.TopicRequest;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
