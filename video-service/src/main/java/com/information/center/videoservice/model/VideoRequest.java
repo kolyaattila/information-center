@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Tolerate;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
@@ -13,6 +14,8 @@ public class VideoRequest {
     public VideoRequest() {
     }
 
+    private MultipartFile file;
+
     private String path;
 
     private String title;
@@ -20,4 +23,6 @@ public class VideoRequest {
     private String description;
 
     private String chapter;
+
+    private String topicId;
 }

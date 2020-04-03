@@ -2,10 +2,8 @@ package com.information.center.videoservice.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.Tolerate;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
@@ -15,7 +13,9 @@ public class VideoDto {
     public VideoDto() {
     }
 
-    private String uid;
+    private MultipartFile file;
+
+    private String externalId;
 
     private String path;
 
@@ -23,5 +23,7 @@ public class VideoDto {
 
     private String description;
 
-    private String chapterId;
+    private String chapter;
+
+    private String topicId;
 }

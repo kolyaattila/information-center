@@ -1,123 +1,132 @@
 package com.information.center.questionservice.service;
 
+import com.information.center.questionservice.client.TopicServiceClient;
 import com.information.center.questionservice.converter.QuestionConverter;
 import com.information.center.questionservice.entity.QuestionEntity;
+import com.information.center.questionservice.model.QuestionListDetails;
 import com.information.center.questionservice.model.request.AnswerRequest;
 import com.information.center.questionservice.model.request.QuestionRequest;
 import com.information.center.questionservice.model.response.AnswerResponse;
 import com.information.center.questionservice.model.response.QuestionResponse;
+import com.information.center.questionservice.model.response.QuestionResponsePage;
 import com.information.center.questionservice.repository.QuestionRepository;
 import exception.MicroserviceException;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+import java.util.UUID;
+import java.util.function.Supplier;
+
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QuestionServiceImpl implements QuestionService {
 
-  private final QuestionRepository questionRepository;
-  private final QuestionConverter questionConverter;
+    private final QuestionRepository questionRepository;
 
-  @Override
-  public QuestionResponse create(QuestionRequest questionRequest, String topicExternalId) {
+    private final TopicServiceClient topicServiceClient;
 
-    String questionExternalId = UUID.randomUUID().toString();
+    private final QuestionConverter questionConverter;
 
-    for (AnswerRequest answerRequest : questionRequest.getAnswers()) {
-      answerRequest.setQuestionExternalId(questionExternalId);
-      answerRequest.setExternalId(UUID.randomUUID().toString());
+    private final AnswerService answerService;
+
+    @Override
+    public String getTopicNameByExternalId(String topicId) {
+        return topicServiceClient.getTopicNameByTopicId(topicId);
     }
-    QuestionEntity question = questionConverter.toEntity(questionRequest);
-    question.setExternalId(questionExternalId);
-    question.setTopicExternalId(topicExternalId);
 
-    return questionConverter.toResponse(questionRepository.save(question));
-  }
+    @Override
+    public QuestionResponse create(QuestionRequest questionRequest, String topicExternalId) {
 
-  @Override
-  public void update(QuestionRequest questionRequest) {
-    QuestionEntity question = findById(questionRequest.getExternalId());
-    QuestionEntity questionPersistent = questionConverter
-        .toEntity(questionRequest, question.getId());
-    questionRepository.save(questionPersistent);
+        String questionExternalId = UUID.randomUUID().toString();
 
-  }
 
-  @Override
-  public QuestionResponse findByExternalId(String externalId) {
-    QuestionResponse question = questionConverter.toResponse(findById(externalId));
-    for (AnswerResponse answer : question.getAnswers()) {
-      answer.setCorrect(false);
+        QuestionEntity question = questionConverter.toEntity(questionRequest);
+        question.setExternalId(questionExternalId);
+        question.setTopicExternalId(topicExternalId);
+        question.setAnswers(null);
+        var questionFromDb = questionConverter.toResponse(questionRepository.save(question));
+        for (AnswerRequest answerRequest : questionRequest.getAnswers()) {
+            answerService.create(answerRequest, questionExternalId);
+        }
+
+
+        return questionFromDb;
     }
-    return question;
 
-  }
+    @Override
+    public void update(QuestionRequest questionRequest) {
+        QuestionEntity question = findById(questionRequest.getExternalId());
+        QuestionEntity questionPersistent = questionConverter.toEntity(questionRequest, question.getId());
+        questionRepository.save(questionPersistent);
 
-  @Override
-  public Page<QuestionResponse> findAll(Pageable pageable) {
-    return questionRepository.findAll(pageable)
-        .map(question -> {
-          QuestionResponse response = questionConverter.toResponse(question);
-          for (AnswerResponse answer : response.getAnswers()) {
+    }
+
+    @Override
+    public QuestionResponse findByExternalId(String externalId) {
+        QuestionResponse question = questionConverter.toResponse(findById(externalId));
+        for (AnswerResponse answer : question.getAnswers()) {
             answer.setCorrect(false);
-          }
-          return response;
-        });
-  }
+        }
+        return question;
 
-  @Override
-  public void delete(String externalId) {
-    QuestionEntity question = findById(externalId);
-    questionRepository.delete(question);
-  }
-
-  @Override
-  public QuestionEntity findById(String externalId) {
-    return questionRepository.findByExternalId(externalId)
-        .orElseThrow(throwNotFoundItem("question", externalId));
-  }
-
-  @Override
-  public QuestionResponse validate(QuestionRequest questionRequest) {
-    List<AnswerRequest> answerToBeSend = questionRequest.getAnswers();
-    List<AnswerRequest> answerRequests;
-
-    QuestionRequest question = questionRepository.findByExternalId(questionRequest.getExternalId())
-        .map(questionConverter::toRequest)
-        .orElseThrow(throwNotFoundItem("question", questionRequest.getExternalId()));
-
-    answerRequests = question.getAnswers();
-    if (answerToBeSend.size() == answerRequests.size()) {
-      for (int i = 0; i < answerToBeSend.size(); i++) {
-        answerToBeSend.get(i).setCorrect(answerRequests.get(i).isCorrect());
-      }
     }
-    questionRequest.setAnswers(answerToBeSend);
-    return questionConverter.toResponse(questionRequest);
-  }
 
-  @Override
-  public Page<QuestionResponse> findQuestionsByTopicId(String topicExternalId, Pageable pageable) {
-    return questionRepository.findQuestionsByTopicExternalId(topicExternalId, pageable)
-        .map(question -> {
+    @Override
+    public QuestionResponsePage findAll(Pageable pageable) {
+        Page<QuestionResponse> questionPage = questionRepository.findAll(pageable)
+                .map(question -> {
+                    QuestionResponse response = questionConverter.toResponse(question);
+                    for (AnswerResponse answer : response.getAnswers()) {
+                        answer.setCorrect(false);
+                    }
+                    return response;
+                });
+        var questionResponsePage = new QuestionResponsePage();
+        questionResponsePage.setQuestionResponses(questionPage);
+        questionResponsePage.setStartDate(new Date());
+        return questionResponsePage;
+    }
 
-          QuestionResponse response = questionConverter.toResponse(question);
-          for (AnswerResponse answer : response.getAnswers()) {
-            answer.setCorrect(false);
-          }
-          return response;
-        });
-  }
+    @Override
+    public void delete(String externalId) {
+        QuestionEntity question = findById(externalId);
+        questionRepository.delete(question);
+    }
 
-  private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
-    return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
-        "Cannot find " + item + " by id " + itemId);
-  }
+    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
+        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
+                "Cannot find " + item + " by id " + itemId);
+    }
+
+    @Override
+    public QuestionEntity findById(String externalId) {
+        return questionRepository.findByExternalId(externalId)
+                .orElseThrow(throwNotFoundItem("question", externalId));
+    }
+
+    @Override
+    public QuestionListDetails findQuestionsByTopicId(String topicExternalId, Pageable pageable) {
+        var questionDetails = new QuestionListDetails();
+        Page<QuestionResponse> questions = questionRepository.findQuestionsByTopicExternalId(topicExternalId, pageable)
+                .map(question -> {
+
+                    QuestionResponse response = questionConverter.toResponse(question);
+                    for (AnswerResponse answer : response.getAnswers()) {
+                        answer.setCorrect(false);
+                    }
+                    return response;
+                });
+        questionDetails.setQuestionResponseList(questions);
+        questionDetails.setStartDate(new Date());
+
+        questionDetails.setTopicName(getTopicNameByExternalId(topicExternalId));
+        return questionDetails;
+
+    }
 }

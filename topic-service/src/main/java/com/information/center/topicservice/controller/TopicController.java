@@ -6,15 +6,14 @@ import com.information.center.topicservice.service.TopicService;
 import exception.RestExceptions.BadRequest;
 import exception.ServiceExceptions.InsertFailedException;
 import exception.ServiceExceptions.NotFoundException;
-
-import java.util.List;
-import javax.validation.Valid;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

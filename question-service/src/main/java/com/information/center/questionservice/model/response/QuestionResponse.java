@@ -1,26 +1,28 @@
 package com.information.center.questionservice.model.response;
 
 import com.information.center.questionservice.entity.QuestionDifficulty;
-import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
+
+import java.util.List;
 
 @Data
 @Builder
 public class QuestionResponse {
 
-  @Tolerate
-  public QuestionResponse() {
-  }
+    @Tolerate
+    public QuestionResponse() {
+    }
 
-  private List<AnswerResponse> answers;
+    private List<AnswerResponse> answers;
 
-  private String externalId;
+    private String externalId;
 
-  private String name;
+    private String name;
 
-  private QuestionDifficulty questionDifficulty;
+    private QuestionDifficulty questionDifficulty;
 
-  private String topicExternalId;
+    private String topicExternalId;
+
 }
