@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/topic")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class TopicController {
+public class TopicController implements TopicEndpoint {
 
     private final TopicService topicService;
 
@@ -20,6 +20,11 @@ public class TopicController {
     public TopicResponse create(@RequestBody TopicRequest topicResponse) {
 
         return topicService.create(topicResponse);
+    }
+
+    @GetMapping("/internal/{externalId}")
+    public String getNameById(@PathVariable("externalId") String externalId) {
+        return topicService.getNameById(externalId);
     }
 
     @PutMapping

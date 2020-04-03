@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TopicRequest {
 
-  private String name;
+    private String name;
 
 }

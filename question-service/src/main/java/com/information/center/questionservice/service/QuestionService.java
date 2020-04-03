@@ -1,28 +1,29 @@
 package com.information.center.questionservice.service;
 
 import com.information.center.questionservice.entity.QuestionEntity;
+import com.information.center.questionservice.model.QuestionListDetails;
 import com.information.center.questionservice.model.request.QuestionRequest;
 import com.information.center.questionservice.model.response.QuestionResponse;
-import org.springframework.data.domain.Page;
+import com.information.center.questionservice.model.response.QuestionResponsePage;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface QuestionService {
 
-  QuestionResponse create(QuestionRequest questionRequest, String topicExternalId);
+    QuestionResponse create(QuestionRequest questionRequest, String topicExternalId);
 
-  void update(QuestionRequest questionRequest);
+    String getTopicNameByExternalId(String topicId);
 
-  QuestionResponse findByExternalId(String externalId);
+    void update(QuestionRequest questionRequest);
 
-  Page<QuestionResponse> findAll(Pageable pageable);
+    QuestionResponse findByExternalId(String externalId);
 
-  void delete(String externalId);
+    QuestionResponsePage findAll(Pageable pageable);
 
-  QuestionEntity findById(String externalId);
+    void delete(String externalId);
 
-  QuestionResponse validate(QuestionRequest questionRequest);
+    QuestionEntity findById(String externalId);
 
-  Page<QuestionResponse> findQuestionsByTopicId(String topicExternalId, Pageable pageable);
+    QuestionListDetails findQuestionsByTopicId(String topicExternalId, Pageable pageable);
 }

@@ -1,16 +1,16 @@
 databaseChangeLog:
-  - changeSet:
-      id: difficulty_enum_db_1.0
-      author: attila
-      changes:
-        - sqlFile:
-            dbms: postgresql
-            encoding: utf8
-            endDelimiter: \nGO
-            path: difficulty_enum.sql
-            relativeToChangelogFile: true
-            splitStatements: true
-            stripComments: true
+#  - changeSet:
+#      id: difficulty_enum_db_1.0
+#      author: attila
+#      changes:
+#        - sqlFile:
+#            dbms: postgresql
+#            encoding: utf8
+#            endDelimiter: \nGO
+#            path: difficulty_enum.sql
+#            relativeToChangelogFile: true
+#            splitStatements: true
+#            stripComments: true
 
   - changeSet:
       id: question_db_1.0

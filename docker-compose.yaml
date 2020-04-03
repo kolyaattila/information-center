@@ -333,6 +333,8 @@ services:
       - VIDEO_SERVICE_DATABASE_PORT=5434
       - VIDEO_SERVICE_DATABASE_HOST=video-service-database
       - VIDEO_SERVICE_PASSWORD
+    volumes:
+      - vs:/videos
     logging:
       options:
         max-size: "10m"
@@ -340,6 +342,7 @@ services:
 
 
 volumes:
+  vs:
   ts-db:
   qs-db:
   acs-db:

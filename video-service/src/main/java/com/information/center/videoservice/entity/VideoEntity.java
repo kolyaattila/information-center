@@ -16,11 +16,11 @@ import lombok.Setter;
 public class VideoEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "uid", unique = true, nullable = false)
-  private String uid;
+  @Column(name = "externalId", unique = true, nullable = false)
+  private String externalId;
 
   @Column(name = "path", nullable = false)
   private String path;

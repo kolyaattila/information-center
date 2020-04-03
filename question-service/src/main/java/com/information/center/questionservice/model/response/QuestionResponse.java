@@ -1,6 +1,8 @@
 package com.information.center.questionservice.model.response;
 
 import com.information.center.questionservice.entity.QuestionDifficulty;
+
+import java.util.Date;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +25,6 @@ public class QuestionResponse {
   private QuestionDifficulty questionDifficulty;
 
   private String topicExternalId;
+
+  private Date startDate;
 }
