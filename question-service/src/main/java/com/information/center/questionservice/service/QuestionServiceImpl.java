@@ -1,5 +1,6 @@
 package com.information.center.questionservice.service;
 
+import com.information.center.questionservice.client.TopicServiceClient;
 import com.information.center.questionservice.converter.QuestionConverter;
 import com.information.center.questionservice.entity.QuestionEntity;
 import com.information.center.questionservice.model.QuestionListDetails;
@@ -13,12 +14,10 @@ import exception.MicroserviceException;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.UUID;
@@ -30,22 +29,15 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
 
+    private final TopicServiceClient topicServiceClient;
+
     private final QuestionConverter questionConverter;
 
     private final AnswerService answerService;
 
-    private final RestTemplate template;
-
-    private static final String ORGANISATION_ENDPOINT = "/topic/internal/";
-
-    @Value("${endpoints.topic:http://localhost:8881}")
-    private String equipmentEndpoint;
-
     @Override
     public String getTopicNameByExternalId(String topicId) {
-        return template.getForObject(
-                equipmentEndpoint + ORGANISATION_ENDPOINT + topicId,
-                String.class);
+        return topicServiceClient.getTopicNameByTopicId(topicId);
     }
 
     @Override

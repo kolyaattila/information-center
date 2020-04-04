@@ -6,14 +6,7 @@ import com.information.center.videoservice.model.VideoResponse;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -23,21 +16,21 @@ import java.util.List;
 @RequestMapping("/video")
 public interface VideoEndpoint {
 
-  @GetMapping("/{externalId}/details")
-  VideoResponse findById(@PathVariable("externalId") String externalId);
+    @GetMapping("/{externalId}/details")
+    VideoResponse findById(@PathVariable("externalId") String externalId);
 
-  @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  VideoResponse create(@RequestBody VideoRequest videoRequest) throws IOException;
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    VideoResponse create(@RequestBody VideoRequest videoRequest) throws IOException;
 
-  @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  void update(@RequestBody VideoDto videoDto) throws IOException;
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    void update(@RequestBody VideoDto videoDto) throws IOException;
 
-  @DeleteMapping("/{externalId}")
-  void delete(@PathVariable("externalId") String externalId);
+    @DeleteMapping("/{externalId}")
+    void delete(@PathVariable("externalId") String externalId);
 
-  @GetMapping("/{externalId}")
-  public ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId") String externalId) throws MalformedURLException;
+    @GetMapping("/{externalId}")
+    public ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId") String externalId) throws MalformedURLException;
 
-  @GetMapping("/{topicId}/byChapter")
-  public List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId);
+    @GetMapping("/{topicId}/byChapter")
+    public List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId);
 }
