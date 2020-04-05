@@ -22,7 +22,7 @@ import lombok.Setter;
 public class QuestionEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   @Column(name = "external_id", nullable = false)
