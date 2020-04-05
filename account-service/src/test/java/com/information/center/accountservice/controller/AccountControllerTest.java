@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import sun.security.acl.PrincipalImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
@@ -56,7 +57,7 @@ public class AccountControllerTest {
   public void getAccountByUsername_expectTheAccountRequest() {
     when(accountService.findByUsername("name")).thenReturn(accountRequest);
 
-    AccountRequest response = accountController.getAccountByUsername("name");
+    AccountRequest response = accountController.getCurrentAccount(new PrincipalImpl("name"));
 
     assertEquals(accountRequest, response);
   }
@@ -65,7 +66,7 @@ public class AccountControllerTest {
   public void getAccountByUsername_expectBadRequest() {
     when(accountService.findByUsername("name")).thenThrow(InconsistentDataException.class);
 
-    accountController.getAccountByUsername("name");
+    accountController.getCurrentAccount(new PrincipalImpl("name"));
   }
 
   @Test

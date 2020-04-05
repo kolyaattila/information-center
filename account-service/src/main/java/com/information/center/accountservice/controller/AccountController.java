@@ -8,6 +8,7 @@ import exception.RestExceptions.ServiceUnavailable;
 import exception.ServiceExceptions.InconsistentDataException;
 import exception.ServiceExceptions.InsertFailedException;
 import exception.ServiceExceptions.ServiceUnavailableException;
+import java.security.Principal;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class AccountController implements AccountEndpoint {
   private final AccountService accountService;
 
   @Override
-  public AccountRequest getAccountByUsername(@PathVariable String name) {
+  public AccountRequest getCurrentAccount(Principal principal) {
     try {
-      return accountService.findByUsername(name);
+      return accountService.findByUsername(principal.getName());
     } catch (InconsistentDataException e) {
       throw new BadRequest(e.getMessage());
     }

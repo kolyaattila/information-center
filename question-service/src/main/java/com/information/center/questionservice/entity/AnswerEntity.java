@@ -20,7 +20,7 @@ import lombok.Setter;
 public class AnswerEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   @Column(name = "external_id", nullable = false)
