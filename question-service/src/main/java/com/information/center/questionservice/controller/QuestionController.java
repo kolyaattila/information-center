@@ -7,9 +7,7 @@ import com.information.center.questionservice.model.request.QuestionRequestValid
 import com.information.center.questionservice.model.response.QuestionResponse;
 import com.information.center.questionservice.model.response.QuestionResponsePage;
 import com.information.center.questionservice.service.QuestionService;
-import com.information.center.questionservice.service.QuestionServiceImpl;
 import com.information.center.questionservice.service.QuestionValidateService;
-import com.information.center.questionservice.service.QuestionValidateServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -24,23 +22,27 @@ public class QuestionController implements QuestionEndpoint {
 
     private final QuestionValidateService questionValidateService;
 
+    @Override
     @PostMapping("/topic/{topicExternalId}")
     public QuestionResponse create(@RequestBody QuestionRequest questionRequest, @PathVariable("topicExternalId") String topicExternalId) {
 
         return questionService.create(questionRequest, topicExternalId);
     }
 
+    @Override
     @GetMapping("/questionsByTopic/{topicExternalId}")
     public QuestionListDetails findQuestionsByTopicId(@PathVariable("topicExternalId") String topicExternalId,
                                                       Pageable pageable) {
         return questionService.findQuestionsByTopicId(topicExternalId, pageable);
     }
 
+    @Override
     @PutMapping
     public void update(@RequestBody QuestionRequest questionRequest) {
-        questionService. update(questionRequest);
+        questionService.update(questionRequest);
     }
 
+    @Override
     @GetMapping("/{externalId}")
     public QuestionResponse findByExternalId(@PathVariable("externalId") String externalId) {
         return questionService.findByExternalId(externalId);

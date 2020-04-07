@@ -14,31 +14,37 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AnswerController implements AnswerEndpoint {
 
-  private final AnswerService answerService;
+    private final AnswerService answerService;
 
-  @PostMapping("/question/{questionExternalId}")
-  public AnswerResponse create(@RequestBody AnswerRequest answerRequest, @PathVariable("questionExternalId") String questionExternalId) {
+    @Override
+    @PostMapping("/question/{questionExternalId}")
+    public AnswerResponse create(@RequestBody AnswerRequest answerRequest, @PathVariable("questionExternalId") String questionExternalId) {
 
-    return answerService.create(answerRequest, questionExternalId);
-  }
+        return answerService.create(answerRequest, questionExternalId);
+    }
 
-  @PutMapping
-  public void update(@RequestBody AnswerRequest answerRequest) {
-    answerService.update(answerRequest);
-  }
+    @Override
+    @PutMapping
+    public void update(@RequestBody AnswerRequest answerRequest) {
+        answerService.update(answerRequest);
+    }
 
-  @GetMapping("/{externalId}")
-  public AnswerResponse findByExternalId(@PathVariable("externalId") String externalId) {
-    return answerService.findByExternalId(externalId);
-  }
+    @Override
+    @GetMapping("/{externalId}")
+    public AnswerResponse findByExternalId(@PathVariable("externalId") String externalId) {
+        return answerService.findByExternalId(externalId);
+    }
 
-  @GetMapping
-  public Page<AnswerResponse> findAll(Pageable pageable) {
-    return answerService.findAll(pageable);
-  }
+    @Override
+    @GetMapping
+    public Page<AnswerResponse> findAll(Pageable pageable) {
+        return answerService.findAll(pageable);
+    }
 
-  @DeleteMapping("/{externalId}")
-  public void delete(@PathVariable("externalId") String externalId) {
+    @Override
+    @DeleteMapping("/{externalId}")
+    public void delete(@PathVariable("externalId") String externalId) {
 
-    answerService.delete(externalId);
-  }}
+        answerService.delete(externalId);
+    }
+}

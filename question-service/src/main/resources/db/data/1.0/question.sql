@@ -4,5 +4,5 @@ create table public.Question (
     created           timestamp,
     external_id       varchar(255) not null unique,
     topic_id          varchar(255) not null,
-    difficulty        varchar(255) not null
+    difficulty        Difficulty not null
 );

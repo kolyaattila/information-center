@@ -35,10 +35,12 @@ public class VideoServiceImpl implements VideoService {
 
     private final VideoConverter videoConverter;
 
+    @Override
     public VideoResponse findByExternalId(String externalId) {
         return videoConverter.toResponse(findById(externalId));
     }
 
+    @Override
     public VideoResponse create(VideoRequest videoRequest) throws IOException {
         VideoEntity video = videoConverter.toEntity(videoRequest);
         video.setExternalId(UUID.randomUUID().toString());
@@ -53,6 +55,7 @@ public class VideoServiceImpl implements VideoService {
         return videoConverter.toResponse(videoRepository.save(video));
     }
 
+    @Override
     public void update(VideoDto videoDto) throws IOException {
 
         VideoEntity video = findById(videoDto.getExternalId());
@@ -85,6 +88,7 @@ public class VideoServiceImpl implements VideoService {
         f1.renameTo(f2);
     }
 
+    @Override
     public void delete(String externalId) {
         VideoEntity video = findById(externalId);
         File file = new File(video.getPath() + "/" + video.getExternalId() + ".mp4");
@@ -99,6 +103,7 @@ public class VideoServiceImpl implements VideoService {
                 "Cannot find " + item + " by id " + itemId);
     }
 
+    @Override
     public VideoEntity findById(String externalId) {
 
         return videoRepository.findByExternalId(externalId)
@@ -126,12 +131,13 @@ public class VideoServiceImpl implements VideoService {
         convertFile.createNewFile();
 
         try (FileOutputStream fOut = new FileOutputStream(convertFile)) {
-          fOut.write(file.getBytes());
+            fOut.write(file.getBytes());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Override
     public ResponseEntity<UrlResource> getFullVideo(String externalId) throws MalformedURLException {
 
         var videoDetails = videoRepository.findByExternalId(externalId).orElseThrow(throwNotFoundItem("video", externalId));
@@ -142,6 +148,7 @@ public class VideoServiceImpl implements VideoService {
                 .body(video);
     }
 
+    @Override
     public List<VideoResponse> findAllByTopicId(String topicId) {
         return videoRepository.findAllByTopicId(topicId).stream().map(videoConverter::toResponse).collect(Collectors.toList());
     }
