@@ -1,3 +1,5 @@
+[![codecov.io](https://codecov.io/gh/kolyaattila/information-center/branch/master/graphs/badge.svg)](https://codecov.io/gh/kolyaattila/information-center/branch/master)
+
 # Information-center
 
 ### Develoment enviroment
