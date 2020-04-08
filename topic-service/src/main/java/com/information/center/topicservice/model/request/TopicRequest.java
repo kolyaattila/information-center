@@ -1,14 +1,22 @@
 package com.information.center.topicservice.model.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Tolerate;
+import org.hibernate.validator.constraints.Length;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 public class TopicRequest {
 
-  private String name;
+    @Tolerate
+    public TopicRequest() {
+    }
 
+    @Length(min = 3, max = 255)
+    private String name;
+    @Length(min = 3, max = 255)
+    private String externalId;
 }
