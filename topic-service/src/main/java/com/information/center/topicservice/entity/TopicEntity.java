@@ -1,6 +1,8 @@
 package com.information.center.topicservice.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -10,7 +12,7 @@ import java.util.Date;
 @Setter
 public class TopicEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "external_id")
