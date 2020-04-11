@@ -5,10 +5,12 @@ import com.information.center.questionservice.entity.AnswerEntity;
 import com.information.center.questionservice.model.request.AnswerRequest;
 import com.information.center.questionservice.model.response.AnswerResponse;
 import com.information.center.questionservice.repository.AnswerRepository;
+import com.information.center.questionservice.repository.QuestionRepository;
 import exception.MicroserviceException;
 import java.util.UUID;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +22,15 @@ import org.springframework.stereotype.Component;
 public class AnswerServiceImpl implements AnswerService {
 
   private final AnswerRepository answerRepository;
+  private final QuestionRepository questionRepository;
   private final AnswerConverter answerConverter;
 
   @Override
   public AnswerResponse create(AnswerRequest answerRequest, String questionExternalId) {
 
     AnswerEntity answer = answerConverter.toEntity(answerRequest);
+    var question = questionRepository.findByExternalId(questionExternalId).orElseThrow(throwNotFoundItem("question",questionExternalId));
+    answer.setQuestion(question);
     answer.setExternalId(UUID.randomUUID().toString());
     answer.setExternalId(questionExternalId);
     return answerConverter.toResponse(answerRepository.save(answer));

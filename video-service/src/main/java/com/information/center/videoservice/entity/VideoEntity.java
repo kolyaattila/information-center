@@ -35,5 +35,5 @@ public class VideoEntity {
   private String chapter;
 
   @Column(name = "topic_id", nullable = false)
-  private long topicId;
+  private String topicId;
 }

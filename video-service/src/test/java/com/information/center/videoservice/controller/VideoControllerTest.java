@@ -3,18 +3,23 @@ package com.information.center.videoservice.controller;
 import com.information.center.videoservice.model.VideoRequest;
 import com.information.center.videoservice.model.VideoResponse;
 import com.information.center.videoservice.service.VideoService;
+import lombok.var;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -63,5 +68,19 @@ public class VideoControllerTest {
                 .findAllByTopicId(EXTERNAL_ID);
 
         assertEquals(response, new ArrayList<>());
+    }
+
+    @Test
+    public void findAllByTopicId_expectedResponse() throws Exception {
+        when(videoService.findAllByTopicId(TOPIC_ID)).thenReturn(new ArrayList<>());
+        var response = videoController.findAllByTopicId(TOPIC_ID);
+        assertNotNull(response);
+    }
+
+    @Test
+    public void getFullVideo_expectedResponse() throws Exception {
+        when(videoService.getFullVideo(EXTERNAL_ID)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        var response = videoService.getFullVideo(EXTERNAL_ID);
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
     }
 }
