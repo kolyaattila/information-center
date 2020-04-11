@@ -2,27 +2,26 @@ package com.information.center.topicservice.controller;
 
 import com.information.center.topicservice.model.request.TopicRequest;
 import com.information.center.topicservice.model.response.TopicResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/topic")
 public interface TopicEndpoint {
-    @PostMapping
-    TopicResponse create(@RequestBody TopicRequest topicResponse);
 
-    @GetMapping("/internal/{externalId}")
-    String getNameById(@PathVariable("externalId") String externalId);
+    @PostMapping
+    TopicResponse create(@RequestBody @Valid TopicRequest topicResponse);
 
     @PutMapping
-    void update(@RequestBody TopicResponse topicResponse);
+    void update(@RequestBody @Valid TopicRequest topicRequest);
 
     @GetMapping("/{externalId}")
     TopicResponse findByExternalId(@PathVariable("externalId") String externalId);
 
     @GetMapping
-    Page<TopicResponse> findAll(Pageable pageable);
+    List<TopicResponse> findAll();
 
     @DeleteMapping("/{externalId}")
     void delete(@PathVariable("externalId") String externalId);

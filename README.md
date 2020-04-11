@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/kolyaattila/information-center/tree/master.svg)](https://circleci.com/gh/kolyaattila/information-center/tree/master)
+[![codecov.io](https://codecov.io/gh/kolyaattila/information-center/branch/master/graphs/badge.svg)](https://codecov.io/gh/kolyaattila/information-center/branch/master)
+
 # Information-center
 
 ### Develoment enviroment

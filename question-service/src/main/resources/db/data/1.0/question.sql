@@ -4,5 +4,6 @@ create table public.Question (
     created           timestamp,
     external_id       varchar(255) not null unique,
     topic_id          varchar(255) not null,
-    difficulty        Difficulty not null
+    difficulty        varchar(10) not null,
+    CONSTRAINT question_check_difficulty CHECK (difficulty in ('EASY','HARD','MEDIUM'))
 );
