@@ -1,17 +1,10 @@
 package com.information.center.questionservice.entity;
 
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "Answer")
@@ -19,25 +12,36 @@ import lombok.Setter;
 @Setter
 public class AnswerEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @Column(name = "external_id", nullable = false)
-  private String externalId;
+    @Column(name = "external_id", nullable = false, length = 30)
+    private String externalId;
 
-  @Column(name = "name", nullable = false)
-  private String name;
+    @Column(name = "name", nullable = false, length = 500)
+    private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "question_id", nullable = false, updatable = false)
-  private QuestionEntity question;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false, updatable = false)
+    private QuestionEntity question;
 
-  @Column(name = "is_correct")
-  private boolean isCorrect;
+    @Column(name = "correct")
+    private boolean correct;
 
-  @Column(name = "reason", length = 2000)
-  private String reason;
+    @Column(name = "reason", length = 500)
+    private String reason;
 
-  private Date created;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "key", length = 2, nullable = false)
+    private AnswerKey key;
+
+    @Column(name = "question_number")
+    private int questionNumber;
+
+    @Column(name = "book", length = 100)
+    private String book;
+
+    @Column(name = "created")
+    private Date created = new Date();
 }
