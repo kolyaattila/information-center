@@ -35,7 +35,7 @@ public class VideoController implements VideoEndpoint {
     }
 
     @Override
-    public void delete(@PathVariable("externalId") String externalId) {
+    public void delete(@PathVariable("externalId") String externalId) throws Exception {
         videoService.delete(externalId);
     }
 

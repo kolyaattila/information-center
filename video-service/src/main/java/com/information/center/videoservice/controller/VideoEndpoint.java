@@ -22,15 +22,15 @@ public interface VideoEndpoint {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     VideoResponse create(@RequestBody VideoRequest videoRequest) throws IOException;
 
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void update(@RequestBody VideoDto videoDto) throws IOException;
 
     @DeleteMapping("/{externalId}")
-    void delete(@PathVariable("externalId") String externalId);
+    void delete(@PathVariable("externalId") String externalId) throws Exception;
 
     @GetMapping("/{externalId}")
-    public ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId") String externalId) throws MalformedURLException;
+    ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId") String externalId) throws MalformedURLException;
 
     @GetMapping("/{topicId}/byChapter")
-    public List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId);
+    List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId);
 }

@@ -21,7 +21,7 @@ public interface VideoService {
 
     void update(VideoDto videoDto) throws IOException;
 
-    void delete(String externalId);
+    void delete(String externalId) throws Exception;
 
     VideoEntity findById(String externalId);
 

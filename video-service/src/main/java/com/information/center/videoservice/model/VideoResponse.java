@@ -22,4 +22,6 @@ public class VideoResponse {
     private String description;
 
     private String chapter;
+
+    private String videoDuration;
 }

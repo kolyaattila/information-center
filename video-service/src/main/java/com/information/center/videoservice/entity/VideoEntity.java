@@ -6,12 +6,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Video")
 public class VideoEntity {
 
@@ -31,9 +36,12 @@ public class VideoEntity {
   @Column(name = "description", nullable = false)
   private String description;
 
-  @Column(name = "chapter_id", nullable = false)
+  @Column(name = "chapter", nullable = false)
   private String chapter;
 
   @Column(name = "topic_id", nullable = false)
   private String topicId;
+
+  @Column(name = "video_duration", nullable = false)
+  private String videoDuration;
 }

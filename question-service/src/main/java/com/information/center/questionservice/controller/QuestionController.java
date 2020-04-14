@@ -23,43 +23,39 @@ public class QuestionController implements QuestionEndpoint {
     private final QuestionValidateService questionValidateService;
 
     @Override
-    @PostMapping("/topic/{topicExternalId}")
     public QuestionResponse create(@RequestBody QuestionRequest questionRequest, @PathVariable("topicExternalId") String topicExternalId) {
 
         return questionService.create(questionRequest, topicExternalId);
     }
 
     @Override
-    @GetMapping("/questionsByTopic/{topicExternalId}")
     public QuestionListDetails findQuestionsByTopicId(@PathVariable("topicExternalId") String topicExternalId,
                                                       Pageable pageable) {
         return questionService.findQuestionsByTopicId(topicExternalId, pageable);
     }
 
     @Override
-    @PutMapping
     public void update(@RequestBody QuestionRequest questionRequest) {
         questionService.update(questionRequest);
     }
 
     @Override
-    @GetMapping("/{externalId}")
     public QuestionResponse findByExternalId(@PathVariable("externalId") String externalId) {
         return questionService.findByExternalId(externalId);
     }
 
-    @GetMapping
+    @Override
     public QuestionResponsePage findAll(Pageable pageable) {
         return questionService.findAll(pageable);
     }
 
-    @DeleteMapping("/{externalId}")
+    @Override
     public void delete(@PathVariable("externalId") String externalId) {
 
         questionService.delete(externalId);
     }
 
-    @PostMapping("/validate")
+    @Override
     public QuestionResponseValidated validate(@RequestBody QuestionRequestValidation questionRequestValidation) {
         return questionValidateService.validate(questionRequestValidation);
     }
