@@ -3,6 +3,7 @@ package com.information.center.videoservice.controller;
 import com.information.center.videoservice.model.VideoRequest;
 import com.information.center.videoservice.model.VideoResponse;
 import com.information.center.videoservice.service.VideoService;
+import com.information.center.videoservice.service.VideoServiceImpl;
 import lombok.var;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,7 +30,7 @@ public class VideoControllerTest {
     @InjectMocks
     private VideoController videoController;
     @Mock
-    private VideoService videoService;
+    private VideoServiceImpl videoService;
     private VideoResponse videoResponse;
     private VideoRequest videoRequest;
 
