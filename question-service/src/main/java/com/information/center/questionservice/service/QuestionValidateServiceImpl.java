@@ -48,5 +48,6 @@ public class QuestionValidateServiceImpl implements QuestionValidateService {
         if (response.equals(""))
             LOGGER.warn("Error while getting response from topic-service");
         return response;
+
     }
 }
