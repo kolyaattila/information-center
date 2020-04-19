@@ -3,3 +3,5 @@ databaseChangeLog:
       file: classpath:db/data/1.0/initial_schema.yaml
   - include:
       file: classpath:db/data/1.1/subscription.yaml
+  - include:
+      file: classpath:db/data/1.2/message.yaml
