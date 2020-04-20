@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public interface AccountService {
 
-  AccountRequest findByUsername(String username);
+    AccountRequest findByUsername(String username);
 
-  AccountRequest save(CreateAccountRequest createAccountRequest);
+    AccountRequest save(CreateAccountRequest createAccountRequest);
 
+    AccountRequest updateAccount(AccountRequest account);
 }
