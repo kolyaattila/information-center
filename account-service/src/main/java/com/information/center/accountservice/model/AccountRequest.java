@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 @Builder
@@ -16,10 +18,13 @@ public class AccountRequest {
   }
 
   private String username;
+  @NotBlank
   private String firstName;
+  @NotBlank
   private String lastName;
   private Date birthday;
   private String photo;
+  @NotBlank
   private String uid;
 
   @Override
