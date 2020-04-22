@@ -139,6 +139,7 @@ services:
     container_name: rabbitmq
 
 volumes:
+  vs:
   ts-db:
   qs-db:
   acs-db:
