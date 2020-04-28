@@ -37,7 +37,8 @@ public class VideoServiceImplTest {
     private static final String DESCRIPTION = "description";
     private static final String EXTERNAL_ID = "ExternalId";
     private static final String NEW_CHAPTER = "updateChapter";
-    private static final String VIDEO_DURATION = "12:20";
+    private static final String VIDEO_DURATION = "3665.2344";
+    private static final String EXPECTED_VIDEO_DURATION = "1:01:05";
     @Mock
     private FileServiceImpl fileService;
     @Mock
@@ -91,6 +92,34 @@ public class VideoServiceImplTest {
         assertsForVideoResponse(response);
     }
 
+    @Test
+    public void create_expectedOnlySeconds() throws IOException {
+        var videoRequest = createVideoRequest();
+        videoRequest.setVideoDuration("45");
+        videoService.create(videoRequest);
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertEquals("0:45", videoEntityArgumentCaptor.getValue().getVideoDuration());
+
+    }
+    @Test
+    public void create_expectedMinutesAndSeconds() throws IOException {
+        var videoRequest = createVideoRequest();
+        videoRequest.setVideoDuration("65");
+        videoService.create(videoRequest);
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertEquals("1:05", videoEntityArgumentCaptor.getValue().getVideoDuration());
+
+    }
+    @Test
+    public void create_expectedMinutesSecondsAndHours() throws IOException {
+        var videoRequest = createVideoRequest();
+        videoRequest.setVideoDuration("3715");
+        videoService.create(videoRequest);
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertEquals("1:01:55", videoEntityArgumentCaptor.getValue().getVideoDuration());
+
+    }
+
     private VideoRequest createVideoRequest() {
         var video = new VideoRequest();
         video.setTopicId(TOPIC_ID);
@@ -116,19 +145,19 @@ public class VideoServiceImplTest {
     }
 
     private VideoEntity createVideoEntity() {
-        return new VideoEntity(1, EXTERNAL_ID, PATH, TITLE, DESCRIPTION, CHAPTER, TOPIC_ID,VIDEO_DURATION);
+        return new VideoEntity(1, EXTERNAL_ID, PATH, TITLE, DESCRIPTION, CHAPTER, TOPIC_ID, EXPECTED_VIDEO_DURATION);
     }
 
     private void assertsForVideoEntity(VideoEntity videoEntity) {
         assertEquals(DESCRIPTION, videoEntity.getDescription());
         assertEquals(TITLE, videoEntity.getTitle());
-        assertEquals(VIDEO_DURATION, videoEntity.getVideoDuration());
+        assertEquals(EXPECTED_VIDEO_DURATION, videoEntity.getVideoDuration());
     }
 
     private void assertsForVideoResponse(VideoResponse videoResponse) {
         assertEquals(DESCRIPTION, videoResponse.getDescription());
         assertEquals(TITLE, videoResponse.getTitle());
         assertEquals(CHAPTER, videoResponse.getChapter());
-        assertEquals(VIDEO_DURATION, videoResponse.getVideoDuration());
+        assertEquals(EXPECTED_VIDEO_DURATION, videoResponse.getVideoDuration());
     }
 }
