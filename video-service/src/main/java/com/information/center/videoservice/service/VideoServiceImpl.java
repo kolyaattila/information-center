@@ -43,6 +43,7 @@ public class VideoServiceImpl implements VideoService {
     public VideoResponse create(VideoRequest videoRequest) throws IOException {
         VideoEntity video = videoConverter.toEntity(videoRequest);
         video.setExternalId(UUID.randomUUID().toString());
+        video.setVideoDuration(convertSecondsToTime(videoRequest.getVideoDuration()));
         String rootDirectory = "videos/";
         String path = rootDirectory + videoRequest.getChapter();
         video.setPath(path);
@@ -72,6 +73,7 @@ public class VideoServiceImpl implements VideoService {
         }
         if (videoDto.getFile() != null) {
             if (videoDto.getFile().getBytes().length != 0) {
+                videoPersistent.setVideoDuration(convertSecondsToTime(videoDto.getVideoDuration()));
                 fileService.deleteByPath(videoOldName);
                 fileService.saveVideo(videoDto.getFile(), path, video.getExternalId());
             }
@@ -120,5 +122,32 @@ public class VideoServiceImpl implements VideoService {
     private String createVideoPath(String root, String chapter, String externalId) {
         return root + "/" + chapter + "/" + externalId + ".mp4";
     }
+
+    private String convertSecondsToTime(String totalSeconds) {
+        String finalTime = "";
+        if(totalSeconds.contains("."))
+            totalSeconds = totalSeconds.substring(0,totalSeconds.indexOf("."));
+        int secondsCount = Integer.parseInt(totalSeconds);
+        long seconds = secondsCount % 60;
+        secondsCount -= seconds;
+        long minutesCount = secondsCount / 60;
+        long minutes = minutesCount % 60;
+        minutesCount -= minutes;
+        long hoursCount = minutesCount / 60;
+
+        if (hoursCount != 0)
+            finalTime = "" + hoursCount;
+        if (String.valueOf(minutes).length() == 1 && hoursCount != 0)
+            finalTime += ":0" + minutes;
+        else
+            finalTime += minutes;
+        if (String.valueOf(seconds).length() == 1)
+            finalTime += ":0" + seconds;
+        else
+            finalTime += ":" + seconds;
+
+        return finalTime;
+    }
+
 }
 
