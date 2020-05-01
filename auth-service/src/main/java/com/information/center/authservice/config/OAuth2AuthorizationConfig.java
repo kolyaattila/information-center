@@ -52,8 +52,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         .scopes("server")
 
         .and()
-        .withClient("question-service")
-        .secret(env.getProperty("QUESTION_SERVICE_PASSWORD"))
+        .withClient("quiz-service")
+        .secret(env.getProperty("QUIZ_SERVICE_PASSWORD"))
         .authorizedGrantTypes("client_credentials", "refresh_token")
         .scopes("server")
 

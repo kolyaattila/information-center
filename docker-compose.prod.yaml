@@ -7,11 +7,11 @@ services:
       file: docker-compose.yaml
       service: topic-service-database
 
-  question-service-database:
-    container_name: question-service-database
+  quiz-service-database:
+    container_name: quiz-service-database
     extends:
       file: docker-compose.yaml
-      service: question-service-database
+      service: quiz-service-database
 
   account-service-database:
     container_name: account-service-database
@@ -75,13 +75,13 @@ services:
       config:
         condition: service_healthy
 
-  question-service:
+  quiz-service:
     extends:
       file: docker-compose.yaml
-      service: question-service
-    container_name: question-service
+      service: quiz-service
+    container_name: quiz-service
     depends_on:
-      question-service-database:
+      quiz-service-database:
         condition: service_healthy
       config:
         condition: service_healthy

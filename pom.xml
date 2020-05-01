@@ -58,7 +58,7 @@
     <module>config</module>
     <module>gateway</module>
     <module>monitoring</module>
-    <module>question-service</module>
+    <module>quiz-service</module>
     <module>registry</module>
     <module>topic-service</module>
     <module>video-service</module>
