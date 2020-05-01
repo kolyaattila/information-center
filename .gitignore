@@ -35,6 +35,6 @@ build/
 
 ### Database ###
 topic-service-database/data
-question-service-database/data
+quiz-service-database/data
 account-service-database/data
 auth-service-database/data

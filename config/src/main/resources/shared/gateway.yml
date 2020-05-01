@@ -22,9 +22,9 @@ zuul:
       serviceId: topic-service
       stripPrefix: false
 
-    question-service:
-      path: /question-service/**
-      serviceId: question-service
+    quiz-service:
+      path: /quiz/**
+      serviceId: quiz-service
       stripPrefix: false
 
     email-service:

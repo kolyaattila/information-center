@@ -9,13 +9,13 @@ services:
     ports:
       - ${TOPIC_SERVICE_DATABASE_PORT}:5432
 
-  question-service-database:
-    container_name: question-service-database
+  quiz-service-database:
+    container_name: quiz-service-database
     extends:
       file: docker-compose.yaml
-      service: question-service-database
+      service: quiz-service-database
     ports:
-      - ${QUESTION_SERVICE_DATABASE_PORT}:5432
+      - ${QUIZ_SERVICE_DATABASE_PORT}:5432
 
   account-service-database:
     container_name: account-service-database
