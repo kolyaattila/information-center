@@ -9,18 +9,19 @@ import exception.RestExceptions.ServiceUnavailable;
 import exception.ServiceExceptions.InconsistentDataException;
 import exception.ServiceExceptions.InsertFailedException;
 import exception.ServiceExceptions.ServiceUnavailableException;
+import org.apache.http.auth.BasicUserPrincipal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import sun.security.acl.PrincipalImpl;
 
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
@@ -58,7 +59,7 @@ public class AccountControllerTest {
     public void getAccountByUsername_expectTheAccountRequest() {
         when(accountService.findByUsername("name")).thenReturn(accountRequest);
 
-        AccountRequest response = accountController.getCurrentAccount(new PrincipalImpl("name"));
+        AccountRequest response = accountController.getCurrentAccount(new BasicUserPrincipal("name"));
 
         assertEquals(accountRequest, response);
     }
@@ -67,7 +68,7 @@ public class AccountControllerTest {
     public void getAccountByUsername_expectBadRequest() {
         when(accountService.findByUsername("name")).thenThrow(InconsistentDataException.class);
 
-        accountController.getCurrentAccount(new PrincipalImpl("name"));
+        accountController.getCurrentAccount(new BasicUserPrincipal("name"));
     }
 
     @Test
