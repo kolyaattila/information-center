@@ -12,4 +12,6 @@ public interface AccountService {
     AccountRequest save(CreateAccountRequest createAccountRequest);
 
     AccountRequest updateAccount(AccountRequest account);
+
+    void delete(String username);
 }

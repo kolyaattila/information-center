@@ -53,6 +53,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .mvcMatchers("/subscription/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/message").permitAll()
+                .mvcMatchers(HttpMethod.GET, "**").permitAll()
                 .anyRequest().authenticated();
     }
 }

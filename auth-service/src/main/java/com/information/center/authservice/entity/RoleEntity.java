@@ -2,16 +2,8 @@ package com.information.center.authservice.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,7 +27,7 @@ public class RoleEntity implements GrantedAuthority {
   @ManyToMany(mappedBy = "roles")
   private List<UserEntity> users = new ArrayList<>();
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REMOVE)
   @JoinTable(
       name = "role_permission",
       joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),

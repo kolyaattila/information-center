@@ -1,76 +1,83 @@
 package com.information.center.authservice.service;
 
 import com.information.center.authservice.convert.RoleConverter;
+import com.information.center.authservice.entity.PermissionEntity;
 import com.information.center.authservice.entity.RoleEntity;
-import com.information.center.authservice.entity.UserEntity;
 import com.information.center.authservice.model.RoleRequest;
+import com.information.center.authservice.repository.PermissionRepository;
 import com.information.center.authservice.repository.RoleRepository;
-import com.information.center.authservice.repository.UserRepository;
 import exception.ServiceExceptions.InconsistentDataException;
 import exception.ServiceExceptions.InsertFailedException;
-import java.util.Collections;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
 import model.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RoleService {
 
-  private final RoleRepository roleRepository;
-  private final RoleConverter roleConverter;
-  private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final RoleConverter roleConverter;
+    private final PermissionRepository permissionRepository;
 
-
-  public ErrorResponse saveRole(RoleRequest roleRequest) {
-    checkIfRoleAlreadyExist(roleRequest);
-    RoleEntity role = roleConverter.toRole(roleRequest);
-    ErrorResponse errorResponse = setAllUsers(role, roleRequest);
-    try {
-      roleRepository.save(role);
-      return errorResponse;
-    } catch (Exception e) {
-      throw new InsertFailedException("Error inserting role");
+    private void checkIfRoleAlreadyExist(String name) {
+        if (roleRepository.findByName(name).isPresent()) {
+            throw new InconsistentDataException("Role already exist");
+        }
     }
-  }
 
-  public ErrorResponse updateRole(RoleRequest roleRequest) {
-    RoleEntity role = getRole(roleRequest);
-    role.setDescription(roleRequest.getDescription());
-    ErrorResponse errorResponse = setAllUsers(role, roleRequest);
-    try {
-      roleRepository.save(role);
-      return errorResponse;
-    } catch (Exception e) {
-      throw new InsertFailedException("Error inserting role");
+    private RoleEntity getRole(String name) {
+        return roleRepository.findByName(name).orElseGet(() -> {
+            throw new InconsistentDataException("Role not exist");
+        });
     }
-  }
 
-  private ErrorResponse setAllUsers(RoleEntity role, RoleRequest roleRequest) {
-    ErrorResponse errorResponse = ErrorResponse.builder().build();
-    roleRequest.getUsernames().forEach(username -> {
-      Optional<UserEntity> byUsername = userRepository.findByUsername(username);
-      if (byUsername.isPresent()) {
-        role.getUsers().add(byUsername.get());
-      } else {
-        errorResponse.with(ErrorResponse.builder()
-            .message(Collections.singletonList("User " + username + " not found")).build());
-      }
-    });
-    return errorResponse;
-  }
-
-  private void checkIfRoleAlreadyExist(RoleRequest roleRequest) {
-    if (roleRepository.findByName(roleRequest.getName()).isPresent()) {
-      throw new InconsistentDataException("Role already exist");
+    private ErrorResponse setAllPermissions(RoleEntity roleEntity, List<String> permissionsName) {
+        ErrorResponse errorResponse = ErrorResponse.builder().build();
+        permissionsName.forEach(permissionName -> {
+            Optional<PermissionEntity> permission = permissionRepository.findByName(permissionName);
+            if (permission.isPresent())
+                roleEntity.getPermissions().add(permission.get());
+            else
+                errorResponse.with(ErrorResponse.builder()
+                        .message(Collections.singletonList("Permission " + permissionName + " not found")).build());
+        });
+        return errorResponse;
     }
-  }
 
-  private RoleEntity getRole(RoleRequest roleRequest) {
-    return roleRepository.findByName(roleRequest.getName()).orElseGet(() -> {
-      throw new InconsistentDataException("Role not exist");
-    });
-  }
+    public ErrorResponse saveRole(RoleRequest roleRequest) {
+        checkIfRoleAlreadyExist(roleRequest.getName());
+        RoleEntity role = roleConverter.toRole(roleRequest);
+        ErrorResponse errorResponse = setAllPermissions(role, roleRequest.getPermissions());
+        try {
+            roleRepository.save(role);
+            return errorResponse;
+        } catch (Exception e) {
+            throw new InsertFailedException("Error inserting role");
+        }
+    }
+
+    public ErrorResponse updateRole(RoleRequest roleRequest) {
+
+        RoleEntity roleEntity = getRole(roleRequest.getName());
+        RoleEntity role = roleConverter.toRole(roleRequest, roleEntity.getId());
+        ErrorResponse errorResponse = setAllPermissions(role, roleRequest.getPermissions());
+        try {
+            roleRepository.save(role);
+            return errorResponse;
+        } catch (Exception e) {
+            throw new InsertFailedException("Error inserting role");
+        }
+    }
+
+    public void deleteRole(String name) {
+        var persistentRole = getRole(name);
+        roleRepository.delete(persistentRole);
+    }
 }

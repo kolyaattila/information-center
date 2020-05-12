@@ -15,5 +15,5 @@ public class RoleRequest {
 
   private String name;
   private String description;
-  private List<String> usernames;
+  private List<String> permissions;
 }

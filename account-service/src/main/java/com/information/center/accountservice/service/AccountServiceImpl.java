@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -60,6 +61,32 @@ public class AccountServiceImpl implements AccountService {
             return accountConverter.toAccountRequest(accountRepository.save(accountEntity));
         } catch (Exception e) {
             throw new InsertFailedException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(String username) {
+        Optional<AccountEntity> account = accountRepository.findByUsername(username);
+        if (account.isPresent())
+            deleteAccount(account.get());
+        else
+            throw new InconsistentDataException("Account " + username + " does not exist");
+    }
+
+    private void deleteAccount(AccountEntity account) {
+        deleteUser(account.getUsername());
+        try {
+            accountRepository.delete(account);
+        } catch (Exception e) {
+            throw new InsertFailedException("Error removing account");
+        }
+    }
+
+    private void deleteUser(String username) {
+        ResponseEntity<?> response = authServiceClient.deleteUser(username);
+        LOGGER.warn("Auth-service response with {}", response);
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            throw new ServiceExceptions.ServiceUnavailableException("Service unavailable");
         }
     }
 

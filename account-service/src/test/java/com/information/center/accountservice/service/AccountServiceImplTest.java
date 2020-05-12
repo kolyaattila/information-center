@@ -185,4 +185,36 @@ public class AccountServiceImplTest {
 
         accountService.updateAccount(accountRequest);
     }
+
+    @Test
+    public void deleteAccount_expectDeletedSuccessful() {
+        when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.ofNullable(account));
+        when(authServiceClient.deleteUser(USERNAME)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.ofNullable(account));
+        accountService.delete(USERNAME);
+        verify(accountRepository).delete(captor.capture());
+        assertEquals(account, captor.getValue());
+    }
+
+    @Test(expected = InconsistentDataException.class)
+    public void deleteAccount_expectInconsistentDataException() {
+        when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.empty());
+        accountService.delete(USERNAME);
+    }
+
+    @Test(expected = ServiceUnavailableException.class)
+    public void deleteAccount_expectServiceUnavailableException() {
+        when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.ofNullable(account));
+        when(authServiceClient.deleteUser(USERNAME)).thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        accountService.delete(USERNAME);
+    }
+
+    @Test(expected = InsertFailedException.class)
+    public void deleteAccount_expectInsertFailedException() {
+        when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.ofNullable(account));
+        when(authServiceClient.deleteUser(USERNAME)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
+        when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.ofNullable(account));
+        doThrow(new InsertFailedException()).when(accountRepository).delete(account);
+        accountService.delete(USERNAME);
+    }
 }

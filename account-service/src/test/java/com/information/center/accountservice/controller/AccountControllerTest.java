@@ -12,6 +12,8 @@ import exception.ServiceExceptions.ServiceUnavailableException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -20,18 +22,21 @@ import sun.security.acl.PrincipalImpl;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AccountControllerTest {
 
 
+    private static final String USERNAME = "username";
     @InjectMocks
     private AccountController accountController;
     @Mock
     private AccountService accountService;
     private AccountRequest accountRequest;
     private CreateAccountRequest createAccountRequest;
+    @Captor
+    private ArgumentCaptor<String> usernameArgument;
 
     @Before
     public void setUp() {
@@ -121,5 +126,24 @@ public class AccountControllerTest {
         when(accountService.updateAccount(accountRequest)).thenThrow(InconsistentDataException.class);
 
         accountController.updateAccount(accountRequest);
+    }
+
+    @Test
+    public void deleteAccount_expectAccountDeleted() {
+        accountService.delete(USERNAME);
+        verify(accountService).delete(usernameArgument.capture());
+        assertEquals(USERNAME, usernameArgument.getValue());
+    }
+
+    @Test(expected = BadRequest.class)
+    public void deleteAccount_expectInsertFailedException() {
+        doThrow(new InsertFailedException()).when(accountService).delete(USERNAME);
+        accountController.deleteAccount(USERNAME);
+    }
+
+    @Test(expected = ServiceUnavailable.class)
+    public void deleteAccount_expectServiceUnavailableException() {
+        doThrow(new ServiceUnavailable()).when(accountService).delete(USERNAME);
+        accountService.delete(USERNAME);
     }
 }

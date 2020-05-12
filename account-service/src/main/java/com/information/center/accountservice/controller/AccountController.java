@@ -11,6 +11,7 @@ import exception.ServiceExceptions.ServiceUnavailableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
@@ -48,6 +49,17 @@ public class AccountController implements AccountEndpoint {
             return accountService.updateAccount(account);
         } catch (InsertFailedException | InconsistentDataException e) {
             throw new BadRequest(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteAccount(@PathVariable("username") String username) {
+        try {
+            accountService.delete(username);
+        } catch (InsertFailedException | InconsistentDataException e) {
+            throw new BadRequest(e.getMessage());
+        } catch (ServiceUnavailableException e) {
+            throw new ServiceUnavailable(e.getMessage());
         }
     }
 }

@@ -110,7 +110,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
-          <finalName>topic-service</finalName>
+          <finalName>video-service</finalName>
         </configuration>
       </plugin>
       <plugin>

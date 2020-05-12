@@ -141,6 +141,8 @@ services:
       - POSTGRES_DB=${ACCOUNT_SERVICE_DATABASE}
     volumes:
       - acs-db:/var/lib/postgresql/account-service-database/data
+    ports:
+      - ${ACCOUNT_SERVICE_DATABASE_PORT}:5432
     networks:
       - information-center-prod-network
     healthcheck:

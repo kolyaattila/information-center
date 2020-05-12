@@ -19,4 +19,6 @@ public interface AccountEndpoint {
     @PutMapping("/update")
     AccountRequest updateAccount(@Valid @RequestBody AccountRequest account);
 
+    @DeleteMapping("/{username}")
+    void deleteAccount(@PathVariable("username") String username);
 }
