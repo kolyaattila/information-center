@@ -1,109 +1,275 @@
 package com.information.center.quizservice.service;
 
-import com.information.center.quizservice.client.TopicServiceClient;
+import com.information.center.quizservice.converter.AnswerConverter;
 import com.information.center.quizservice.converter.QuestionConverter;
+import com.information.center.quizservice.entity.AnswerEntity;
 import com.information.center.quizservice.entity.QuestionDifficulty;
 import com.information.center.quizservice.entity.QuestionEntity;
+import com.information.center.quizservice.entity.SchoolEntity;
+import com.information.center.quizservice.model.AnswerDto;
+import com.information.center.quizservice.model.QuestionDto;
+import com.information.center.quizservice.model.request.AnswerRequest;
+import com.information.center.quizservice.model.request.FilterQuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequest;
 import com.information.center.quizservice.repository.QuestionRepository;
-import lombok.var;
+import com.information.center.quizservice.repository.SchoolRepository;
+import exception.ServiceExceptions;
+import org.hibernate.HibernateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QuestionServiceImplTest {
 
-    public static final String NAME = "name";
-    public static final String QUESTION_EXTERNAL_ID = "questionExternalId";
-    public static final String TOPIC_EXTERNAL_ID = "topicExternalId";
+    private static final String QUESTION_EXTERNAL_ID = "questionExternalId";
+    private static final String SCHOOL_EXTERNAL_ID = "schoolExternalId";
+    private static final String EXTERNAL_ID = "externalId";
     @Mock
     private QuestionRepository questionRepository;
     @Mock
-    private TopicServiceClient topicServiceClient;
-    @Mock
     private AnswerService answerService;
+    @Mock
+    private SchoolRepository schoolRepository;
     @Captor
     ArgumentCaptor<QuestionEntity> questionEntityArgumentCaptor;
     @Captor
-    ArgumentCaptor<String> externalIdArgumentCaptor;
+    ArgumentCaptor<PageRequest> pageRequestArgumentCaptor;
+
+    @Captor
+    ArgumentCaptor<Specification> specificationArgumentCaptor;
+    @InjectMocks
     private QuestionServiceImpl questionService;
-    private QuestionConverter converter = Mappers.getMapper(QuestionConverter.class);
+    private QuestionRequest questionRequest;
+    private AnswerRequest answerRequest;
+    private AnswerEntity answerEntity;
+    private QuestionEntity questionEntity;
+    private FilterQuestionRequest filterQuestion;
+
 
     @Before
     public void setUp() {
-        questionService = new QuestionServiceImpl(questionRepository, topicServiceClient, converter, answerService);
-        mocks();
+        QuestionConverter questionConverter = Mappers.getMapper(QuestionConverter.class);
+        questionConverter.setAnswerConverter(Mappers.getMapper(AnswerConverter.class));
+        questionService.setQuestionConverter(questionConverter);
+
+        answerRequest = AnswerRequest.builder().build();
+        questionRequest = QuestionRequest.builder()
+                .schoolExternalId(SCHOOL_EXTERNAL_ID)
+                .externalId(EXTERNAL_ID)
+                .answers(Collections.singletonList(answerRequest)).build();
+        SchoolEntity schoolEntity = new SchoolEntity();
+        schoolEntity.setExternalId(SCHOOL_EXTERNAL_ID);
+        answerEntity = new AnswerEntity();
+        questionEntity = new QuestionEntity();
+        questionEntity.setAnswers(Collections.emptyList());
+        questionEntity.setSchool(schoolEntity);
+
+        filterQuestion = FilterQuestionRequest.builder()
+                .pageNumber(2)
+                .pageSize(10)
+                .questionDifficulty(QuestionDifficulty.EASY)
+                .courseExternalId("course")
+                .verified(false)
+                .externalId(EXTERNAL_ID)
+                .questionNumber(423)
+                .chapterExternalId("chapter")
+                .name("name")
+                .book("book")
+                .build();
     }
 
     @Test
     public void create_expectResponse() {
-        questionService.create(createQuestion(), TOPIC_EXTERNAL_ID);
-        verify(questionRepository).save(questionEntityArgumentCaptor.capture());
-        assertsForQuestion(questionEntityArgumentCaptor.getValue());
+        SchoolEntity schoolEntity = new SchoolEntity();
+        schoolEntity.setExternalId(SCHOOL_EXTERNAL_ID);
+
+        when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.of(schoolEntity));
+        when(answerService.saveEntity(eq(answerRequest), any())).thenReturn(answerEntity);
+        when(questionRepository.save(any())).then(r -> r.getArgument(0));
+        when(questionRepository.existsByExternalId(anyString())).thenReturn(true).thenReturn(false);
+
+        QuestionDto response = questionService.create(questionRequest);
+
+        assertFalse(response.getExternalId().isEmpty());
+        assertEquals(response.getBook(), questionRequest.getBook());
+        assertEquals(response.getChapterExternalId(), questionRequest.getChapterExternalId());
+        assertEquals(response.getCourseExternalId(), questionRequest.getCourseExternalId());
+        assertEquals(response.getName(), questionRequest.getName());
+        assertEquals(response.getQuestionDifficulty(), questionRequest.getQuestionDifficulty());
+        assertEquals(response.getQuestionNumber(), questionRequest.getQuestionNumber());
+        assertEquals(SCHOOL_EXTERNAL_ID, response.getSchoolExternalId());
+
+        assertFalse(response.getAnswers().isEmpty());
+        AnswerDto answerDto = response.getAnswers().get(0);
+        assertEquals(answerDto.getKey(), answerRequest.getKey());
+        assertEquals(answerDto.getName(), answerRequest.getName());
+        assertEquals(answerDto.getReason(), answerRequest.getReason());
+        assertEquals(answerDto.isCorrect(), answerRequest.isCorrect());
     }
+
+    @Test(expected = ServiceExceptions.InsertFailedException.class)
+    public void create_expectInsertFailedException() {
+        SchoolEntity schoolEntity = new SchoolEntity();
+        schoolEntity.setExternalId(SCHOOL_EXTERNAL_ID);
+
+        when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.of(schoolEntity));
+        when(questionRepository.save(any())).thenThrow(HibernateException.class);
+
+        questionService.create(questionRequest);
+    }
+
+    @Test
+    public void createWhenSchoolNotFound_ExpectExternalSchoolIdNull() {
+        when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.empty());
+        when(answerService.saveEntity(eq(answerRequest), any())).thenReturn(answerEntity);
+        when(questionRepository.save(any())).then(r -> r.getArgument(0));
+
+        QuestionDto response = questionService.create(questionRequest);
+
+        assertNull(response.getSchoolExternalId());
+    }
+
 
     @Test
     public void update_expectedResponse() {
-        questionService.update(createQuestion());
+        SchoolEntity schoolEntity = new SchoolEntity();
+
+        when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.of(schoolEntity));
+        when(questionRepository.findByExternalId(EXTERNAL_ID)).thenReturn(Optional.of(questionEntity));
+        when(answerService.getUpdatedEntities(questionRequest.getAnswers(), questionEntity))
+                .thenReturn(Collections.singletonList(answerEntity));
+
+        questionService.update(questionRequest);
+
         verify(questionRepository).save(questionEntityArgumentCaptor.capture());
-        assertsForQuestion(questionEntityArgumentCaptor.getValue());
+        QuestionEntity response = questionEntityArgumentCaptor.getValue();
+        assertEquals(response.getBook(), questionRequest.getBook());
+        assertEquals(response.getChapterExternalId(), questionRequest.getChapterExternalId());
+        assertEquals(response.getCourseExternalId(), questionRequest.getCourseExternalId());
+        assertEquals(response.getName(), questionRequest.getName());
+        assertEquals(response.getQuestionDifficulty(), questionRequest.getQuestionDifficulty());
+        assertEquals(response.getQuestionNumber(), questionRequest.getQuestionNumber());
+        assertEquals(schoolEntity, response.getSchool());
+
+        assertFalse(response.getAnswers().isEmpty());
+        assertEquals(answerEntity, response.getAnswers().get(0));
     }
+
+    @Test
+    public void updateWhenSchoolNotFound_expectedSchoolIsNull() {
+        when(questionRepository.findByExternalId(EXTERNAL_ID)).thenReturn(Optional.of(questionEntity));
+        when(answerService.getUpdatedEntities(questionRequest.getAnswers(), questionEntity))
+                .thenReturn(Collections.singletonList(answerEntity));
+
+        questionService.update(questionRequest);
+
+        verify(questionRepository).save(questionEntityArgumentCaptor.capture());
+        QuestionEntity response = questionEntityArgumentCaptor.getValue();
+        assertNull(response.getSchool());
+    }
+
+    @Test(expected = ServiceExceptions.InsertFailedException.class)
+    public void update_expectedInsertFailedException() {
+        when(questionRepository.findByExternalId(EXTERNAL_ID)).thenReturn(Optional.of(questionEntity));
+        when(answerService.getUpdatedEntities(questionRequest.getAnswers(), questionEntity))
+                .thenReturn(Collections.singletonList(answerEntity));
+        when(questionRepository.save(any())).thenThrow(HibernateException.class);
+
+        questionService.update(questionRequest);
+    }
+
 
     @Test
     public void findById_expectedResponse() {
-        questionService.findById(QUESTION_EXTERNAL_ID);
-        verify(questionRepository).findByExternalId(externalIdArgumentCaptor.capture());
-        assertEquals(QUESTION_EXTERNAL_ID, externalIdArgumentCaptor.getValue());
+        when(questionRepository.findByExternalId(QUESTION_EXTERNAL_ID)).thenReturn(Optional.of(questionEntity));
 
+        QuestionDto response = questionService.findByExternalId(QUESTION_EXTERNAL_ID);
+
+        assertQuestion(questionEntity, response);
+        assertTrue(response.getAnswers().isEmpty());
+    }
+
+    @Test(expected = ServiceExceptions.NotFoundException.class)
+    public void findById_expectedNotFoundException() {
+        when(questionRepository.findByExternalId(QUESTION_EXTERNAL_ID)).thenReturn(Optional.empty());
+
+        questionService.findByExternalId(QUESTION_EXTERNAL_ID);
     }
 
     @Test
-    public void findAll_expectedResponse() {
-        var response = questionService.findAll(PageRequest.of(2, 20));
-        assertNotNull(response);
+    public void testDelete() {
+        when(questionRepository.findByExternalId(EXTERNAL_ID)).thenReturn(Optional.of(questionEntity));
+
+        questionService.delete(EXTERNAL_ID);
+
+        verify(questionRepository).delete(questionEntity);
+    }
+
+    @Test(expected = ServiceExceptions.NotFoundException.class)
+    public void delete_expectNotFound() {
+        when(questionRepository.findByExternalId(EXTERNAL_ID)).thenReturn(Optional.empty());
+
+        questionService.delete(EXTERNAL_ID);
     }
 
     @Test
-    public void findQuestionByTopicId_expectedResponse() {
-        var response = questionService.findQuestionsByTopicId(TOPIC_EXTERNAL_ID, PageRequest.of(2, 20));
-        assertNotNull(response);
+    public void testFilterWithAllFilters() {
+        when(questionRepository.findAll(any(Specification.class), any(PageRequest.class)))
+                .thenReturn(new PageImpl(Collections.singletonList(questionEntity)));
+
+        Page<QuestionDto> pageResponse = questionService.filterQuestions(filterQuestion);
+
+        verify(questionRepository).findAll(specificationArgumentCaptor.capture(), pageRequestArgumentCaptor.capture());
+        PageRequest pageRequest = pageRequestArgumentCaptor.getValue();
+        assertEquals(10, pageRequest.getPageSize());
+        assertEquals(2, pageRequest.getPageNumber());
+        assertQuestion(questionEntity, pageResponse.stream().findFirst().get());
     }
 
-    private QuestionRequest createQuestion() {
-        var question = new QuestionRequest();
-        question.setExternalId(QUESTION_EXTERNAL_ID);
-        question.setName(NAME);
-        question.setQuestionDifficulty(QuestionDifficulty.EASY);
-        question.setTopicExternalId(TOPIC_EXTERNAL_ID);
-        question.setAnswers(new ArrayList<>());
-        return question;
+    @Test
+    public void testFilterWithOneCondition() {
+        FilterQuestionRequest filterQuestion = FilterQuestionRequest.builder()
+                .pageNumber(3)
+                .pageSize(5)
+                .build();
+        when(questionRepository.findAll(any(Specification.class), any(PageRequest.class)))
+                .thenReturn(new PageImpl(Collections.singletonList(questionEntity)));
+
+        Page<QuestionDto> pageResponse = questionService.filterQuestions(filterQuestion);
+
+        verify(questionRepository).findAll(specificationArgumentCaptor.capture(), pageRequestArgumentCaptor.capture());
+        PageRequest pageRequest = pageRequestArgumentCaptor.getValue();
+        assertEquals(5, pageRequest.getPageSize());
+        assertEquals(3, pageRequest.getPageNumber());
+        assertQuestion(questionEntity, pageResponse.stream().findFirst().get());
     }
 
-    private void assertsForQuestion(QuestionEntity questionEntity) {
-        assertEquals(NAME, questionEntity.getName());
-        assertEquals(TOPIC_EXTERNAL_ID, questionEntity.getTopicExternalId());
-        assertEquals(QuestionDifficulty.EASY, questionEntity.getQuestionDifficulty());
-    }
-
-    private void mocks() {
-        when(questionRepository.findByExternalId(QUESTION_EXTERNAL_ID)).thenReturn(Optional.of(new QuestionEntity()));
-        when(questionRepository.findAll(PageRequest.of(2, 20))).thenReturn(Page.empty());
-        when(questionRepository.findQuestionsByTopicExternalId(TOPIC_EXTERNAL_ID, PageRequest.of(2, 20))).thenReturn(Page.empty());
+    private void assertQuestion(QuestionEntity entity, QuestionDto dto) {
+        assertEquals(entity.getBook(), dto.getBook());
+        assertEquals(entity.getChapterExternalId(), dto.getChapterExternalId());
+        assertEquals(entity.getName(), dto.getName());
+        assertEquals(entity.getQuestionDifficulty(), dto.getQuestionDifficulty());
+        assertEquals(entity.getQuestionNumber(), dto.getQuestionNumber());
+        assertEquals(entity.getSchool().getExternalId(), dto.getSchoolExternalId());
+        assertEquals(entity.getCourseExternalId(), dto.getCourseExternalId());
     }
 }

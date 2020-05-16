@@ -1,5 +1,6 @@
 package com.information.center.quizservice.model.request;
 
+import com.information.center.quizservice.entity.AnswerKey;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -13,14 +14,8 @@ public class AnswerRequest {
   }
 
   private String name;
-
   private String externalId;
-
-  private String questionExternalId;
-
-  private boolean isCorrect;
-
-  private boolean checked;
-
+  private boolean correct;
   private String reason;
+  private AnswerKey key;
 }

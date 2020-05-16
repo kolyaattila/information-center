@@ -1,37 +1,33 @@
 package com.information.center.quizservice.controller;
 
-import com.information.center.quizservice.model.QuestionListDetails;
+import com.information.center.quizservice.model.QuestionDto;
 import com.information.center.quizservice.model.QuestionResponseValidated;
+import com.information.center.quizservice.model.request.FilterQuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequestValidation;
-import com.information.center.quizservice.model.response.QuestionResponse;
-import com.information.center.quizservice.model.response.QuestionResponsePage;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/question")
 public interface QuestionEndpoint {
-    @PostMapping("/topic/{topicExternalId}")
-    QuestionResponse create(@RequestBody QuestionRequest questionRequest,
-                            @PathVariable("topicExternalId") String topicExternalId);
-
-    @GetMapping("/questionsByTopic/{topicExternalId}")
-    QuestionListDetails findQuestionsByTopicId(@PathVariable("topicExternalId") String topicExternalId,
-                                               Pageable pageable);
+    @PostMapping
+    QuestionDto create(@RequestBody @Valid QuestionRequest questionRequest);
 
     @PostMapping("/validate")
     QuestionResponseValidated validate(@RequestBody QuestionRequestValidation questionRequestValidation);
 
     @PutMapping
-    void update(@RequestBody QuestionRequest questionRequest);
+    void update(@RequestBody @Valid QuestionRequest questionRequest);
 
     @GetMapping("/{externalId}")
-    QuestionResponse findByExternalId(@PathVariable("externalId") String externalId);
-
-    @GetMapping
-    QuestionResponsePage findAll(Pageable pageable);
+    QuestionDto findByExternalId(@PathVariable("externalId") String externalId);
 
     @DeleteMapping("/{externalId}")
     void delete(@PathVariable("externalId") String externalId);
+
+    @PostMapping("/filter")
+    Page<QuestionDto> filterQuestion(@RequestBody @Valid FilterQuestionRequest filterQuestionRequest);
 }

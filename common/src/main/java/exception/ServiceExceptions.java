@@ -41,4 +41,14 @@ public final class ServiceExceptions extends Throwable {
             super(message);
         }
     }
+
+    public static final class WrongQuizType extends RuntimeException {
+
+        public WrongQuizType() {
+        }
+
+        public WrongQuizType(String message) {
+            super(message);
+        }
+    }
 }
