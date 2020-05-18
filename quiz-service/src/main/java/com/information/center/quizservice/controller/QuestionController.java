@@ -1,63 +1,74 @@
 package com.information.center.quizservice.controller;
 
-import com.information.center.quizservice.model.QuestionListDetails;
+import com.information.center.quizservice.model.QuestionDto;
 import com.information.center.quizservice.model.QuestionResponseValidated;
+import com.information.center.quizservice.model.request.FilterQuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequestValidation;
-import com.information.center.quizservice.model.response.QuestionResponse;
-import com.information.center.quizservice.model.response.QuestionResponsePage;
 import com.information.center.quizservice.service.QuestionService;
 import com.information.center.quizservice.service.QuestionValidateService;
+import exception.RestExceptions;
+import exception.ServiceExceptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QuestionController implements QuestionEndpoint {
 
     private final QuestionService questionService;
-
     private final QuestionValidateService questionValidateService;
 
     @Override
-    public QuestionResponse create(@RequestBody QuestionRequest questionRequest, @PathVariable("topicExternalId") String topicExternalId) {
-
-        return questionService.create(questionRequest, topicExternalId);
-    }
-
-    @Override
-    public QuestionListDetails findQuestionsByTopicId(@PathVariable("topicExternalId") String topicExternalId,
-                                                      Pageable pageable) {
-        return questionService.findQuestionsByTopicId(topicExternalId, pageable);
+    public QuestionDto create(@RequestBody @Valid QuestionRequest questionRequest) {
+        try {
+            return questionService.create(questionRequest);
+        } catch (ServiceExceptions.NotFoundException | ServiceExceptions.InsertFailedException e) {
+            throw new RestExceptions.BadRequest(e.getMessage());
+        }
     }
 
     @Override
     public void update(@RequestBody QuestionRequest questionRequest) {
-        questionService.update(questionRequest);
+        try {
+            questionService.update(questionRequest);
+        } catch (ServiceExceptions.NotFoundException | ServiceExceptions.InsertFailedException e) {
+            throw new RestExceptions.BadRequest(e.getMessage());
+        }
     }
 
     @Override
-    public QuestionResponse findByExternalId(@PathVariable("externalId") String externalId) {
-        return questionService.findByExternalId(externalId);
-    }
-
-    @Override
-    public QuestionResponsePage findAll(Pageable pageable) {
-        return questionService.findAll(pageable);
+    public QuestionDto findByExternalId(@PathVariable("externalId") String externalId) {
+        try {
+            return questionService.findByExternalId(externalId);
+        } catch (ServiceExceptions.NotFoundException e) {
+            throw new RestExceptions.BadRequest(e.getMessage());
+        }
     }
 
     @Override
     public void delete(@PathVariable("externalId") String externalId) {
-
-        questionService.delete(externalId);
+        try {
+            questionService.delete(externalId);
+        } catch (ServiceExceptions.NotFoundException e) {
+            throw new RestExceptions.BadRequest(e.getMessage());
+        }
     }
 
     @Override
     public QuestionResponseValidated validate(@RequestBody QuestionRequestValidation questionRequestValidation) {
         return questionValidateService.validate(questionRequestValidation);
+    }
+
+    @Override
+    public Page<QuestionDto> filterQuestion(@Valid @RequestBody FilterQuestionRequest filterQuestionRequest) {
+        return questionService.filterQuestions(filterQuestionRequest);
     }
 }
 

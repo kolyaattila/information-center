@@ -1,132 +1,168 @@
 package com.information.center.quizservice.service;
 
-import com.information.center.quizservice.client.TopicServiceClient;
 import com.information.center.quizservice.converter.QuestionConverter;
+import com.information.center.quizservice.entity.AnswerEntity;
 import com.information.center.quizservice.entity.QuestionEntity;
-import com.information.center.quizservice.model.QuestionListDetails;
-import com.information.center.quizservice.model.request.AnswerRequest;
+import com.information.center.quizservice.entity.SchoolEntity;
+import com.information.center.quizservice.model.QuestionDto;
+import com.information.center.quizservice.model.request.FilterQuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequest;
-import com.information.center.quizservice.model.response.AnswerResponse;
-import com.information.center.quizservice.model.response.QuestionResponse;
-import com.information.center.quizservice.model.response.QuestionResponsePage;
 import com.information.center.quizservice.repository.QuestionRepository;
-import exception.MicroserviceException;
+import com.information.center.quizservice.repository.SchoolRepository;
+import exception.ServiceExceptions;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QuestionServiceImpl implements QuestionService {
 
-    private final QuestionRepository questionRepository;
-
-    private final TopicServiceClient topicServiceClient;
-
-    private final QuestionConverter questionConverter;
-
     private final AnswerService answerService;
+    private final QuestionRepository questionRepository;
+    private final SchoolRepository schoolRepository;
+    private QuestionConverter questionConverter;
 
-    @Override
-    public String getTopicNameByExternalId(String topicId) {
-        return topicServiceClient.getTopicNameByTopicId(topicId);
+
+    @Autowired
+    public void setQuestionConverter(QuestionConverter questionConverter) {
+        this.questionConverter = questionConverter;
     }
 
     @Override
-    public QuestionResponse create(QuestionRequest questionRequest, String topicExternalId) {
-
-        String questionExternalId = UUID.randomUUID().toString();
-
-
+    public QuestionDto create(QuestionRequest questionRequest) {
         QuestionEntity question = questionConverter.toEntity(questionRequest);
-        question.setExternalId(questionExternalId);
-        question.setTopicExternalId(topicExternalId);
-        question.setAnswers(null);
-        var questionFromDb = questionConverter.toResponse(questionRepository.save(question));
-        for (AnswerRequest answerRequest : questionRequest.getAnswers()) {
-            answerService.create(answerRequest, questionExternalId);
-        }
+        question.setExternalId(getUid());
+        question.setSchool(getSchoolEntity(questionRequest.getSchoolExternalId()));
+        QuestionEntity entity = getSave(question);
 
-
-        return questionFromDb;
+        List<AnswerEntity> answers = questionRequest
+                .getAnswers()
+                .stream()
+                .map(answer -> answerService.saveEntity(answer, entity))
+                .collect(Collectors.toList());
+        entity.setAnswers(answers);
+        return questionConverter.toDtoWithAnswers(entity);
     }
 
     @Override
     public void update(QuestionRequest questionRequest) {
-        QuestionEntity question = findById(questionRequest.getExternalId());
-        QuestionEntity questionPersistent = questionConverter.toEntity(questionRequest, question.getId());
-        questionRepository.save(questionPersistent);
+        QuestionEntity entity = findQuestionEntityByExternalId(questionRequest.getExternalId());
+        List<AnswerEntity> updatedEntities = answerService.getUpdatedEntities(questionRequest.getAnswers(), entity);
 
+        entity.setAnswers(updatedEntities);
+        entity.setBook(questionRequest.getBook());
+        entity.setChapterExternalId(questionRequest.getChapterExternalId());
+        entity.setCourseExternalId(questionRequest.getCourseExternalId());
+        entity.setName(questionRequest.getName());
+        entity.setQuestionDifficulty(questionRequest.getQuestionDifficulty());
+        entity.setQuestionNumber(questionRequest.getQuestionNumber());
+        entity.setTopicExternalId(questionRequest.getTopicExternalId());
+        entity.setVerified(questionRequest.isVerified());
+        entity.setSchool(getSchoolEntity(questionRequest.getSchoolExternalId()));
+
+        getSave(entity);
     }
 
     @Override
-    public QuestionResponse findByExternalId(String externalId) {
-        QuestionResponse question = questionConverter.toResponse(findById(externalId));
-        for (AnswerResponse answer : question.getAnswers()) {
-            answer.setCorrect(false);
-        }
-        return question;
-
-    }
-
-    @Override
-    public QuestionResponsePage findAll(Pageable pageable) {
-        Page<QuestionResponse> questionPage = questionRepository.findAll(pageable)
-                .map(question -> {
-                    QuestionResponse response = questionConverter.toResponse(question);
-                    for (AnswerResponse answer : response.getAnswers()) {
-                        answer.setCorrect(false);
-                    }
-                    return response;
-                });
-        var questionResponsePage = new QuestionResponsePage();
-        questionResponsePage.setQuestionResponses(questionPage);
-        questionResponsePage.setStartDate(new Date());
-        return questionResponsePage;
+    public QuestionDto findByExternalId(String externalId) {
+        QuestionEntity question = findQuestionEntityByExternalId(externalId);
+        return questionConverter.toDto(question);
     }
 
     @Override
     public void delete(String externalId) {
-        QuestionEntity question = findById(externalId);
+        QuestionEntity question = findQuestionEntityByExternalId(externalId);
         questionRepository.delete(question);
     }
 
-    private Supplier<MicroserviceException> throwNotFoundItem(String item, String itemId) {
-        return () -> new MicroserviceException(HttpStatus.NOT_FOUND,
-                "Cannot find " + item + " by id " + itemId);
+    @Override
+    public Page<QuestionDto> filterQuestions(FilterQuestionRequest filterRequest) {
+        List<QuestionSpecification> questionSpecifications = getQuestionSpecifications(filterRequest);
+        Specification<QuestionEntity> specification = getSpecification(questionSpecifications);
+        return questionRepository.findAll(specification, PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize()))
+                .map(questionConverter::toDtoWithAnswers);
     }
 
-    @Override
-    public QuestionEntity findById(String externalId) {
+    private Specification<QuestionEntity> getSpecification(List<QuestionSpecification> questionSpecifications) {
+        if (questionSpecifications.isEmpty()) {
+            return null;
+        } else if (questionSpecifications.size() > 1) {
+            Specification<QuestionEntity> result = questionSpecifications.get(0);
+            for (Specification<QuestionEntity> spec : questionSpecifications) {
+                result = Specification.where(result).and(spec);
+            }
+            return result;
+        } else {
+            return questionSpecifications.get(0);
+        }
+    }
+
+    private List<QuestionSpecification> getQuestionSpecifications(FilterQuestionRequest filterRequest) {
+        List<QuestionSpecification> questionSpecifications = new ArrayList<>();
+
+        if (!isBlank(filterRequest.getBook()))
+            questionSpecifications.add(getQuestionSpecification("book", FilterOperation.EQUALS, filterRequest.getBook()));
+
+        if (!isBlank(filterRequest.getName()))
+            questionSpecifications.add(getQuestionSpecification("name", FilterOperation.EQUALS, filterRequest.getName()));
+
+        if (!isBlank(filterRequest.getChapterExternalId()))
+            questionSpecifications.add(getQuestionSpecification("chapterExternalId", FilterOperation.EQUALS, filterRequest.getChapterExternalId()));
+
+        if (!isBlank(filterRequest.getExternalId()))
+            questionSpecifications.add(getQuestionSpecification("externalId", FilterOperation.EQUALS, filterRequest.getExternalId()));
+
+        if (filterRequest.getQuestionDifficulty() != null)
+            questionSpecifications.add(getQuestionSpecification("questionDifficulty", FilterOperation.EQUALS, filterRequest.getQuestionDifficulty()));
+
+        if (filterRequest.getQuestionNumber() != 0)
+            questionSpecifications.add(getQuestionSpecification("questionNumber", FilterOperation.EQUALS, filterRequest.getQuestionNumber()));
+
+        if (!isBlank(filterRequest.getCourseExternalId()))
+            questionSpecifications.add(getQuestionSpecification("courseExternalId", FilterOperation.EQUALS, filterRequest.getCourseExternalId()));
+
+        questionSpecifications.add(getQuestionSpecification("verified", FilterOperation.EQUALS, filterRequest.isVerified()));
+
+        return questionSpecifications;
+    }
+
+    private QuestionSpecification getQuestionSpecification(String key, FilterOperation operation, Object value) {
+        return new QuestionSpecification(new SearchCriteria(key, operation, value));
+    }
+
+    private QuestionEntity findQuestionEntityByExternalId(String externalId) {
         return questionRepository.findByExternalId(externalId)
-                .orElseThrow(throwNotFoundItem("question", externalId));
+                .orElseThrow(() -> new ServiceExceptions.NotFoundException("Question not found by id " + externalId));
     }
 
-    @Override
-    public QuestionListDetails findQuestionsByTopicId(String topicExternalId, Pageable pageable) {
-        var questionDetails = new QuestionListDetails();
-        Page<QuestionResponse> questions = questionRepository.findQuestionsByTopicExternalId(topicExternalId, pageable)
-                .map(question -> {
+    private QuestionEntity getSave(QuestionEntity question) {
+        try {
+            return questionRepository.save(question);
+        } catch (Exception e) {
+            throw new ServiceExceptions.InsertFailedException("Can not insert values" + question.toString());
+        }
+    }
 
-                    QuestionResponse response = questionConverter.toResponse(question);
-                    for (AnswerResponse answer : response.getAnswers()) {
-                        answer.setCorrect(false);
-                    }
-                    return response;
-                });
-        questionDetails.setQuestionResponseList(questions);
-        questionDetails.setStartDate(new Date());
+    private String getUid() {
+        UUID uuid = UUID.randomUUID();
+        if (questionRepository.existsByExternalId(uuid.toString())) {
+            return this.getUid();
+        }
+        return uuid.toString();
+    }
 
-        questionDetails.setTopicName(getTopicNameByExternalId(topicExternalId));
-        return questionDetails;
-
+    private SchoolEntity getSchoolEntity(String externalId) {
+        return schoolRepository.findByExternalId(externalId).orElse(null);
     }
 }

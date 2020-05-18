@@ -1,28 +1,41 @@
 package com.information.center.quizservice.converter;
 
 import com.information.center.quizservice.entity.QuestionEntity;
+import com.information.center.quizservice.model.QuestionDto;
 import com.information.center.quizservice.model.QuestionResponseValidated;
 import com.information.center.quizservice.model.request.QuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequestValidation;
-import com.information.center.quizservice.model.response.QuestionResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface QuestionConverter {
+public abstract class QuestionConverter {
 
-  QuestionEntity toEntity(QuestionRequest questionRequest);
+    private AnswerConverter answerConverter;
 
-  @Mapping(source = "topicExternalId",target = "topicExternalId")
-  QuestionResponse toResponse(QuestionEntity question);
+    @Mappings({
+            @Mapping(target = "answers", ignore = true),
+            @Mapping(target = "quizEntities", ignore = true)
+    })
+    public abstract QuestionEntity toEntity(QuestionRequest questionRequest);
 
-  QuestionEntity toEntity(QuestionResponse questionResponse, long id);
+    public abstract QuestionResponseValidated toResponse(QuestionRequestValidation questionRequestValidation);
 
-  QuestionEntity toEntity(QuestionRequest questionResponse, long id);
+    @Mapping(target = "schoolExternalId", expression = "java(entity.getSchool() != null ?  entity.getSchool().getExternalId() : null)")
+    public abstract QuestionDto toDto(QuestionEntity entity);
 
-  QuestionRequest toRequest(QuestionEntity question);
+    public QuestionDto toDtoWithAnswers(QuestionEntity entity) {
+        QuestionDto dto = this.toDto(entity);
+        dto.setAnswers(entity.getAnswers().stream().map(answerConverter::toDto).collect(Collectors.toList()));
+        return dto;
+    }
 
-  QuestionResponse toResponse(QuestionRequest questionRequest);
-
-  QuestionResponseValidated toResponse(QuestionRequestValidation questionRequestValidation);
+    @Autowired
+    public void setAnswerConverter(AnswerConverter answerConverter) {
+        this.answerConverter = answerConverter;
+    }
 }

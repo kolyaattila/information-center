@@ -1,13 +1,15 @@
 package com.information.center.quizservice.controller;
 
-import com.information.center.quizservice.model.QuestionListDetails;
+import com.information.center.quizservice.entity.QuestionDifficulty;
+import com.information.center.quizservice.model.QuestionDto;
 import com.information.center.quizservice.model.QuestionResponseValidated;
+import com.information.center.quizservice.model.request.FilterQuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequestValidation;
-import com.information.center.quizservice.model.response.QuestionResponse;
-import com.information.center.quizservice.model.response.QuestionResponsePage;
 import com.information.center.quizservice.service.QuestionService;
 import com.information.center.quizservice.service.QuestionValidateService;
+import exception.RestExceptions;
+import exception.ServiceExceptions;
 import lombok.var;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,15 +17,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QuestionControllerTest {
@@ -37,24 +37,68 @@ public class QuestionControllerTest {
     private QuestionRequestValidation questionRequestValidation;
     private QuestionResponseValidated questionResponseValidated;
     private QuestionRequest questionRequest;
-    private QuestionResponse questionResponse;
+    private QuestionDto questionDto;
+    private FilterQuestionRequest filterQuestionRequest;
 
     @Before
     public void setUp() {
-        questionRequest = QuestionRequest.builder().build();
-        questionResponse = QuestionResponse.builder().build();
         questionRequestValidation = QuestionRequestValidation.builder().build();
         questionResponseValidated = QuestionResponseValidated.builder().build();
+        questionRequest = QuestionRequest.builder()
+                .book("book")
+                .chapterExternalId("chapterExternalId")
+                .externalId("externalId")
+                .name("name")
+                .verified(true)
+                .questionNumber(1412)
+                .courseExternalId("courseExternalId")
+                .questionDifficulty(QuestionDifficulty.EASY).build();
+        questionDto = QuestionDto.builder()
+                .book("book")
+                .chapterExternalId("chapterExternalId")
+                .externalId("externalId")
+                .name("name")
+                .verified(true)
+                .questionNumber(1412)
+                .courseExternalId("courseExternalId")
+                .questionDifficulty(QuestionDifficulty.EASY)
+                .build();
+        filterQuestionRequest = FilterQuestionRequest.builder()
+                .book("book")
+                .chapterExternalId("chapterExternalId")
+                .externalId("externalId")
+                .name("name")
+                .pageSize(2)
+                .verified(true)
+                .questionNumber(1412)
+                .courseExternalId("courseExternalId")
+                .questionDifficulty(QuestionDifficulty.EASY)
+                .pageNumber(2)
+                .build();
     }
+
 
     @Test
     public void create() {
-        when(questionService.create(questionRequest, "topicExternalId")).thenReturn(questionResponse);
+        when(questionService.create(questionRequest)).thenReturn(questionDto);
 
-        QuestionResponse response = questionController
-                .create(questionRequest, "topicExternalId");
+        QuestionDto response = questionController.create(questionRequest);
 
-        assertEquals(questionResponse, response);
+        assertEquals(questionDto, response);
+    }
+
+    @Test(expected = RestExceptions.BadRequest.class)
+    public void createWhenServiceThrowInsertFailedException_expectBadRequest() {
+        when(questionService.create(questionRequest)).thenThrow(ServiceExceptions.InsertFailedException.class);
+
+        questionController.create(questionRequest);
+    }
+
+    @Test(expected = RestExceptions.BadRequest.class)
+    public void createWhenServiceThrowNotFoundException_expectBadRequest() {
+        when(questionService.create(questionRequest)).thenThrow(ServiceExceptions.NotFoundException.class);
+
+        questionController.create(questionRequest);
     }
 
     @Test
@@ -64,6 +108,21 @@ public class QuestionControllerTest {
         verify(questionService).update(questionRequest);
     }
 
+    @Test(expected = RestExceptions.BadRequest.class)
+    public void updateWhenServiceThrowInsertFailedException_expectBadRequest() {
+        doThrow(ServiceExceptions.InsertFailedException.class).when(questionService).update(questionRequest);
+
+        questionController.update(questionRequest);
+    }
+
+    @Test(expected = RestExceptions.BadRequest.class)
+    public void updateWhenServiceThrowNotFoundException_expectBadRequest() {
+        doThrow(ServiceExceptions.NotFoundException.class).when(questionService).update(questionRequest);
+
+        questionController.update(questionRequest);
+    }
+
+
     @Test
     public void delete() {
         questionController.delete("externalId");
@@ -71,46 +130,45 @@ public class QuestionControllerTest {
         verify(questionService).delete("externalId");
     }
 
+    @Test(expected = RestExceptions.BadRequest.class)
+    public void delete_expectBadRequest() {
+        doThrow(ServiceExceptions.NotFoundException.class).when(questionService).delete("externalId");
+
+        questionController.delete("externalId");
+    }
+
+
     @Test
     public void findByExternalId() {
-        when(questionService.findByExternalId("externalId")).thenReturn(questionResponse);
+        when(questionService.findByExternalId("externalId")).thenReturn(questionDto);
 
-        QuestionResponse response = questionController.findByExternalId("externalId");
+        QuestionDto response = questionController.findByExternalId("externalId");
 
-        assertEquals(questionResponse, response);
+        assertEquals(questionDto, response);
+    }
+
+    @Test(expected = RestExceptions.BadRequest.class)
+    public void findByExternalId_expectBadRequest() {
+        when(questionService.findByExternalId("externalId")).thenThrow(ServiceExceptions.NotFoundException.class);
+
+        questionController.findByExternalId("externalId");
     }
 
     @Test
-    public void findQuestionsByTopicId() {
-        PageRequest pageRequest = new PageRequest(1, 1);
+    public void validate() {
+        when(questionValidateService.validate(questionRequestValidation)).thenReturn(questionResponseValidated);
 
-        when(questionService.findQuestionsByTopicId("externalId", pageRequest))
-                .thenReturn(new QuestionListDetails(new PageImpl<>(Collections.singletonList(questionResponse)), new Date(), ""));
-
-        var response = questionController
-                .findQuestionsByTopicId("externalId", pageRequest);
-
-        assertEquals(1, response.getQuestionResponseList().getTotalElements());
+        var response = questionController.validate(questionRequestValidation);
+        assertEquals(questionResponseValidated, response);
     }
 
     @Test
-    public void findAll() {
-        PageRequest pageRequest = new PageRequest(1, 1);
+    public void test() {
+        PageImpl<QuestionDto> page = new PageImpl<>(Collections.singletonList(questionDto));
+        when(questionService.filterQuestions(filterQuestionRequest)).thenReturn(page);
 
-        when(questionService.findAll(pageRequest))
-                .thenReturn(new QuestionResponsePage(new Date(), new PageImpl<>(Collections.singletonList(questionResponse))));
+        Page<QuestionDto> response = questionController.filterQuestion(filterQuestionRequest);
 
-        var response = questionController.findAll(pageRequest);
-
-        assertEquals(1, response.getQuestionResponses().getTotalElements());
+        assertEquals(page, response);
     }
-
-  @Test
-  public void validate() {
-    when(questionValidateService.validate(questionRequestValidation)).thenReturn(questionResponseValidated);
-
-    var response = questionController.validate(questionRequestValidation);
-
-    assertEquals(questionResponseValidated, response);
-  }
 }

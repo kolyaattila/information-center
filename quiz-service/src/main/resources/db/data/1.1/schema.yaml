@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: school_db_1.1
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: school.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+
+  - changeSet:
+      id: quiz_db_1.1
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: quiz.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+
+  - changeSet:
+        id: add_course_to_question_db_1.1
+        author: attila
+        changes:
+            - sqlFile:
+                  dbms: postgresql
+                  encoding: utf8
+                  endDelimiter: \nGO
+                  path: add_course_to_question.sql
+                  relativeToChangelogFile: true
+                  splitStatements: true
+                  stripComments: true
+
+  - changeSet:
+        id: solved_quiz_db_1.1
+        author: attila
+        changes:
+            - sqlFile:
+                  dbms: postgresql
+                  encoding: utf8
+                  endDelimiter: \nGO
+                  path: solved_quiz.sql
+                  relativeToChangelogFile: true
+                  splitStatements: true
+                  stripComments: true
+
+  - changeSet:
+        id: answered_question_db_1.1
+        author: attila
+        changes:
+            - sqlFile:
+                  dbms: postgresql
+                  encoding: utf8
+                  endDelimiter: \nGO
+                  path: answered_question.sql
+                  relativeToChangelogFile: true
+                  splitStatements: true
+                  stripComments: true
+
+  - changeSet:
+      id: question2quiz_db_1.1
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: question2quiz.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

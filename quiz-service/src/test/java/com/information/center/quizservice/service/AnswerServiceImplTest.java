@@ -2,110 +2,118 @@ package com.information.center.quizservice.service;
 
 import com.information.center.quizservice.converter.AnswerConverter;
 import com.information.center.quizservice.entity.AnswerEntity;
+import com.information.center.quizservice.entity.AnswerKey;
 import com.information.center.quizservice.entity.QuestionEntity;
 import com.information.center.quizservice.model.request.AnswerRequest;
 import com.information.center.quizservice.repository.AnswerRepository;
-import com.information.center.quizservice.repository.QuestionRepository;
-import lombok.var;
+import exception.ServiceExceptions;
+import org.hibernate.HibernateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnswerServiceImplTest {
-    private static final String QUESTION_EXTERNAL_ID = "questionExternalId";
-    private static final boolean IS_CORRECT = true;
-    private static final boolean CHECKED = true;
-    private static final String NAME = "name";
-    private static final String REASON = "reason";
-    public static final String ANSWER_EXTERNAL_ID = "answerExternalId";
+    public static final String ANSWER_ENTITY_EXTERNAL_ID = "answerEntityExternalId";
+    public static final String ANSWER_REQUEST_EXTERNAL_ID = "answerRequestExternalId";
 
+    @InjectMocks
     private AnswerServiceImpl answerService;
     @Mock
     private AnswerRepository answerRepository;
-    @Mock
-    private QuestionRepository questionRepository;
-    @Captor
-    private ArgumentCaptor<AnswerEntity> answerEntityArgumentCaptor;
-    @Captor
-    private ArgumentCaptor<String> externalIdArgumentCapture;
-
-    private AnswerConverter answerConverter = Mappers.getMapper(AnswerConverter.class);
+    private AnswerRequest answerRequest;
+    private QuestionEntity questionEntity;
+    private AnswerEntity answerEntity;
 
     @Before
     public void setUp() {
-        mocks();
-        answerService = new AnswerServiceImpl(answerRepository, questionRepository, answerConverter);
+        answerService.setAnswerConverter(Mappers.getMapper(AnswerConverter.class));
+
+        questionEntity = new QuestionEntity();
+        answerRequest = AnswerRequest.builder()
+                .externalId(ANSWER_REQUEST_EXTERNAL_ID)
+                .correct(true)
+                .key(AnswerKey.C)
+                .reason("reason")
+                .name("name").build();
+        answerEntity = new AnswerEntity();
+        answerEntity.setExternalId(ANSWER_ENTITY_EXTERNAL_ID);
     }
 
     @Test
-    public void create_expectedResponse() throws Exception {
-        answerService.create(createAnswer(), QUESTION_EXTERNAL_ID);
-        verify(answerRepository).save(answerEntityArgumentCaptor.capture());
-        assertsForAnswer(answerEntityArgumentCaptor.getValue());
+    public void saveEntity() {
+        when(answerRepository.existsByExternalId(anyString())).thenReturn(true).thenReturn(false);
+        when(answerRepository.save(any())).then(r -> r.getArgument(0));
+
+        AnswerEntity response = answerService.saveEntity(answerRequest, questionEntity);
+
+        assertEquals(response.getQuestion(), questionEntity);
+        assertFalse(response.getExternalId().isEmpty());
+        assertEquals(response.getName(), answerRequest.getName());
+        assertEquals(response.getReason(), answerRequest.getReason());
+        assertEquals(response.getKey(), answerRequest.getKey());
+    }
+
+    @Test(expected = ServiceExceptions.InsertFailedException.class)
+    public void saveEntity_expectInsertFailedException() {
+        when(answerRepository.existsByExternalId(anyString())).thenReturn(true).thenReturn(false);
+        when(answerRepository.save(any())).thenThrow(HibernateException.class);
+
+        answerService.saveEntity(answerRequest, questionEntity);
     }
 
     @Test
-    public void update_expectedRepositoryCall() throws Exception {
-        answerService.update(createAnswer());
-        verify(answerRepository).save(answerEntityArgumentCaptor.capture());
-        assertsForAnswer(answerEntityArgumentCaptor.getValue());
+    public void getUpdatedEntities_expectToDeleteAnswer() {
+        questionEntity.setAnswers(Collections.singletonList(answerEntity));
+        List<AnswerEntity> response = answerService.getUpdatedEntities(Collections.emptyList(), questionEntity);
+
+        assertTrue(response.isEmpty());
+        verify(answerRepository).delete(answerEntity);
     }
 
     @Test
-    public void findByExternalId_expectedResponse() throws Exception {
-        var response = answerService.findByExternalId(ANSWER_EXTERNAL_ID);
-        assertNotNull(response);
+    public void getUpdatedEntities_expectToCreateNewEntity() {
+        questionEntity.setAnswers(Collections.singletonList(answerEntity));
+        List<AnswerEntity> response = answerService.getUpdatedEntities(Collections.singletonList(answerRequest), questionEntity);
+
+        verify(answerRepository).delete(answerEntity);
+        assertFalse(response.isEmpty());
+        AnswerEntity entityResponse = response.get(0);
+        assertEquals(entityResponse.getQuestion(), questionEntity);
+        assertNotEquals(ANSWER_REQUEST_EXTERNAL_ID, entityResponse.getExternalId());
+        assertNotEquals(ANSWER_ENTITY_EXTERNAL_ID, entityResponse.getExternalId());
+        assertEquals(entityResponse.getName(), answerRequest.getName());
+        assertEquals(entityResponse.getReason(), answerRequest.getReason());
+        assertEquals(entityResponse.getKey(), answerRequest.getKey());
     }
 
     @Test
-    public void findAll_expectedResponse() throws Exception {
-        var response = answerService.findAll(PageRequest.of(2, 20));
-        assertNotNull(response);
+    public void getUpdatedEntities_expectToUpdateEntityValues() {
+        answerRequest.setExternalId(ANSWER_ENTITY_EXTERNAL_ID);
+        questionEntity.setAnswers(Collections.singletonList(answerEntity));
+
+        when(answerRepository.findByExternalId(ANSWER_ENTITY_EXTERNAL_ID)).thenReturn(Optional.of(answerEntity));
+
+        List<AnswerEntity> response = answerService.getUpdatedEntities(Collections.singletonList(answerRequest), questionEntity);
+
+        verify(answerRepository, never()).delete(answerEntity);
+        assertFalse(response.isEmpty());
+        AnswerEntity entityResponse = response.get(0);
+        assertEquals(ANSWER_ENTITY_EXTERNAL_ID, entityResponse.getExternalId());
+        assertEquals(entityResponse.getName(), answerRequest.getName());
+        assertEquals(entityResponse.getReason(), answerRequest.getReason());
+        assertEquals(entityResponse.getKey(), answerRequest.getKey());
     }
-
-    @Test
-    public void delete_expectedExternalId() throws Exception {
-        answerService.delete(ANSWER_EXTERNAL_ID);
-        verify(answerRepository).findByExternalId(externalIdArgumentCapture.capture());
-        assertEquals(ANSWER_EXTERNAL_ID, externalIdArgumentCapture.getValue());
-    }
-
-
-    private AnswerRequest createAnswer() {
-        var answer = new AnswerRequest();
-        answer.setExternalId(ANSWER_EXTERNAL_ID);
-        answer.setQuestionExternalId(QUESTION_EXTERNAL_ID);
-        answer.setCorrect(IS_CORRECT);
-        answer.setChecked(CHECKED);
-        answer.setName(NAME);
-        answer.setReason(REASON);
-        return answer;
-    }
-
-    private void assertsForAnswer(AnswerEntity answerEntity) {
-        assertEquals(answerEntity.getName(), NAME);
-        assertEquals(answerEntity.getReason(), REASON);
-    }
-
-    private void mocks() {
-        when(questionRepository.findByExternalId(QUESTION_EXTERNAL_ID)).thenReturn(Optional.of(new QuestionEntity()));
-        when(answerRepository.findByExternalId(ANSWER_EXTERNAL_ID)).thenReturn(Optional.of(new AnswerEntity()));
-        when(answerRepository.findAll(PageRequest.of(2, 20))).thenReturn(Page.empty());
-    }
-
 }

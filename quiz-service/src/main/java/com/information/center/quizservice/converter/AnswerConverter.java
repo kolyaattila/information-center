@@ -1,16 +1,23 @@
 package com.information.center.quizservice.converter;
 
 import com.information.center.quizservice.entity.AnswerEntity;
+import com.information.center.quizservice.model.AnswerDto;
 import com.information.center.quizservice.model.request.AnswerRequest;
-import com.information.center.quizservice.model.response.AnswerResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface AnswerConverter {
 
-  AnswerEntity toEntity(AnswerRequest answerRequest);
+    AnswerEntity toEntity(AnswerRequest answerRequest);
 
-  AnswerResponse toResponse(AnswerEntity answer);
+    @Mapping(target = "questionExternalId", expression = "java(entity.getQuestion() != null ?  entity.getQuestion().getExternalId() : null)")
+    AnswerDto toDto(AnswerEntity entity);
 
-  AnswerEntity toEntity(AnswerRequest answerRequest, long id);
+    @Mappings({
+            @Mapping(target = "correct", ignore = true),
+            @Mapping(target = "questionExternalId", expression = "java(entity.getQuestion() != null ?  entity.getQuestion().getExternalId() : null)")
+    })
+    AnswerDto toDtoWithoutCorrect(AnswerEntity entity);
 }
