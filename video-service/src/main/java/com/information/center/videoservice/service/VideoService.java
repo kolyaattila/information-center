@@ -28,4 +28,6 @@ public interface VideoService {
     List<VideoResponse> findAllByTopicId(String topicId);
 
     ResponseEntity<UrlResource> getFullVideo(String externalId) throws MalformedURLException;
+
+    List<VideoResponse> findAllByCourseId(String courseId);
 }

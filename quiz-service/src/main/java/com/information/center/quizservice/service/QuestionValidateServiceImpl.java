@@ -1,6 +1,6 @@
 package com.information.center.quizservice.service;
 
-import com.information.center.quizservice.client.TopicServiceClient;
+import com.information.center.quizservice.client.CourseServiceClient;
 import com.information.center.quizservice.converter.QuestionConverter;
 import com.information.center.quizservice.model.QuestionResponseValidated;
 import com.information.center.quizservice.model.request.QuestionRequestValidation;
@@ -20,7 +20,7 @@ public class QuestionValidateServiceImpl implements QuestionValidateService {
     private final AnswerRepository answerRepository;
     private final QuestionConverter questionConverter;
     private final CrunchifyTimeDiff crunchifyTimeDiff;
-    private final TopicServiceClient topicServiceClient;
+    private final CourseServiceClient courseServiceClient;
     private static final Logger LOGGER = LoggerFactory.getLogger(QuestionValidateServiceImpl.class);
 
     @Override
@@ -42,9 +42,9 @@ public class QuestionValidateServiceImpl implements QuestionValidateService {
     @Override
     public String getTopicById(String topicId) {
 
-        String response = topicServiceClient.getTopicNameByTopicId(topicId);
+        String response = courseServiceClient.getTopicNameByTopicId(topicId);
         if (response.equals(""))
-            LOGGER.warn("Error while getting response from topic-service");
+            LOGGER.warn("Error while getting response from course-service");
         return response;
 
     }

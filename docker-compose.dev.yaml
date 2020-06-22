@@ -1,13 +1,13 @@
 version: '2.1'
 
 services:
-  topic-service-database:
-    container_name: topic-service-database
+  course-service-database:
+    container_name: course-service-database
     extends:
       file: docker-compose.yaml
-      service: topic-service-database
+      service: course-service-database
     ports:
-      - ${TOPIC_SERVICE_DATABASE_PORT}:5432
+      - ${COURSE_SERVICE_DATABASE_PORT}:5432
 
   quiz-service-database:
     container_name: quiz-service-database

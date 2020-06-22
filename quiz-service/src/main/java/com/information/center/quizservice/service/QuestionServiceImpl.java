@@ -118,7 +118,7 @@ public class QuestionServiceImpl implements QuestionService {
             questionSpecifications.add(getQuestionSpecification("name", FilterOperation.EQUALS, filterRequest.getName()));
 
         if (!isBlank(filterRequest.getChapterExternalId()))
-            questionSpecifications.add(getQuestionSpecification("chapterExternalId", FilterOperation.EQUALS, filterRequest.getChapterExternalId()));
+            questionSpecifications.add(getQuestionSpecification("topicExternalId", FilterOperation.EQUALS, filterRequest.getChapterExternalId()));
 
         if (!isBlank(filterRequest.getExternalId()))
             questionSpecifications.add(getQuestionSpecification("externalId", FilterOperation.EQUALS, filterRequest.getExternalId()));

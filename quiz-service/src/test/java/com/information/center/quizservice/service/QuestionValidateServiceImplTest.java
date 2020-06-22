@@ -1,6 +1,6 @@
 package com.information.center.quizservice.service;
 
-import com.information.center.quizservice.client.TopicServiceClient;
+import com.information.center.quizservice.client.CourseServiceClient;
 import com.information.center.quizservice.converter.QuestionConverter;
 import com.information.center.quizservice.entity.AnswerEntity;
 import com.information.center.quizservice.entity.QuestionDifficulty;
@@ -45,12 +45,12 @@ public class QuestionValidateServiceImplTest {
     @Mock
     private AnswerRepository answerRepository;
     @Mock
-    private TopicServiceClient topicServiceClient;
+    private CourseServiceClient courseServiceClient;
     private QuestionConverter questionConverter = Mappers.getMapper(QuestionConverter.class);
 
     @Before
     public void setUp() {
-        questionValidateService = new QuestionValidateServiceImpl(answerRepository, questionConverter, new CrunchifyTimeDiff(), topicServiceClient);
+        questionValidateService = new QuestionValidateServiceImpl(answerRepository, questionConverter, new CrunchifyTimeDiff(), courseServiceClient);
     }
 
     @Test

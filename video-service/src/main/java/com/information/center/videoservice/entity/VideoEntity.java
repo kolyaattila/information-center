@@ -1,16 +1,9 @@
 package com.information.center.videoservice.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -20,28 +13,31 @@ import lombok.Setter;
 @Table(name = "Video")
 public class VideoEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @Column(name = "externalId", unique = true, nullable = false)
-  private String externalId;
+    @Column(name = "external_id", unique = true, nullable = false, length = 50)
+    private String externalId;
 
-  @Column(name = "path", nullable = false)
-  private String path;
+    @Column(name = "path", nullable = false, length = 255, unique = true)
+    private String path;
 
-  @Column(name = "title", nullable = false)
-  private String title;
+    @Column(name = "title", nullable = false, length = 255)
+    private String title;
 
-  @Column(name = "description", nullable = false)
-  private String description;
+    @Column(name = "description", nullable = false, length = 500)
+    private String description;
 
-  @Column(name = "chapter", nullable = false)
-  private String chapter;
+    @Column(name = "course_id", nullable = false, length = 50)
+    private String courseExternalId;
 
-  @Column(name = "topic_id", nullable = false)
-  private String topicId;
+    @Column(name = "topic_id", nullable = false, length = 50)
+    private String topicExternalId;
 
-  @Column(name = "video_duration", nullable = false)
-  private String videoDuration;
+    @Column(name = "video_duration", nullable = false, length = 10)
+    private String videoDuration;
+
+    @Column(name = "created")
+    private Date created = new Date();
 }

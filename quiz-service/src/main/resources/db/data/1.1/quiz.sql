@@ -4,7 +4,7 @@ create table public.Quiz (
     external_id       varchar(50)   not null unique,
     type              varchar(10)   not null unique,
     duration          integer,
-    school_id         bigint        not null CONSTRAINT fk_quiz_school_id references School,
+    school_id         bigint        CONSTRAINT fk_quiz_school_id references School,
     course_id         varchar(50),
     chapter_id        varchar(50),
     enable            boolean       default 'false',

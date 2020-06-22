@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: course_db_1.1
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: Course.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+
+  - changeSet:
+      id: update_topic_db_1.1
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: updateTopic.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+
+  - changeSet:
+      id: review_db_1.1
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: Review.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

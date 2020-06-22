@@ -20,7 +20,7 @@ public interface VideoEndpoint {
     VideoResponse findById(@PathVariable("externalId") String externalId);
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    VideoResponse create(@RequestBody VideoRequest videoRequest) throws IOException;
+    VideoResponse create(@ModelAttribute VideoRequest videoRequest) throws IOException;
 
     @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void update(@RequestBody VideoDto videoDto) throws IOException;
@@ -33,4 +33,7 @@ public interface VideoEndpoint {
 
     @GetMapping("/{topicId}/byChapter")
     List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId);
+
+    @GetMapping("/byCourse/{courseId}")
+    List<VideoResponse> findAllByCourseId(@PathVariable("courseId") String courseId);
 }

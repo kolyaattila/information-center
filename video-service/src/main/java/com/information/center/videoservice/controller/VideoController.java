@@ -7,14 +7,17 @@ import com.information.center.videoservice.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Component
 public class VideoController implements VideoEndpoint {
 
     private final VideoService videoService;
@@ -25,12 +28,12 @@ public class VideoController implements VideoEndpoint {
     }
 
     @Override
-    public VideoResponse create(VideoRequest videoRequest) throws IOException {
+    public VideoResponse create(@ModelAttribute VideoRequest videoRequest) throws IOException {
         return videoService.create(videoRequest);
     }
 
     @Override
-    public void update(VideoDto videoDto) throws IOException {
+    public void update(@RequestBody VideoDto videoDto) throws IOException {
         videoService.update(videoDto);
     }
 
@@ -49,4 +52,10 @@ public class VideoController implements VideoEndpoint {
     public List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId) {
         return videoService.findAllByTopicId(topicId);
     }
+
+    @Override
+    public List<VideoResponse> findAllByCourseId(@PathVariable("courseId") String courseId) {
+        return videoService.findAllByCourseId(courseId);
+    }
+
 }

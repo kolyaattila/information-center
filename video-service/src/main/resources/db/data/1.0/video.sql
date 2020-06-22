@@ -1,12 +1,11 @@
 create table public.video (
     id                bigserial constraint video_pkey primary key,
-    uid               varchar(255) not null unique,
+    external_id       varchar(50) not null unique,
     title             varchar(255) not null,
     created           timestamp default CURRENT_DATE,
-    path              varchar(255) not null,
-    description       varchar(255) not null,
-    topic_id          varchar(255) not null,
-    chapter           varchar(255) not null,
-    videoDuration     varchar(255) not null
-
+    path              varchar(255) not null unique ,
+    description       varchar(500) not null,
+    topic_id          varchar(50) not null,
+    course_id         varchar(50) not null,
+    video_duration    varchar(10) not null
 );
