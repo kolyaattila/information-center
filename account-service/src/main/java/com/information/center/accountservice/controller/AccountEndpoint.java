@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import java.security.Principal;
 
 @RestController
+@RequestMapping("/account")
 public interface AccountEndpoint {
 
     @GetMapping("/")

@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,8 +31,14 @@ public class SolvedQuizEntity {
     private boolean passed;
 
     @Column(name = "note")
-    private float note;
+    private double note;
 
     @Column(name = "completed_quiz")
     private boolean completedQuiz;
+
+    @Column(name = "user_id", length = 50, nullable = false)
+    private String userExternalId;
+
+    @OneToMany(mappedBy = "solvedQuiz", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<AnsweredQuestionEntity> answeredQuestionEntities = new ArrayList<>();
 }

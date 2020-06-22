@@ -3,4 +3,4 @@ server:
 
 turbine:
   clusterNameExpression: new String("default")
-  appConfig: account-service,email-service,auth-service,quiz-service,topic-service
+  appConfig: account-service,email-service,auth-service,quiz-service,course-service

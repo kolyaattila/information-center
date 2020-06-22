@@ -1,0 +1,8 @@
+INSERT INTO public.course (id, name, created, external_id, author, description, enable, price, image, number_videos, number_quizzes) VALUES (1, 'Time management', '2020-06-21 13:56:26.329000', '2a0f3f99-2c5d-46a4-8d32-5516175f1176', 'Kolya Attila', 'When someone brings up essential skills for independent living, time management might not be at the top of your list. It’s probably not one you would think of until your to do list has gotten out of control. But learning how to manage your time wisely is an essential life skill that most young adults don’t “leave the nest” doing well.
+
+Knowing how to manage your time wisely is essential to climbing the ladder of success. The more successful you get, the less time you have. We hope this information will equip you in mentoring a young adult as they grow more independent and hopefully you’ll learn some useful tips too!', true, 30, 'time-management-course', 5, 4);
+
+INSERT INTO public.topic (id, name, created, external_id, course_id) VALUES (1, '​What Is Time Management?', '2020-06-21 13:57:22.419000', 'd9ab3c1d-d080-4e2f-869c-0ccba4844bba', 1);
+INSERT INTO public.topic (id, name, created, external_id, course_id) VALUES (2, 'Five Steps to Get on Top of Your Schedule', '2020-06-21 13:57:34.794000', '7648ddca-ff01-4548-b452-9c35bdf73fad', 1);
+INSERT INTO public.topic (id, name, created, external_id, course_id) VALUES (3, '​​​Five Great Time Management Strategies', '2020-06-21 14:16:41.693000', 'bc498940-eef1-405d-9c2a-2ab0ede0c726', 1);
+INSERT INTO public.topic (id, name, created, external_id, course_id) VALUES (4, 'Five Tools To Help You Be More Productive', '2020-06-21 14:16:54.810000', 'fd6f8e99-8af7-4002-b105-c8b64ce193a9', 1);

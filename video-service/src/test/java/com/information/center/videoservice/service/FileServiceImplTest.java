@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.Assert.assertFalse;
@@ -99,7 +100,7 @@ public class FileServiceImplTest {
     }
 
     private VideoEntity createVideoEntity(String path) {
-        return new VideoEntity(1, EXTERNAL_ID, path, "", "", "", "", "");
+        return new VideoEntity(1, EXTERNAL_ID, path, "", "", "", "", "", new Date());
     }
 
 

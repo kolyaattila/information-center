@@ -8,7 +8,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController()
-@RequestMapping("/school")
+@RequestMapping("/quiz/school")
 public interface SchoolEndpoint {
 
     @PostMapping

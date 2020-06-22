@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ public class QuestionEntity {
     @OneToMany(
             mappedBy = "question",
             cascade = {CascadeType.REMOVE, CascadeType.MERGE})
-    private List<AnswerEntity> answers;
+    private List<AnswerEntity> answers = new ArrayList<>();
 
     @Column(name = "name", nullable = false, length = 1000)
     private String name;
@@ -60,4 +61,7 @@ public class QuestionEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="school_id")
     private SchoolEntity school;
+
+    @OneToMany(mappedBy = "questionEntity", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<AnsweredQuestionEntity> answeredQuestionEntity = new ArrayList<>();
 }

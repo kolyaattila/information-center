@@ -40,18 +40,12 @@ management:
       enabled: true
     refresh:
       enabled: true
+    turbine:
+      enable: true
   endpoints:
     web:
       exposure:
-        include:
-          - health
-          - httptrace
-          - info
-          - loggers
-          - metrics
-          - prometheus
-          - refresh
-    enabled-by-default: false
+        include: "*"
 
 spring:
   rabbitmq:

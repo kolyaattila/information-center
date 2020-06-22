@@ -37,7 +37,7 @@ public class FileServiceImpl implements FileService {
     public void createFolder(String path) {
         File file = new File(path);
         if (!file.exists()) {
-            boolean bool = file.mkdir();
+            boolean bool = file.mkdirs();
             if (!bool)
                 throw new MicroserviceException(HttpStatus.BAD_REQUEST, "can't create directory on path " + path);
         }

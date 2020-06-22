@@ -34,7 +34,8 @@ build/
 .env
 
 ### Database ###
-topic-service-database/data
+course-service-database/data
 quiz-service-database/data
 account-service-database/data
 auth-service-database/data
+videos/

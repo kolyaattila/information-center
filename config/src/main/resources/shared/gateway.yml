@@ -17,9 +17,9 @@ zuul:
       serviceId: account-service
       stripPrefix: false
 
-    topic-service:
-      path: /topic-service/**
-      serviceId: topic-service
+    course-service:
+      path: /course-service/**
+      serviceId: course-service
       stripPrefix: false
 
     quiz-service:

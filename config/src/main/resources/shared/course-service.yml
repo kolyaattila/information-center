@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${COURSE_SERVICE_DATABASE_HOST}:${COURSE_SERVICE_DATABASE_PORT}/${COURSE_SERVICE_DATABASE}?autoReconnect=true&useSSL=false
+    username: ${COURSE_SERVICE_DATABASE_USER}
+    password: ${COURSE_SERVICE_DATABASE_PASSWORD}
+
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog.master.yaml
+
+server:
+  port: 8881
+
+security:
+  oauth2:
+    client:
+      clientId: course-service
+      clientSecret: ${COURSE_SERVICE_PASSWORD}
+      accessTokenUri: http://${AUTH_SERVER_HOST:localhost}:8884/auth/oauth/token
+      grant-type: client_credentials
+      scope: server

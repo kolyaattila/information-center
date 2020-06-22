@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -57,22 +58,24 @@ public class VideoServiceImplTest {
 
     @Test
     public void create_expectedProperRepoCall() throws IOException {
-
         videoService.create(createVideoRequest());
+
         verify(fileService).createFolder(stringArgumentCaptor.capture());
         verify(videoRepository).save(videoEntityArgumentCaptor.capture());
-        assertEquals(ROOT_DIR + "/" + CHAPTER, stringArgumentCaptor.getValue());
+        assertEquals(ROOT_DIR + "/" + CHAPTER +"/"+TOPIC_ID, stringArgumentCaptor.getValue());
         assertsForVideoEntity(videoEntityArgumentCaptor.getValue());
     }
 
     @Test
     public void update_expectedProperRepoCall() throws IOException {
         when(videoRepository.findByExternalId(any())).thenReturn(Optional.of(createVideoEntity()));
+
         videoService.update(createVideoDto());
+
         verify(fileService).createFolder(stringArgumentCaptor.capture());
-        assertEquals(ROOT_DIR + "/" + NEW_CHAPTER, stringArgumentCaptor.getValue());
+        assertEquals(ROOT_DIR + "/" + NEW_CHAPTER + "/" + TOPIC_ID, stringArgumentCaptor.getValue());
         verify(fileService).deleteByPath(stringArgumentCaptor.capture());
-        assertEquals(ROOT_DIR + "/" + CHAPTER + "/" + EXTERNAL_ID + ".mp4", stringArgumentCaptor.getValue());
+        assertEquals(ROOT_DIR + "/" + CHAPTER + "/" + TOPIC_ID + "/"+ EXTERNAL_ID + ".mp4", stringArgumentCaptor.getValue());
         verify(videoRepository).save(videoEntityArgumentCaptor.capture());
         assertsForVideoEntity(videoEntityArgumentCaptor.getValue());
     }
@@ -122,9 +125,9 @@ public class VideoServiceImplTest {
 
     private VideoRequest createVideoRequest() {
         var video = new VideoRequest();
-        video.setTopicId(TOPIC_ID);
+        video.setTopicExternalId(TOPIC_ID);
         video.setTitle(TITLE);
-        video.setChapter(CHAPTER);
+        video.setCourseExternalId(CHAPTER);
         video.setDescription(DESCRIPTION);
         video.setVideoDuration(VIDEO_DURATION);
         video.setFile(new MockMultipartFile("files", "filename.txt", "text/plain", "hello".getBytes(StandardCharsets.UTF_8)));
@@ -134,10 +137,10 @@ public class VideoServiceImplTest {
     private VideoDto createVideoDto() {
         var video = new VideoDto();
         video.setExternalId(EXTERNAL_ID);
-        video.setTopicId(TOPIC_ID);
+        video.setTopicExternalId(TOPIC_ID);
         video.setTitle(TITLE);
         video.setPath(PATH);
-        video.setChapter(NEW_CHAPTER);
+        video.setCourseExternalId(NEW_CHAPTER);
         video.setDescription(DESCRIPTION);
         video.setVideoDuration(VIDEO_DURATION);
         video.setFile(new MockMultipartFile("files", "filename.txt", "text/plain", "hello".getBytes(StandardCharsets.UTF_8)));
@@ -145,7 +148,7 @@ public class VideoServiceImplTest {
     }
 
     private VideoEntity createVideoEntity() {
-        return new VideoEntity(1, EXTERNAL_ID, PATH, TITLE, DESCRIPTION, CHAPTER, TOPIC_ID, EXPECTED_VIDEO_DURATION);
+        return new VideoEntity(1, EXTERNAL_ID, PATH, TITLE, DESCRIPTION, CHAPTER, TOPIC_ID, EXPECTED_VIDEO_DURATION, new Date());
     }
 
     private void assertsForVideoEntity(VideoEntity videoEntity) {
@@ -157,7 +160,7 @@ public class VideoServiceImplTest {
     private void assertsForVideoResponse(VideoResponse videoResponse) {
         assertEquals(DESCRIPTION, videoResponse.getDescription());
         assertEquals(TITLE, videoResponse.getTitle());
-        assertEquals(CHAPTER, videoResponse.getChapter());
+        assertEquals(CHAPTER, videoResponse.getCourseExternalId());
         assertEquals(EXPECTED_VIDEO_DURATION, videoResponse.getVideoDuration());
     }
 }

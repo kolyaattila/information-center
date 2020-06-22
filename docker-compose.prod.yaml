@@ -1,11 +1,11 @@
 version: '2.1'
 
 services:
-  topic-service-database:
-    container_name: topic-service-database
+  course-service-database:
+    container_name: course-service-database
     extends:
       file: docker-compose.yaml
-      service: topic-service-database
+      service: course-service-database
 
   quiz-service-database:
     container_name: quiz-service-database
@@ -64,13 +64,13 @@ services:
       config:
         condition: service_healthy
 
-  topic-service:
+  course-service:
     extends:
       file: docker-compose.yaml
-      service: topic-service
-    container_name: topic-service
+      service: course-service
+    container_name: course-service
     depends_on:
-      topic-service-database:
+      course-service-database:
         condition: service_healthy
       config:
         condition: service_healthy
