@@ -3,8 +3,11 @@ package com.information.center.quizservice.controller;
 import com.information.center.quizservice.model.QuizDto;
 import com.information.center.quizservice.model.QuizStartDto;
 import com.information.center.quizservice.model.request.QuizRequest;
+import com.information.center.quizservice.model.request.QuizValidation;
+import com.information.center.quizservice.service.QuestionValidateService;
 import com.information.center.quizservice.service.QuizService;
 import exception.RestExceptions;
+import exception.ServiceExceptions;
 import exception.ServiceExceptions.InsertFailedException;
 import exception.ServiceExceptions.NotFoundException;
 import exception.ServiceExceptions.WrongQuizType;
@@ -24,6 +27,7 @@ import java.util.List;
 public class QuizController implements QuizEndpoint {
 
     private final QuizService quizService;
+    private final QuestionValidateService questionValidateService;
 
     @Override
     public ResponseEntity<String> createQuiz(@Valid @RequestBody QuizRequest quizRequest) {
@@ -59,6 +63,24 @@ public class QuizController implements QuizEndpoint {
         } catch (NotFoundException e) {
             e.printStackTrace();
             throw new RestExceptions.NotFoundException(e.getMessage());
+        }
+    }
+
+    @Override
+    public QuizValidation validate(@RequestBody @Valid QuizValidation quizValidation) {
+        try {
+            return questionValidateService.validate(quizValidation);
+        } catch (ServiceExceptions.InconsistentDataException e) {
+            throw new RestExceptions.BadRequest(e.getMessage());
+        }
+    }
+
+    @Override
+    public QuizValidation getResultQuiz(@PathVariable String externalId){
+        try {
+            return questionValidateService.getQuizValidation(externalId);
+        } catch (ServiceExceptions.InconsistentDataException e) {
+            throw new RestExceptions.BadRequest(e.getMessage());
         }
     }
 }

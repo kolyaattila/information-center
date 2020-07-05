@@ -37,4 +37,7 @@ public interface CourseEndpoint {
     @GetMapping("/course")
     List<CourseDto> getAllCourses();
 
+    @GetMapping("/course/best")
+    List<CourseDto> getBestCourses();
+
 }

@@ -26,4 +26,5 @@ public class QuestionDto {
     private String chapterExternalId;
     private String courseExternalId;
     private String schoolExternalId;
+    private boolean status;
 }

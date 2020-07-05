@@ -76,4 +76,9 @@ public class CourseController implements CourseEndpoint {
     public List<CourseDto> getAllCourses() {
         return courseService.getAllCourses();
     }
+
+    @Override
+    public List<CourseDto> getBestCourses() {
+        return courseService.getBestCourses();
+    }
 }

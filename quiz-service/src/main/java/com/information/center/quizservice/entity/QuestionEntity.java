@@ -60,4 +60,7 @@ public class QuestionEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="school_id")
     private SchoolEntity school;
+
+    @OneToOne(mappedBy = "questionEntity")
+    private AnsweredQuestionEntity answeredQuestionEntity;
 }

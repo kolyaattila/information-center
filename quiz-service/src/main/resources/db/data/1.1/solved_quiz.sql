@@ -5,7 +5,8 @@ create table public.Solved_quiz (
     quiz_id           bigint        not null,
     passed            boolean,
     note              NUMERIC(2,2),
-    completed_quiz    boolean       default false
+    completed_quiz    boolean       default false,
+    user_id           varchar(50)   not null
 );
 
 ALTER TABLE Solved_quiz

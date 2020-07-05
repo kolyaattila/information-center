@@ -24,4 +24,6 @@ public interface CourseService {
     List<CourseDto> getAllActiveCourses();
 
     List<CourseDto> getAllCourses();
+
+    List<CourseDto> getBestCourses();
 }

@@ -20,4 +20,5 @@ public class AnswerDto {
     private String reason;
     private boolean correct;
     private AnswerKey key;
+    private boolean selected;
 }

@@ -109,6 +109,14 @@ public class CourseServiceImp implements CourseService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CourseDto> getBestCourses() {
+        return courseRepository.bestCourses()
+                .stream()
+                .map(this::toDtoWithRating)
+                .collect(Collectors.toList());
+    }
+
     CourseDto toDtoWithRating(CourseEntity entity) {
         RatingDto rating = reviewService.getRating(entity);
         CourseDto courseDto = courseConverter.toDto(entity);

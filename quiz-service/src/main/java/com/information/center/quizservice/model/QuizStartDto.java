@@ -19,4 +19,5 @@ public class QuizStartDto {
     private Boolean enable;
     private String schoolExternalId;
     private String externalId;
+    private String description;
 }

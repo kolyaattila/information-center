@@ -14,6 +14,5 @@ public class RatingDto {
     private int threeStarsReviews;
     private int twoStarsReviews;
     private int oneStarsReviews;
-    private int zeroStarsReviews;
     private int numberOfReviews;
 }

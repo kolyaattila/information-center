@@ -107,6 +107,7 @@ public class QuizServiceImpl implements QuizService {
 
         QuizStartDto quizStartDto = quizConverter.toQuizStartDto(quizEntity);
         List<QuestionDto> questionDtos = quizEntity.getQuestions().stream()
+                .distinct()
                 .map(questionConverter::toDtoWithAnswersWithoutCorrectValue)
                 .collect(Collectors.toList());
 
@@ -136,7 +137,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private QuizEntity findByExternalId(String externalId) {
-        return quizRepository.findByChapterExternalId(externalId)
+        return quizRepository.findByExternalId(externalId)
                 .orElseThrow(() -> new NotFoundException("Quiz not found by id " + externalId));
     }
 

@@ -14,12 +14,12 @@ import javax.validation.constraints.NotBlank;
 public class ReviewRequest {
 
     @NotBlank
-    private String courseId;
+    private String courseExternalId;
     private String message;
-    private String accountId;
+    private String accountExternalId;
     @Min(0)
     @Max(5)
-    private int stars;
+    private int rating;
 
 
 }

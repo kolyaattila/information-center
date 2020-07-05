@@ -6,6 +6,7 @@ import com.information.center.quizservice.model.QuizDto;
 import com.information.center.quizservice.model.QuizStartDto;
 import com.information.center.quizservice.model.request.QuizRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ public abstract class QuizConverter {
 
     public abstract QuizDto toDto(QuizEntity entity);
 
+    @Mapping(target = "questions", ignore = true)
     public abstract QuizStartDto toQuizStartDto(QuizEntity entity);
 
 

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -29,11 +30,19 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void reviewCourse(ReviewRequest reviewRequest) {
-        CourseEntity courseEntity = findByCourseExternalId(reviewRequest.getCourseId());
-        ReviewEntity reviewEntity = reviewConverter.toEntity(reviewRequest);
+        CourseEntity courseEntity = findByCourseExternalId(reviewRequest.getCourseExternalId());
+        ReviewEntity reviewEntity;
+        Optional<ReviewEntity> optionalReviewEntity = reviewRepository.findByCourseExternalIdAndAccountExternalId(
+                reviewRequest.getCourseExternalId(), reviewRequest.getAccountExternalId());
 
-        reviewEntity.setCourse(courseEntity);
-        reviewEntity.setExternalId(getUid());
+        if (optionalReviewEntity.isPresent()) {
+            reviewEntity = optionalReviewEntity.get();
+            reviewEntity.setRating(reviewRequest.getRating());
+        } else {
+            reviewEntity = reviewConverter.toEntity(reviewRequest);
+            reviewEntity.setCourse(courseEntity);
+            reviewEntity.setExternalId(getUid());
+        }
         try {
             reviewRepository.save(reviewEntity);
         } catch (Exception e) {
@@ -52,7 +61,6 @@ public class ReviewServiceImpl implements ReviewService {
         ratingDto.setThreeStarsReviews(getNumberOfReviewsByStar(entity, 3));
         ratingDto.setTwoStarsReviews(getNumberOfReviewsByStar(entity, 2));
         ratingDto.setOneStarsReviews(getNumberOfReviewsByStar(entity, 1));
-        ratingDto.setZeroStarsReviews(getNumberOfReviewsByStar(entity, 0));
         ratingDto.setNumberOfReviews(count);
         ratingDto.setAverage(average);
         return ratingDto;

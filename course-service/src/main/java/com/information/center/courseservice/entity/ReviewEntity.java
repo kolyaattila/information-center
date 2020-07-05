@@ -29,7 +29,7 @@ public class ReviewEntity {
     private String message;
 
     @Column(name = "account_id")
-    private String AccountId;
+    private String accountExternalId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id", nullable = false, updatable = false)

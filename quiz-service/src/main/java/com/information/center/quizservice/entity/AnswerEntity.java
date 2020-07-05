@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -44,4 +45,7 @@ public class AnswerEntity {
 
     @Column(name = "created")
     private Date created = new Date();
+
+    @ManyToMany(mappedBy = "answerEntities", cascade = CascadeType.PERSIST)
+    Collection<AnsweredQuestionEntity> answeredQuestionEntities;
 }
