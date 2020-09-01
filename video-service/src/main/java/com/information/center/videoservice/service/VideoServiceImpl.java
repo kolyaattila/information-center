@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VideoServiceImpl implements VideoService {
 
+    public static final String ROOT_DIRECTORY = "videos";
     private final VideoRepository videoRepository;
 
     private final VideoConverter videoConverter;
@@ -61,28 +62,27 @@ public class VideoServiceImpl implements VideoService {
 
         VideoEntity video = findById(videoDto.getExternalId());
         VideoEntity videoPersistent = videoConverter.toEntity(videoDto);
-        String videoExternalId = video.getExternalId();
-        String rootDirectory = "videos";
-//        String path = rootDirectory + "/" + videoDto.getChapter();
+        String path = ROOT_DIRECTORY + "/" + videoDto.getCourseExternalId() + "/" + videoDto.getTopicExternalId();
+        String oldPath = ROOT_DIRECTORY + "/" + video.getCourseExternalId() + "/" + video.getTopicExternalId();
         videoPersistent.setId(video.getId());
-//        videoPersistent.setPath(path);
-//        String videoOldName = createVideoPath(rootDirectory, video.getChapter(), videoExternalId);
+        videoPersistent.setPath(path);
+        String videoOldName = createVideoPath(oldPath, video.getExternalId());
 
-//        if (!videoDto.getChapter().equals(video.getChapter())) {
-//            fileService.createFolder(path);
-//        }
+        if (!videoDto.getTopicExternalId().equals(video.getTopicExternalId()) || !videoDto.getCourseExternalId().equals(video.getCourseExternalId())) {
+            fileService.createFolder(path);
+        }
         if (videoDto.getFile() != null) {
             if (videoDto.getFile().getBytes().length != 0) {
                 videoPersistent.setVideoDuration(convertSecondsToTime(videoDto.getVideoDuration()));
-//                fileService.deleteByPath(videoOldName);
-//                fileService.saveVideo(videoDto.getFile(), path, video.getExternalId());
+                fileService.deleteByPath(videoOldName);
+                fileService.saveVideo(videoDto.getFile(), path, video.getExternalId());
             }
         } else {
-//            String videoNewName = createVideoPath(rootDirectory, videoDto.getChapter(), videoExternalId);
-//            fileService.renameFile(videoOldName, videoNewName);
+            String videoNewName = createVideoPath(path, video.getExternalId());
+            fileService.renameFile(videoOldName, videoNewName);
         }
-//        if (!video.getChapter().equals(videoDto.getChapter()))
-//            fileService.deleteIfEmpty(new File(video.getPath()));
+        if (!video.getTopicExternalId().equals(videoDto.getTopicExternalId()) || !videoDto.getCourseExternalId().equals(video.getCourseExternalId()))
+            fileService.deleteIfEmpty(new File(video.getPath()));
         videoRepository.save(videoPersistent);
     }
 
@@ -125,8 +125,8 @@ public class VideoServiceImpl implements VideoService {
     }
 
 
-    private String createVideoPath(String root, String chapter, String externalId) {
-        return root + "/" + chapter + "/" + externalId + ".mp4";
+    private String createVideoPath(String root, String externalId) {
+        return root + "/" + externalId + ".mp4";
     }
 
     private String convertSecondsToTime(String totalSeconds) {

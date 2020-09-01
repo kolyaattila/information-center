@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/question")
+@RequestMapping("/quiz/question")
 public interface QuestionEndpoint {
     @PostMapping
     QuestionDto create(@RequestBody @Valid QuestionRequest questionRequest);

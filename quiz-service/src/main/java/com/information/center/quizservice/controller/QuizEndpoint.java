@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/quiz/")
 public interface QuizEndpoint {
 
     @PostMapping

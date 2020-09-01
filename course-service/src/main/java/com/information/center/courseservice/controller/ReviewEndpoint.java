@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/course-service/review")
 public interface ReviewEndpoint {
 
     @PostMapping

@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class VideoServiceImplTest {
 
     private static final String ROOT_DIR = "videos";
@@ -56,76 +56,78 @@ public class VideoServiceImplTest {
         videoService = new VideoServiceImpl(videoRepository, videoConverter, fileService);
     }
 
-//    @Test
-//    public void create_expectedProperRepoCall() throws IOException {
-//
-//        videoService.create(createVideoRequest());
-//        verify(fileService).createFolder(stringArgumentCaptor.capture());
-//        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
-//        assertEquals(ROOT_DIR + "/" + CHAPTER, stringArgumentCaptor.getValue());
-//        assertsForVideoEntity(videoEntityArgumentCaptor.getValue());
-//    }
-//
-//    @Test
-//    public void update_expectedProperRepoCall() throws IOException {
-//        when(videoRepository.findByExternalId(any())).thenReturn(Optional.of(createVideoEntity()));
-//        videoService.update(createVideoDto());
-//        verify(fileService).createFolder(stringArgumentCaptor.capture());
-//        assertEquals(ROOT_DIR + "/" + NEW_CHAPTER, stringArgumentCaptor.getValue());
-//        verify(fileService).deleteByPath(stringArgumentCaptor.capture());
-//        assertEquals(ROOT_DIR + "/" + CHAPTER + "/" + EXTERNAL_ID + ".mp4", stringArgumentCaptor.getValue());
-//        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
-//        assertsForVideoEntity(videoEntityArgumentCaptor.getValue());
-//    }
-//
-//    @Test
-//    public void delete_expectedProperCall() throws Exception {
-//        videoService.delete(EXTERNAL_ID);
-//        verify(fileService).deleteByExternalId(stringArgumentCaptor.capture());
-//        assertEquals(EXTERNAL_ID, stringArgumentCaptor.getValue());
-//
-//    }
-//
-//    @Test
-//    public void findById_expectedResponse() {
-//        when(videoRepository.findByExternalId(EXTERNAL_ID)).thenReturn(Optional.of(createVideoEntity()));
-//        var response = videoService.findByExternalId(EXTERNAL_ID);
-//        assertsForVideoResponse(response);
-//    }
-//
-//    @Test
-//    public void create_expectedOnlySeconds() throws IOException {
-//        var videoRequest = createVideoRequest();
-//        videoRequest.setVideoDuration("45");
-//        videoService.create(videoRequest);
-//        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
-//        assertEquals("0:45", videoEntityArgumentCaptor.getValue().getVideoDuration());
-//
-//    }
-//    @Test
-//    public void create_expectedMinutesAndSeconds() throws IOException {
-//        var videoRequest = createVideoRequest();
-//        videoRequest.setVideoDuration("65");
-//        videoService.create(videoRequest);
-//        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
-//        assertEquals("1:05", videoEntityArgumentCaptor.getValue().getVideoDuration());
-//
-//    }
-//    @Test
-//    public void create_expectedMinutesSecondsAndHours() throws IOException {
-//        var videoRequest = createVideoRequest();
-//        videoRequest.setVideoDuration("3715");
-//        videoService.create(videoRequest);
-//        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
-//        assertEquals("1:01:55", videoEntityArgumentCaptor.getValue().getVideoDuration());
-//
-//    }
+    @Test
+    public void create_expectedProperRepoCall() throws IOException {
+        videoService.create(createVideoRequest());
+
+        verify(fileService).createFolder(stringArgumentCaptor.capture());
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertEquals(ROOT_DIR + "/" + CHAPTER +"/"+TOPIC_ID, stringArgumentCaptor.getValue());
+        assertsForVideoEntity(videoEntityArgumentCaptor.getValue());
+    }
+
+    @Test
+    public void update_expectedProperRepoCall() throws IOException {
+        when(videoRepository.findByExternalId(any())).thenReturn(Optional.of(createVideoEntity()));
+
+        videoService.update(createVideoDto());
+
+        verify(fileService).createFolder(stringArgumentCaptor.capture());
+        assertEquals(ROOT_DIR + "/" + NEW_CHAPTER + "/" + TOPIC_ID, stringArgumentCaptor.getValue());
+        verify(fileService).deleteByPath(stringArgumentCaptor.capture());
+        assertEquals(ROOT_DIR + "/" + CHAPTER + "/" + TOPIC_ID + "/"+ EXTERNAL_ID + ".mp4", stringArgumentCaptor.getValue());
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertsForVideoEntity(videoEntityArgumentCaptor.getValue());
+    }
+
+    @Test
+    public void delete_expectedProperCall() throws Exception {
+        videoService.delete(EXTERNAL_ID);
+        verify(fileService).deleteByExternalId(stringArgumentCaptor.capture());
+        assertEquals(EXTERNAL_ID, stringArgumentCaptor.getValue());
+
+    }
+
+    @Test
+    public void findById_expectedResponse() {
+        when(videoRepository.findByExternalId(EXTERNAL_ID)).thenReturn(Optional.of(createVideoEntity()));
+        var response = videoService.findByExternalId(EXTERNAL_ID);
+        assertsForVideoResponse(response);
+    }
+
+    @Test
+    public void create_expectedOnlySeconds() throws IOException {
+        var videoRequest = createVideoRequest();
+        videoRequest.setVideoDuration("45");
+        videoService.create(videoRequest);
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertEquals("0:45", videoEntityArgumentCaptor.getValue().getVideoDuration());
+
+    }
+    @Test
+    public void create_expectedMinutesAndSeconds() throws IOException {
+        var videoRequest = createVideoRequest();
+        videoRequest.setVideoDuration("65");
+        videoService.create(videoRequest);
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertEquals("1:05", videoEntityArgumentCaptor.getValue().getVideoDuration());
+
+    }
+    @Test
+    public void create_expectedMinutesSecondsAndHours() throws IOException {
+        var videoRequest = createVideoRequest();
+        videoRequest.setVideoDuration("3715");
+        videoService.create(videoRequest);
+        verify(videoRepository).save(videoEntityArgumentCaptor.capture());
+        assertEquals("1:01:55", videoEntityArgumentCaptor.getValue().getVideoDuration());
+
+    }
 
     private VideoRequest createVideoRequest() {
         var video = new VideoRequest();
-//        video.setTopicId(TOPIC_ID);
+        video.setTopicExternalId(TOPIC_ID);
         video.setTitle(TITLE);
-//        video.setChapter(CHAPTER);
+        video.setCourseExternalId(CHAPTER);
         video.setDescription(DESCRIPTION);
         video.setVideoDuration(VIDEO_DURATION);
         video.setFile(new MockMultipartFile("files", "filename.txt", "text/plain", "hello".getBytes(StandardCharsets.UTF_8)));

@@ -33,13 +33,13 @@ services:
     ports:
       - ${AUTH_SERVICE_DATABASE_PORT}:5432
 
-#  video-service-database:
-#    container_name: video-service-database
-#    extends:
-#      file: docker-compose.yaml
-#      service: video-service-database
-#    ports:
-#      - ${VIDEO_SERVICE_DATABASE_PORT}:5432
+  video-service-database:
+    container_name: video-service-database
+    extends:
+      file: docker-compose.yaml
+      service: video-service-database
+    ports:
+      - ${VIDEO_SERVICE_DATABASE_PORT}:5432
 
   config:
     container_name: config
@@ -58,14 +58,14 @@ services:
       config:
         condition: service_healthy
 
-#  monitoring:
-#    extends:
-#      file: docker-compose.yaml
-#      service: monitoring
-#    container_name: monitoring
-#    depends_on:
-#      config:
-#        condition: service_healthy
+  monitoring:
+    extends:
+      file: docker-compose.yaml
+      service: monitoring
+    container_name: monitoring
+    depends_on:
+      config:
+        condition: service_healthy
 
   registry:
     extends:

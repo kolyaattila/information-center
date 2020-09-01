@@ -50,9 +50,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .mvcMatchers("/subscription/**").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/message").permitAll()
+                .mvcMatchers("/account/subscription/**").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/account/").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/account/message").permitAll()
+                .mvcMatchers("/actuator").permitAll()
+                .mvcMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated();
     }
 }

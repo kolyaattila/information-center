@@ -50,7 +50,6 @@ public class QuizEntity {
             inverseJoinColumns = @JoinColumn(name = "question_id"))
     Collection<QuestionEntity> questions;
 
-
     @Override
     public String toString() {
         return "QuizEntity{" +

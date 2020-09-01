@@ -37,7 +37,7 @@ public class AnsweredQuestionEntity {
             inverseJoinColumns = @JoinColumn(name = "answer_id"))
     private Collection<AnswerEntity> answerEntities;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     private QuestionEntity questionEntity;
 }

@@ -62,7 +62,7 @@ public class QuizController implements QuizEndpoint {
             return quizService.getActiveQuizById(externalId);
         } catch (NotFoundException e) {
             e.printStackTrace();
-            throw new RestExceptions.NotFoundException(e.getMessage());
+            throw new RestExceptions.BadRequest(e.getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ public class QuizController implements QuizEndpoint {
     public QuizValidation validate(@RequestBody @Valid QuizValidation quizValidation) {
         try {
             return questionValidateService.validate(quizValidation);
-        } catch (ServiceExceptions.InconsistentDataException e) {
+        } catch (ServiceExceptions.InconsistentDataException | NotFoundException | InsertFailedException e) {
             throw new RestExceptions.BadRequest(e.getMessage());
         }
     }
@@ -79,7 +79,7 @@ public class QuizController implements QuizEndpoint {
     public QuizValidation getResultQuiz(@PathVariable String externalId){
         try {
             return questionValidateService.getQuizValidation(externalId);
-        } catch (ServiceExceptions.InconsistentDataException e) {
+        } catch (NotFoundException e) {
             throw new RestExceptions.BadRequest(e.getMessage());
         }
     }

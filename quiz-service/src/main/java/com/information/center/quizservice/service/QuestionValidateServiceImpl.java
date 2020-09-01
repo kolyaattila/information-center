@@ -34,7 +34,7 @@ public class QuestionValidateServiceImpl implements QuestionValidateService {
     @Override
     public QuizValidation getQuizValidation(String externalId) {
         SolvedQuizEntity solvedQuizEntity = solvedQuizRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new ServiceExceptions.InconsistentDataException("Not found any quiz resolved with id: " + externalId));
+                .orElseThrow(() -> new ServiceExceptions.NotFoundException("Not found any quiz resolved with id: " + externalId));
 
 
         QuizValidation quizValidation = new QuizValidation();
@@ -171,6 +171,9 @@ public class QuestionValidateServiceImpl implements QuestionValidateService {
             if (numOfCorrectAnswersSelected != 0) {
                 dto.setStatus(true);
             }
+
+            if(numOfCorrectAnswers == 0)
+                return 0;
 
             return numOfCorrectAnswersSelected / numOfCorrectAnswers;
 

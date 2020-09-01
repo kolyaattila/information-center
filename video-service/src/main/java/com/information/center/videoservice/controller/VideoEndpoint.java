@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/video")
+@RequestMapping("/video-service/video")
 public interface VideoEndpoint {
 
     @GetMapping("/{externalId}/details")

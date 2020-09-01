@@ -15,6 +15,7 @@ public abstract class QuizConverter {
 
     public abstract QuizEntity toEntity(QuizRequest quizRequest);
 
+    @Mapping(target = "schoolExternalId", expression = "java(entity.getSchool() != null ? entity.getSchool().getExternalId() : null)" )
     public abstract QuizDto toDto(QuizEntity entity);
 
     @Mapping(target = "questions", ignore = true)

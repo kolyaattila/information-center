@@ -117,14 +117,14 @@ public class CourseServiceImp implements CourseService {
                 .collect(Collectors.toList());
     }
 
-    CourseDto toDtoWithRating(CourseEntity entity) {
+    private CourseDto toDtoWithRating(CourseEntity entity) {
         RatingDto rating = reviewService.getRating(entity);
         CourseDto courseDto = courseConverter.toDto(entity);
         courseDto.setRating(rating);
         return courseDto;
     }
 
-    CourseDetailsDto toDetailsDtoWithRating(CourseEntity entity) {
+    private CourseDetailsDto toDetailsDtoWithRating(CourseEntity entity) {
         RatingDto rating = reviewService.getRating(entity);
         CourseDetailsDto courseDetailsDto = courseConverter.toDetailsDto(entity);
         courseDetailsDto.setRating(rating);

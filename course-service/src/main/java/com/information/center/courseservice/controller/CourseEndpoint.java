@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/course-service/")
 public interface CourseEndpoint {
 
     @PostMapping

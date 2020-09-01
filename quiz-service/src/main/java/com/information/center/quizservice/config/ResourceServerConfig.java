@@ -53,6 +53,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
   @Override
   public void configure(HttpSecurity http) throws Exception {
     http.authorizeRequests()
+            .mvcMatchers("/actuator").permitAll()
+            .mvcMatchers("/actuator/**").permitAll()
             .mvcMatchers("/**").permitAll()
         .anyRequest().authenticated();
   }

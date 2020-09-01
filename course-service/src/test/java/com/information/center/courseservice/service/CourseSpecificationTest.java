@@ -1,6 +1,6 @@
-package com.information.center.quizservice.service;
+package com.information.center.courseservice.service;
 
-import com.information.center.quizservice.entity.QuestionEntity;
+import com.information.center.courseservice.entity.CourseEntity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,12 +11,12 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class QuestionSpecificationTest {
+public class CourseSpecificationTest {
 
 	public static final String KEY = "key";
 	public static final String VALUE = "value";
-	private QuestionSpecification questionSpecification;
-	private Root<QuestionEntity> root;
+	private CourseSpecification courseSpecification;
+	private Root<CourseEntity> root;
 	private CriteriaQuery<?> criteriaQuery;
 	private CriteriaBuilder builder;
 	private Path<String> stringPath;
@@ -25,7 +25,7 @@ public class QuestionSpecificationTest {
 	@Before
 	public void setUp() {
 		SearchCriteria searchCriteria = new SearchCriteria(KEY, FilterOperation.EQUALS, VALUE);
-		questionSpecification = new QuestionSpecification(searchCriteria);
+		courseSpecification = new CourseSpecification(searchCriteria);
 
 		root = mock(Root.class);
 		criteriaQuery = mock(CriteriaQuery.class);
@@ -39,7 +39,7 @@ public class QuestionSpecificationTest {
 		when(root.<String>get(KEY)).thenReturn(stringPath);
 		when(builder.equal(stringPath, VALUE)).thenReturn(predicate);
 
-		Predicate response = questionSpecification.toPredicate(root, criteriaQuery, builder);
+		Predicate response = courseSpecification.toPredicate(root, criteriaQuery, builder);
 
 		assertEquals(predicate, response);
 	}
@@ -47,9 +47,9 @@ public class QuestionSpecificationTest {
 	@Test
 	public void testToPredicateForNotEqualsOperation() {
 		SearchCriteria searchCriteria = new SearchCriteria(KEY, null, VALUE);
-		questionSpecification = new QuestionSpecification(searchCriteria);
+		courseSpecification = new CourseSpecification(searchCriteria);
 
-		Predicate response = questionSpecification.toPredicate(root, criteriaQuery, builder);
+		Predicate response = courseSpecification.toPredicate(root, criteriaQuery, builder);
 
 		assertNull(response);
 	}

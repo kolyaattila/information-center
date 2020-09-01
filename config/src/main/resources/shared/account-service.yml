@@ -20,8 +20,6 @@ spring:
     change-log: classpath:db/changelog/db.changelog.master.yaml
 
 server:
-  servlet:
-    context-path: /account
   port: 8883
 
 feign:

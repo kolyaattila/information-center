@@ -33,6 +33,7 @@ public class CourseController implements CourseEndpoint {
     }
 
     @Override
+
     public void updateCourse(@Valid @RequestBody CourseRequest courseRequest) {
         try {
             courseService.updateCourse(courseRequest);
@@ -53,7 +54,7 @@ public class CourseController implements CourseEndpoint {
     }
 
     @Override
-    public Page<CourseDto> filterCourse(@RequestBody FilterCourseRequest filterCourseRequest) {
+    public Page<CourseDto> filterCourse (@RequestBody FilterCourseRequest filterCourseRequest) {
         return courseService.filterCourse(filterCourseRequest);
     }
 

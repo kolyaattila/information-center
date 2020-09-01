@@ -51,7 +51,7 @@ public class QuizServiceImpl implements QuizService {
         }
 
         QuizEntity quizEntity = quizConverter.toEntity(quizRequest);
-//        quizEntity.setSchool(getSchool(quizRequest.getSchoolExternalId()));
+        quizEntity.setSchool(getSchool(quizRequest.getSchoolExternalId()));
         quizEntity.setQuestions(getQuestions(quizRequest));
         quizEntity.setExternalId(getUid());
         try {
