@@ -155,14 +155,6 @@ public class QuestionControllerTest {
     }
 
     @Test
-    public void validate() {
-        when(questionValidateService.validate(questionRequestValidation)).thenReturn(questionResponseValidated);
-
-        var response = questionController.validate(questionRequestValidation);
-        assertEquals(questionResponseValidated, response);
-    }
-
-    @Test
     public void test() {
         PageImpl<QuestionDto> page = new PageImpl<>(Collections.singletonList(questionDto));
         when(questionService.filterQuestions(filterQuestionRequest)).thenReturn(page);

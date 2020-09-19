@@ -49,42 +49,42 @@ services:
         max-size: "10m"
         max-file: "10"
 
-  topic-service-database:
-    container_name: topic-service-database
+  course-service-database:
+    container_name: course-service-database
     image: postgres:11.2
     restart: always
     environment:
-      - POSTGRES_PASSWORD=${TOPIC_SERVICE_DATABASE_PASSWORD}
-      - POSTGRES_USER=${TOPIC_SERVICE_DATABASE_USER}
-      - POSTGRES_DB=${TOPIC_SERVICE_DATABASE}
+      - POSTGRES_PASSWORD=${COURSE_SERVICE_DATABASE_PASSWORD}
+      - POSTGRES_USER=${COURSE_SERVICE_DATABASE_USER}
+      - POSTGRES_DB=${COURSE_SERVICE_DATABASE}
     volumes:
-      - ts-db:/var/lib/postgresql/topic-service-database/data
+      - ts-db:/var/lib/postgresql/course-service-database/data
     networks:
       - information-center-prod-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d ${TOPIC_SERVICE_DATABASE} -U ${TOPIC_SERVICE_DATABASE_USER}"]
+      test: ["CMD-SHELL", "pg_isready -d ${COURSE_SERVICE_DATABASE} -U ${COURSE_SERVICE_DATABASE_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  topic-service:
+  course-service:
     extends:
       service: base-microservice
     restart: always
     build:
-      context: ./topic-service
-    container_name: topic-service
+      context: ./course-service
+    container_name: course-service
     networks:
       - information-center-prod-network
     ports:
       - 8881:8881
     environment:
-      - TOPIC_SERVICE_DATABASE
-      - TOPIC_SERVICE_DATABASE_USER
-      - TOPIC_SERVICE_DATABASE_PASSWORD
-      - TOPIC_SERVICE_DATABASE_PORT=5432
-      - TOPIC_SERVICE_DATABASE_HOST=topic-service-database
-      - TOPIC_SERVICE_PASSWORD
+      - COURSE_SERVICE_DATABASE
+      - COURSE_SERVICE_DATABASE_USER
+      - COURSE_SERVICE_DATABASE_PASSWORD
+      - COURSE_SERVICE_DATABASE_PORT=5432
+      - COURSE_SERVICE_DATABASE_HOST=course-service-database
+      - COURSE_SERVICE_PASSWORD
     logging:
       options:
         max-size: "10m"
@@ -208,7 +208,7 @@ services:
       - AUTH_SERVICE_DATABASE_PORT=5432
       - AUTH_SERVICE_DATABASE_HOST=auth-service-database
       - QUIZ_SERVICE_PASSWORD
-      - TOPIC_SERVICE_PASSWORD
+      - COURSE_SERVICE_PASSWORD
       - EMAIL_SERVICE_PASSWORD
       - ACCOUNT_SERVICE_PASSWORD
       - VIDEO_SERVICE_PASSWORD

@@ -1,12 +1,9 @@
 package com.information.center.quizservice.controller;
 
 import com.information.center.quizservice.model.QuestionDto;
-import com.information.center.quizservice.model.QuestionResponseValidated;
 import com.information.center.quizservice.model.request.FilterQuestionRequest;
 import com.information.center.quizservice.model.request.QuestionRequest;
-import com.information.center.quizservice.model.request.QuestionRequestValidation;
 import com.information.center.quizservice.service.QuestionService;
-import com.information.center.quizservice.service.QuestionValidateService;
 import exception.RestExceptions;
 import exception.ServiceExceptions;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +20,6 @@ import javax.validation.Valid;
 public class QuestionController implements QuestionEndpoint {
 
     private final QuestionService questionService;
-    private final QuestionValidateService questionValidateService;
 
     @Override
     public QuestionDto create(@RequestBody @Valid QuestionRequest questionRequest) {
@@ -59,11 +55,6 @@ public class QuestionController implements QuestionEndpoint {
         } catch (ServiceExceptions.NotFoundException e) {
             throw new RestExceptions.BadRequest(e.getMessage());
         }
-    }
-
-    @Override
-    public QuestionResponseValidated validate(@RequestBody QuestionRequestValidation questionRequestValidation) {
-        return questionValidateService.validate(questionRequestValidation);
     }
 
     @Override

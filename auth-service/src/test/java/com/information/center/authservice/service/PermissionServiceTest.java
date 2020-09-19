@@ -28,9 +28,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class PermissionServiceTest {
 
 
-  public static final String PERMISSION_NAME = "permissionName";
-  public static final String ROLE_ADMIN = "ADMIN";
-  public static final String ROLE_USER = "USER";
+  private static final String PERMISSION_NAME = "permissionName";
+  private static final String ROLE_ADMIN = "ADMIN";
+  private static final String ROLE_USER = "USER";
   @Mock
   private PermissionRepository permissionRepository;
   @Mock

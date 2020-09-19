@@ -77,7 +77,7 @@ public class AccountServiceImplTest {
     }
 
     @Test
-    public void findByUsername_expectAccount() {
+    public void findByUsername_whenUsernameFound_expectAccount() {
         when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.of(account));
         when(accountConverter.toAccountRequest(account)).thenReturn(accountRequest);
 
@@ -87,7 +87,7 @@ public class AccountServiceImplTest {
     }
 
     @Test(expected = InconsistentDataException.class)
-    public void findByUsername_expectInconsistentDataException() {
+    public void findByUsername_whenUsernameNotFound_expectInconsistentDataException() {
         when(accountRepository.findByUsername(USERNAME)).thenReturn(Optional.empty());
 
         accountService.findByUsername(USERNAME);

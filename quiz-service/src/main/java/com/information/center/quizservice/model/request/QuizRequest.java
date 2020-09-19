@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter
@@ -18,7 +17,6 @@ public class QuizRequest {
     public QuizRequest() {
     }
 
-    @NotBlank
     private QuizType type;
     private String chapterExternalId;
     private String courseExternalId;

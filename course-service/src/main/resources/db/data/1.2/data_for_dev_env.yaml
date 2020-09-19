@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: data_for_dev_env_db_1.2
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: dev.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

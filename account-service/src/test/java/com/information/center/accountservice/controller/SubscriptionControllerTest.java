@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @SpringBootTest
 public class SubscriptionControllerTest {
 
-  private static final String URL_TEMPLATE = "/subscription";
+  private static final String URL_TEMPLATE = "/account/subscription";
   @InjectMocks
   private SubscriptionController subscriptionController;
   @Mock

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/data/1.0/initial_schema.yaml
+  - include:
+      file: classpath:db/data/1.1/add_course.yaml
+  - include:
+      file: classpath:db/data/1.2/data_for_dev_env.yaml

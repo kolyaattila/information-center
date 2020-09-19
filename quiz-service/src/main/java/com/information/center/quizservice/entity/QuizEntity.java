@@ -45,11 +45,10 @@ public class QuizEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "Question2Quiz",
+            name = "question2quiz",
             joinColumns = @JoinColumn(name = "quiz_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id"))
     Collection<QuestionEntity> questions;
-
 
     @Override
     public String toString() {

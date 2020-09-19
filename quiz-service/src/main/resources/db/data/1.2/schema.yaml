@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: answer2answered_question_db_1.1
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: answer2answered_question.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

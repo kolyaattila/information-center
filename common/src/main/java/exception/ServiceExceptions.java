@@ -51,4 +51,15 @@ public final class ServiceExceptions extends Throwable {
             super(message);
         }
     }
+
+    public static final class InvalidAnswerException extends RuntimeException {
+
+        public InvalidAnswerException() {
+        }
+
+        public InvalidAnswerException(String message) {
+            super(message);
+        }
+    }
+
 }

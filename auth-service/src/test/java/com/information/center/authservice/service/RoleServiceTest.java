@@ -26,9 +26,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class RoleServiceTest {
 
-  public static final String ROLE_NAME = "role";
-  public static final String USERNAME_2 = "username2";
-  public static final String USERNAME_1 = "username1";
+  private static final String ROLE_NAME = "role";
+  private static final String USERNAME_2 = "username2";
+  private static final String USERNAME_1 = "username1";
   @Mock
   private RoleRepository roleRepository;
   @Mock
