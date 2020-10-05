@@ -33,7 +33,7 @@ Spring Cloud Security provides convenient annotations and autoconfiguration to m
 
 From the client side, everything works exactly the same as with traditional session-based authorization. You can retrieve `Principal` object from request, check user's roles and other stuff with expression-based access control and `@PreAuthorize` annotation.
 
-Each client in InformationCenter (account-service, course-service, email-service, video-service and browser) has a scope: `server` for backend services, and `ui` - for the browser. So we can also protect controllers from external access, for example:
+Each client in InformationCenter (account-service, course-service, email-service and browser) has a scope: `server` for backend services, and `ui` - for the browser. So we can also protect controllers from external access, for example:
 
 ``` java
 @PreAuthorize("#oauth2.hasScope('server')")

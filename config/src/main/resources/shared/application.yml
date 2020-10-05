@@ -8,10 +8,10 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 500000
+            timeoutInMilliseconds: 5000000
 
 ribbon:
-  ReadTimeout: 40000
+  ReadTimeout: 4000000
   connection-timeout: 3000
   eureka:
     enabled: true
