@@ -28,141 +28,142 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QuestionServiceImpl implements QuestionService {
 
-    private final AnswerService answerService;
-    private final QuestionRepository questionRepository;
-    private final SchoolRepository schoolRepository;
-    private QuestionConverter questionConverter;
+	private final AnswerService answerService;
+	private final QuestionRepository questionRepository;
+	private final SchoolRepository schoolRepository;
+	private QuestionConverter questionConverter;
 
+	@Autowired
+	public void setQuestionConverter(QuestionConverter questionConverter) {
+		this.questionConverter = questionConverter;
+	}
 
-    @Autowired
-    public void setQuestionConverter(QuestionConverter questionConverter) {
-        this.questionConverter = questionConverter;
-    }
+	@Override
+	public QuestionDto create(QuestionRequest questionRequest) {
+		QuestionEntity question = questionConverter.toEntity(questionRequest);
+		question.setExternalId(getUid());
+		question.setSchool(getSchoolEntity(questionRequest.getSchoolExternalId()));
+		QuestionEntity entity = getSave(question);
 
-    @Override
-    public QuestionDto create(QuestionRequest questionRequest) {
-        QuestionEntity question = questionConverter.toEntity(questionRequest);
-        question.setExternalId(getUid());
-        question.setSchool(getSchoolEntity(questionRequest.getSchoolExternalId()));
-        QuestionEntity entity = getSave(question);
+		List<AnswerEntity> answers = questionRequest
+				.getAnswers()
+				.stream()
+				.map(answer -> answerService.saveEntity(answer, entity))
+				.collect(Collectors.toList());
+		entity.setAnswers(answers);
+		return questionConverter.toDtoWithAnswers(entity);
+	}
 
-        List<AnswerEntity> answers = questionRequest
-                .getAnswers()
-                .stream()
-                .map(answer -> answerService.saveEntity(answer, entity))
-                .collect(Collectors.toList());
-        entity.setAnswers(answers);
-        return questionConverter.toDtoWithAnswers(entity);
-    }
+	@Override
+	public void update(QuestionRequest questionRequest) {
+		QuestionEntity entity = findQuestionEntityByExternalId(questionRequest.getExternalId());
+		List<AnswerEntity> updatedEntities = answerService.getUpdatedEntities(questionRequest.getAnswers(), entity);
 
-    @Override
-    public void update(QuestionRequest questionRequest) {
-        QuestionEntity entity = findQuestionEntityByExternalId(questionRequest.getExternalId());
-        List<AnswerEntity> updatedEntities = answerService.getUpdatedEntities(questionRequest.getAnswers(), entity);
+		entity.setAnswers(updatedEntities);
+		entity.setBook(questionRequest.getBook());
+		entity.setChapterExternalId(questionRequest.getChapterExternalId());
+		entity.setCourseExternalId(questionRequest.getCourseExternalId());
+		entity.setName(questionRequest.getName());
+		entity.setQuestionDifficulty(questionRequest.getQuestionDifficulty());
+		entity.setQuestionNumber(questionRequest.getQuestionNumber());
+		entity.setTopicExternalId(questionRequest.getTopicExternalId());
+		entity.setVerified(questionRequest.isVerified());
+		entity.setSchool(getSchoolEntity(questionRequest.getSchoolExternalId()));
+		entity.setQuestionType(questionRequest.getQuestionType());
+		entity.setParseText(questionRequest.getParseText());
 
-        entity.setAnswers(updatedEntities);
-        entity.setBook(questionRequest.getBook());
-        entity.setChapterExternalId(questionRequest.getChapterExternalId());
-        entity.setCourseExternalId(questionRequest.getCourseExternalId());
-        entity.setName(questionRequest.getName());
-        entity.setQuestionDifficulty(questionRequest.getQuestionDifficulty());
-        entity.setQuestionNumber(questionRequest.getQuestionNumber());
-        entity.setTopicExternalId(questionRequest.getTopicExternalId());
-        entity.setVerified(questionRequest.isVerified());
-        entity.setSchool(getSchoolEntity(questionRequest.getSchoolExternalId()));
+		getSave(entity);
+	}
 
-        getSave(entity);
-    }
+	@Override
+	public QuestionDto findByExternalId(String externalId) {
+		QuestionEntity question = findQuestionEntityByExternalId(externalId);
+		return questionConverter.toDto(question);
+	}
 
-    @Override
-    public QuestionDto findByExternalId(String externalId) {
-        QuestionEntity question = findQuestionEntityByExternalId(externalId);
-        return questionConverter.toDto(question);
-    }
+	@Override
+	public void delete(String externalId) {
+		QuestionEntity question = findQuestionEntityByExternalId(externalId);
+		questionRepository.delete(question);
+	}
 
-    @Override
-    public void delete(String externalId) {
-        QuestionEntity question = findQuestionEntityByExternalId(externalId);
-        questionRepository.delete(question);
-    }
+	@Override
+	public Page<QuestionDto> filterQuestions(FilterQuestionRequest filterRequest) {
+		List<QuestionSpecification> questionSpecifications = getQuestionSpecifications(filterRequest);
+		Specification<QuestionEntity> specification = getSpecification(questionSpecifications);
+		return questionRepository.findAll(specification, PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize()))
+				.map(questionConverter::toDtoWithAnswers);
+	}
 
-    @Override
-    public Page<QuestionDto> filterQuestions(FilterQuestionRequest filterRequest) {
-        List<QuestionSpecification> questionSpecifications = getQuestionSpecifications(filterRequest);
-        Specification<QuestionEntity> specification = getSpecification(questionSpecifications);
-        return questionRepository.findAll(specification, PageRequest.of(filterRequest.getPageNumber(), filterRequest.getPageSize()))
-                .map(questionConverter::toDtoWithAnswers);
-    }
+	private Specification<QuestionEntity> getSpecification(List<QuestionSpecification> questionSpecifications) {
+		if (questionSpecifications.isEmpty()) {
+			return null;
+		} else if (questionSpecifications.size() > 1) {
+			Specification<QuestionEntity> result = questionSpecifications.get(0);
+			for (Specification<QuestionEntity> spec : questionSpecifications) {
+				result = Specification.where(result).and(spec);
+			}
+			return result;
+		} else {
+			return questionSpecifications.get(0);
+		}
+	}
 
-    private Specification<QuestionEntity> getSpecification(List<QuestionSpecification> questionSpecifications) {
-        if (questionSpecifications.isEmpty()) {
-            return null;
-        } else if (questionSpecifications.size() > 1) {
-            Specification<QuestionEntity> result = questionSpecifications.get(0);
-            for (Specification<QuestionEntity> spec : questionSpecifications) {
-                result = Specification.where(result).and(spec);
-            }
-            return result;
-        } else {
-            return questionSpecifications.get(0);
-        }
-    }
+	private List<QuestionSpecification> getQuestionSpecifications(FilterQuestionRequest filterRequest) {
+		List<QuestionSpecification> questionSpecifications = new ArrayList<>();
 
-    private List<QuestionSpecification> getQuestionSpecifications(FilterQuestionRequest filterRequest) {
-        List<QuestionSpecification> questionSpecifications = new ArrayList<>();
+		if (!isBlank(filterRequest.getBook()))
+			questionSpecifications.add(getQuestionSpecification("book", FilterOperation.EQUALS, filterRequest.getBook()));
 
-        if (!isBlank(filterRequest.getBook()))
-            questionSpecifications.add(getQuestionSpecification("book", FilterOperation.EQUALS, filterRequest.getBook()));
+		if (!isBlank(filterRequest.getName()))
+			questionSpecifications.add(getQuestionSpecification("name", FilterOperation.EQUALS, filterRequest.getName()));
 
-        if (!isBlank(filterRequest.getName()))
-            questionSpecifications.add(getQuestionSpecification("name", FilterOperation.EQUALS, filterRequest.getName()));
+		if (!isBlank(filterRequest.getChapterExternalId()))
+			questionSpecifications.add(getQuestionSpecification("topicExternalId", FilterOperation.EQUALS, filterRequest.getChapterExternalId()));
 
-        if (!isBlank(filterRequest.getChapterExternalId()))
-            questionSpecifications.add(getQuestionSpecification("topicExternalId", FilterOperation.EQUALS, filterRequest.getChapterExternalId()));
+		if (!isBlank(filterRequest.getExternalId()))
+			questionSpecifications.add(getQuestionSpecification("externalId", FilterOperation.EQUALS, filterRequest.getExternalId()));
 
-        if (!isBlank(filterRequest.getExternalId()))
-            questionSpecifications.add(getQuestionSpecification("externalId", FilterOperation.EQUALS, filterRequest.getExternalId()));
+		if (filterRequest.getQuestionDifficulty() != null)
+			questionSpecifications.add(getQuestionSpecification("questionDifficulty", FilterOperation.EQUALS, filterRequest.getQuestionDifficulty()));
 
-        if (filterRequest.getQuestionDifficulty() != null)
-            questionSpecifications.add(getQuestionSpecification("questionDifficulty", FilterOperation.EQUALS, filterRequest.getQuestionDifficulty()));
+		if (filterRequest.getQuestionNumber() != 0)
+			questionSpecifications.add(getQuestionSpecification("questionNumber", FilterOperation.EQUALS, filterRequest.getQuestionNumber()));
 
-        if (filterRequest.getQuestionNumber() != 0)
-            questionSpecifications.add(getQuestionSpecification("questionNumber", FilterOperation.EQUALS, filterRequest.getQuestionNumber()));
+		if (!isBlank(filterRequest.getCourseExternalId()))
+			questionSpecifications.add(getQuestionSpecification("courseExternalId", FilterOperation.EQUALS, filterRequest.getCourseExternalId()));
 
-        if (!isBlank(filterRequest.getCourseExternalId()))
-            questionSpecifications.add(getQuestionSpecification("courseExternalId", FilterOperation.EQUALS, filterRequest.getCourseExternalId()));
+		questionSpecifications.add(getQuestionSpecification("verified", FilterOperation.EQUALS, filterRequest.isVerified()));
 
-        questionSpecifications.add(getQuestionSpecification("verified", FilterOperation.EQUALS, filterRequest.isVerified()));
+		return questionSpecifications;
+	}
 
-        return questionSpecifications;
-    }
+	private QuestionSpecification getQuestionSpecification(String key, FilterOperation operation, Object value) {
+		return new QuestionSpecification(new SearchCriteria(key, operation, value));
+	}
 
-    private QuestionSpecification getQuestionSpecification(String key, FilterOperation operation, Object value) {
-        return new QuestionSpecification(new SearchCriteria(key, operation, value));
-    }
+	private QuestionEntity findQuestionEntityByExternalId(String externalId) {
+		return questionRepository.findByExternalId(externalId)
+				.orElseThrow(() -> new ServiceExceptions.NotFoundException("Question not found by id " + externalId));
+	}
 
-    private QuestionEntity findQuestionEntityByExternalId(String externalId) {
-        return questionRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new ServiceExceptions.NotFoundException("Question not found by id " + externalId));
-    }
+	private QuestionEntity getSave(QuestionEntity question) {
+		try {
+			return questionRepository.save(question);
+		} catch (Exception e) {
+			throw new ServiceExceptions.InsertFailedException("Can not insert values" + question.toString());
+		}
+	}
 
-    private QuestionEntity getSave(QuestionEntity question) {
-        try {
-            return questionRepository.save(question);
-        } catch (Exception e) {
-            throw new ServiceExceptions.InsertFailedException("Can not insert values" + question.toString());
-        }
-    }
+	private String getUid() {
+		UUID uuid = UUID.randomUUID();
+		if (questionRepository.existsByExternalId(uuid.toString())) {
+			return this.getUid();
+		}
+		return uuid.toString();
+	}
 
-    private String getUid() {
-        UUID uuid = UUID.randomUUID();
-        if (questionRepository.existsByExternalId(uuid.toString())) {
-            return this.getUid();
-        }
-        return uuid.toString();
-    }
-
-    private SchoolEntity getSchoolEntity(String externalId) {
-        return schoolRepository.findByExternalId(externalId).orElse(null);
-    }
+	private SchoolEntity getSchoolEntity(String externalId) {
+		return schoolRepository.findByExternalId(externalId).orElse(null);
+	}
 }

@@ -3,6 +3,7 @@ package com.information.center.quizservice.service;
 import com.information.center.quizservice.converter.AnswerConverter;
 import com.information.center.quizservice.entity.AnswerEntity;
 import com.information.center.quizservice.entity.AnswerKey;
+import com.information.center.quizservice.entity.AnswerType;
 import com.information.center.quizservice.entity.QuestionEntity;
 import com.information.center.quizservice.model.request.AnswerRequest;
 import com.information.center.quizservice.repository.AnswerRepository;
@@ -47,7 +48,10 @@ public class AnswerServiceImplTest {
                 .correct(true)
                 .key(AnswerKey.C)
                 .reason("reason")
-                .name("name").build();
+                .name("name")
+                .answerType(AnswerType.CHEMISTRY_ANSWER)
+                .parseText("parseText")
+                .build();
         answerEntity = new AnswerEntity();
         answerEntity.setExternalId(ANSWER_ENTITY_EXTERNAL_ID);
     }
@@ -64,6 +68,8 @@ public class AnswerServiceImplTest {
         assertEquals(response.getName(), answerRequest.getName());
         assertEquals(response.getReason(), answerRequest.getReason());
         assertEquals(response.getKey(), answerRequest.getKey());
+        assertEquals(response.getParseText(), answerRequest.getParseText());
+        assertEquals(response.getAnswerType(), answerRequest.getAnswerType());
     }
 
     @Test(expected = ServiceExceptions.InsertFailedException.class)
@@ -97,6 +103,8 @@ public class AnswerServiceImplTest {
         assertEquals(entityResponse.getName(), answerRequest.getName());
         assertEquals(entityResponse.getReason(), answerRequest.getReason());
         assertEquals(entityResponse.getKey(), answerRequest.getKey());
+        assertEquals(entityResponse.getAnswerType(), answerRequest.getAnswerType());
+        assertEquals(entityResponse.getParseText(), answerRequest.getParseText());
     }
 
     @Test
@@ -115,5 +123,7 @@ public class AnswerServiceImplTest {
         assertEquals(entityResponse.getName(), answerRequest.getName());
         assertEquals(entityResponse.getReason(), answerRequest.getReason());
         assertEquals(entityResponse.getKey(), answerRequest.getKey());
+        assertEquals(entityResponse.getAnswerType(), answerRequest.getAnswerType());
+        assertEquals(entityResponse.getParseText(), answerRequest.getParseText());
     }
 }

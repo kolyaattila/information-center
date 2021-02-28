@@ -86,6 +86,8 @@ public class AnswerServiceImpl implements AnswerService {
         entity.setCorrect(request.isCorrect());
         entity.setKey(request.getKey());
         entity.setReason(request.getReason());
+        entity.setAnswerType(request.getAnswerType());
+        entity.setParseText(request.getParseText());
         return entity;
     }
 

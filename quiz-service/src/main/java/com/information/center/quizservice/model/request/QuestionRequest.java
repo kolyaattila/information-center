@@ -1,6 +1,7 @@
 package com.information.center.quizservice.model.request;
 
 import com.information.center.quizservice.entity.QuestionDifficulty;
+import com.information.center.quizservice.entity.QuestionType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -26,4 +27,6 @@ public class QuestionRequest {
     private String chapterExternalId;
     private String courseExternalId;
     private String schoolExternalId;
+    private String parseText;
+    private QuestionType questionType;
 }

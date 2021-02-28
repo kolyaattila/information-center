@@ -1,6 +1,7 @@
 package com.information.center.quizservice.model;
 
 import com.information.center.quizservice.entity.AnswerKey;
+import com.information.center.quizservice.entity.AnswerType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -21,4 +22,6 @@ public class AnswerDto {
     private boolean correct;
     private AnswerKey key;
     private boolean selected;
+    private AnswerType answerType;
+    private String parseText;
 }
