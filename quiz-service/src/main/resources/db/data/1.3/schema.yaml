@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_answer_type_db_1.3
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: add_answer_type.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+        id: add_question_type_db_1.3
+        author: attila
+        changes:
+            - sqlFile:
+                  dbms: postgresql
+                  encoding: utf8
+                  endDelimiter: \nGO
+                  path: add_question_type.sql
+                  relativeToChangelogFile: true
+                  splitStatements: true
+                  stripComments: true
+  - changeSet:
+      id: add_status_to_Answered_question_db_1.3
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: add_status_to_Answered_question.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
+  - changeSet:
+      id: adapt_solved_quiz_note_precision_db_1.3
+      author: attila
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            encoding: utf8
+            endDelimiter: \nGO
+            path: adapt_solved_quiz_note_precision.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

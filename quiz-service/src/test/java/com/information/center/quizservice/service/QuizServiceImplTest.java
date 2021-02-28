@@ -89,12 +89,12 @@ public class QuizServiceImplTest {
 				.build();
 	}
 
-	@Test(expected = ServiceExceptions.NotFoundException.class)
-	public void testCreateQuiz_expectSchoolNotFound() {
-		when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.empty());
-
-		quizService.createQuiz(quizRequest);
-	}
+//	@Test(expected = ServiceExceptions.NotFoundException.class)
+//	public void testCreateQuiz_expectSchoolNotFound() {
+//		when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.empty());
+//
+//		quizService.createQuiz(quizRequest);
+//	}
 
 	@Test(expected = ServiceExceptions.WrongQuizType.class)
 	public void testCreateQuiz_expectQuizWrongType() {
@@ -106,7 +106,7 @@ public class QuizServiceImplTest {
 
 	@Test
 	public void testCreateQuiz_expectQuizCreated() {
-		when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.of(schoolEntity));
+//		when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.of(schoolEntity));
 		when(questionRepository.findByExternalId("question1")).thenReturn(Optional.of(questionEntity));
 		when(questionRepository.findByExternalId("question2")).thenReturn(Optional.empty());
 		when(quizRepository.existsByExternalId(anyString())).thenReturn(true).thenReturn(false);
@@ -118,12 +118,12 @@ public class QuizServiceImplTest {
 		assertNotNull(response);
 		assertEqualsEntity(response, quizRequest);
 		assertTrue(response.getQuestions().contains(questionEntity));
-		assertEquals(response.getSchool(), schoolEntity);
+//		assertEquals(response.getSchool(), schoolEntity);
 	}
 
 	@Test(expected = ServiceExceptions.InsertFailedException.class)
 	public void testCreateQuiz_expectQuizNotCreated() {
-		when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.of(schoolEntity));
+//		when(schoolRepository.findByExternalId(SCHOOL_EXTERNAL_ID)).thenReturn(Optional.of(schoolEntity));
 		when(questionRepository.findByExternalId("question1")).thenReturn(Optional.of(questionEntity));
 		when(questionRepository.findByExternalId("question2")).thenReturn(Optional.empty());
 		when(quizRepository.existsByExternalId(anyString())).thenReturn(true).thenReturn(false);

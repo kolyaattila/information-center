@@ -2,10 +2,7 @@ package com.information.center.quizservice.service;
 
 import com.information.center.quizservice.converter.AnswerConverter;
 import com.information.center.quizservice.converter.QuestionConverter;
-import com.information.center.quizservice.entity.AnswerEntity;
-import com.information.center.quizservice.entity.QuestionDifficulty;
-import com.information.center.quizservice.entity.QuestionEntity;
-import com.information.center.quizservice.entity.SchoolEntity;
+import com.information.center.quizservice.entity.*;
 import com.information.center.quizservice.model.AnswerDto;
 import com.information.center.quizservice.model.QuestionDto;
 import com.information.center.quizservice.model.request.AnswerRequest;
@@ -82,6 +79,8 @@ public class QuestionServiceImplTest {
         questionEntity = new QuestionEntity();
         questionEntity.setAnswers(Collections.emptyList());
         questionEntity.setSchool(schoolEntity);
+        questionEntity.setQuestionType(QuestionType.CHEMISTRY_QUESTION);
+        questionEntity.setParseText("parseText");
 
         filterQuestion = FilterQuestionRequest.builder()
                 .pageNumber(2)
@@ -271,5 +270,7 @@ public class QuestionServiceImplTest {
         assertEquals(entity.getQuestionNumber(), dto.getQuestionNumber());
         assertEquals(entity.getSchool().getExternalId(), dto.getSchoolExternalId());
         assertEquals(entity.getCourseExternalId(), dto.getCourseExternalId());
+        assertEquals(entity.getParseText(), dto.getParseText());
+        assertEquals(entity.getQuestionType(), dto.getQuestionType());
     }
 }

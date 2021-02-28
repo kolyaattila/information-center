@@ -1,6 +1,7 @@
 package com.information.center.quizservice.controller;
 
 import com.information.center.quizservice.entity.QuestionDifficulty;
+import com.information.center.quizservice.entity.QuestionType;
 import com.information.center.quizservice.model.QuestionDto;
 import com.information.center.quizservice.model.QuestionResponseValidated;
 import com.information.center.quizservice.model.request.FilterQuestionRequest;
@@ -52,7 +53,9 @@ public class QuestionControllerTest {
                 .verified(true)
                 .questionNumber(1412)
                 .courseExternalId("courseExternalId")
-                .questionDifficulty(QuestionDifficulty.EASY).build();
+                .questionDifficulty(QuestionDifficulty.EASY)
+                .questionType(QuestionType.CHEMISTRY_QUESTION)
+                .parseText("parseText").build();
         questionDto = QuestionDto.builder()
                 .book("book")
                 .chapterExternalId("chapterExternalId")
@@ -62,6 +65,8 @@ public class QuestionControllerTest {
                 .questionNumber(1412)
                 .courseExternalId("courseExternalId")
                 .questionDifficulty(QuestionDifficulty.EASY)
+                .questionType(QuestionType.CHEMISTRY_QUESTION)
+                .parseText("parseText")
                 .build();
         filterQuestionRequest = FilterQuestionRequest.builder()
                 .book("book")
