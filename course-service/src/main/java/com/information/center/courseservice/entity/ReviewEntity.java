@@ -13,7 +13,8 @@ import java.util.Date;
 public class ReviewEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_generator")
+    @SequenceGenerator(name = "review_generator", sequenceName = "S_REVIEW_0", allocationSize = 1)
     private long id;
 
     @Column(name = "external_id", nullable = false)

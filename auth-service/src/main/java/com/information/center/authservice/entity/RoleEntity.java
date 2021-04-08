@@ -1,20 +1,12 @@
 package com.information.center.authservice.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,7 +15,8 @@ import org.springframework.security.core.GrantedAuthority;
 public class RoleEntity implements GrantedAuthority {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_generator")
+  @SequenceGenerator(name = "role_generator", sequenceName = "S_ROLE_0", allocationSize = 1)
   private long id;
 
   @Column(nullable = false, unique = true, name = "name")

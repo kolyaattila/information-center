@@ -15,7 +15,8 @@ import java.util.List;
 public class SolvedQuizEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "solved_quiz_generator")
+    @SequenceGenerator(name = "solved_quiz_generator", sequenceName = "S_SOLVED_QUIZ_0", allocationSize = 1)
     private long id;
 
     @Column(name = "external_id", nullable = false, length = 50)

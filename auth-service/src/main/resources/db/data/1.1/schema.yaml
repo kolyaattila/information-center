@@ -1,0 +1,25 @@
+databaseChangeLog:
+    - changeSet:
+          id: create_sequances_db_1.1
+          author: attila
+          changes:
+              - sqlFile:
+                    dbms: postgresql
+                    encoding: utf8
+                    endDelimiter: \nGO
+                    path: create_sequances.sql
+                    relativeToChangelogFile: true
+                    splitStatements: true
+                    stripComments: true
+    - changeSet:
+          id: dev_data_db_1.1
+          author: attila
+          changes:
+              - sqlFile:
+                    dbms: postgresql
+                    encoding: utf8
+                    endDelimiter: \nGO
+                    path: dev_data.sql
+                    relativeToChangelogFile: true
+                    splitStatements: true
+                    stripComments: true

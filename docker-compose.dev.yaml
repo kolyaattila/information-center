@@ -48,6 +48,8 @@ services:
       service: config
     ports:
       - 8888:8888
+    environment:
+      - ACCOUNT_SERVICE_PASSWORD
 
   gateway:
     extends:
@@ -81,6 +83,33 @@ services:
       file: docker-compose.yaml
       service: rabbitmq
     container_name: rabbitmq
+
+  account-service:
+    extends:
+      file: docker-compose.yaml
+      service: account-service
+    container_name: account-service
+    depends_on:
+      account-service-database:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+    ports:
+      - 8883:8883
+
+  auth-service:
+    extends:
+      file: docker-compose.yaml
+      service: auth-service
+    container_name: auth-service
+    depends_on:
+      auth-service-database:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+    ports:
+      - 8884:8884
+
 
 volumes:
   vs:

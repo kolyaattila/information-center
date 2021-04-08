@@ -12,7 +12,8 @@ import java.util.Date;
 @Setter
 public class TopicEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "topic_generator")
+    @SequenceGenerator(name = "topic_generator", sequenceName = "S_TOPIC_0", allocationSize = 1)
     private long id;
 
     @Column(name = "external_id", nullable = false, length = 50)

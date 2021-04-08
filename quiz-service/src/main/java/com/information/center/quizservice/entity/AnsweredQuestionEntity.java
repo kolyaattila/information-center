@@ -14,7 +14,8 @@ import java.util.Date;
 public class AnsweredQuestionEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "answered_question_generator")
+    @SequenceGenerator(name = "answered_question_generator", sequenceName = "S_ANSWERED_QUESTION_0", allocationSize = 1)
     private long id;
 
     @Column(name = "external_id", nullable = false, length = 50)
