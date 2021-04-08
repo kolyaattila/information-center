@@ -1,13 +1,37 @@
 databaseChangeLog:
   - changeSet:
-      id: data_for_dev_env_db_1.2
+      id: create_indexes_db_1.2
       author: attila
       changes:
         - sqlFile:
             dbms: postgresql
             encoding: utf8
             endDelimiter: \nGO
-            path: dev.sql
+            path: create_indexes.sql
             relativeToChangelogFile: true
             splitStatements: true
             stripComments: true
+  - changeSet:
+        id: create_sequance_db_1.2
+        author: attila
+        changes:
+            - sqlFile:
+                  dbms: postgresql
+                  encoding: utf8
+                  endDelimiter: \nGO
+                  path: create_sequance.sql
+                  relativeToChangelogFile: true
+                  splitStatements: true
+                  stripComments: true
+  - changeSet:
+        id: data_for_dev_env_db_1.2
+        author: attila
+        changes:
+            - sqlFile:
+                  dbms: postgresql
+                  encoding: utf8
+                  endDelimiter: \nGO
+                  path: dev.sql
+                  relativeToChangelogFile: true
+                  splitStatements: true
+                  stripComments: true

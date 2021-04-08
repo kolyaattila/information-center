@@ -13,7 +13,8 @@ import java.util.Date;
 public class SchoolEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "school_generator")
+    @SequenceGenerator(name = "school_generator", sequenceName = "S_SCHOOL_0", allocationSize = 1)
     private long id;
 
     @Column(name = "external_id", nullable = false, length = 50)

@@ -58,4 +58,4 @@ spring:
 security:
   oauth2:
     resource:
-      user-info-uri: http://${AUTH_SERVER_HOST:localhost}:8884/auth/user/current
+      user-info-uri: http://${AUTH_SERVER_HOST:auth-service}:8884/auth/user/current

@@ -1,14 +1,5 @@
 package com.information.center.accountservice.service.security;
 
-import static org.springframework.security.oauth2.common.OAuth2AccessToken.BEARER_TYPE;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -24,6 +15,10 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+
+import java.util.*;
+
+import static org.springframework.security.oauth2.common.OAuth2AccessToken.BEARER_TYPE;
 
 public class CustomUserInfoTokenServices implements ResourceServerTokenServices {
 
@@ -62,6 +57,7 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices 
 
   @Override
   public OAuth2Authentication loadAuthentication(String accessToken) {
+    this.logger.info("access_token" + accessToken);
     Map<String, Object> map = getMap(this.userInfoEndpointUrl, accessToken);
     if (map.containsKey("error")) {
       this.logger.debug("userinfo returned error: " + map.get("error"));

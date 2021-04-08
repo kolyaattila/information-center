@@ -15,7 +15,8 @@ import java.util.List;
 public class CourseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_generator")
+    @SequenceGenerator(name = "course_generator", sequenceName = "S_COURSE_0", allocationSize = 1)
     private long id;
 
     @Column(name = "external_id", nullable = false)

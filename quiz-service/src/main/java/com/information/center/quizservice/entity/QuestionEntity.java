@@ -16,7 +16,8 @@ import java.util.List;
 public class QuestionEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "question_generator")
+	@SequenceGenerator(name = "question_generator", sequenceName = "S_QUESTION_0", allocationSize = 1)
 	private long id;
 
 	@Column(name = "external_id", nullable = false, length = 50)

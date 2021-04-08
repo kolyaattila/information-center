@@ -31,6 +31,6 @@ security:
     client:
       clientId: account-service
       clientSecret: ${ACCOUNT_SERVICE_PASSWORD}
-      accessTokenUri: http://${AUTH_SERVER_HOST:localhost}:8884/auth/oauth/token
+      accessTokenUri: http://${AUTH_SERVER_HOST:auth-service}:8884/auth/oauth/token
       grant-type: client_credentials
       scope: server
