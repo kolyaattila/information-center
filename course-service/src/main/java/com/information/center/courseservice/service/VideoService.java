@@ -1,15 +1,12 @@
-package com.information.center.videoservice.service;
+package com.information.center.courseservice.service;
 
-import com.information.center.videoservice.entity.VideoEntity;
-import com.information.center.videoservice.model.VideoDto;
-import com.information.center.videoservice.model.VideoRequest;
-import com.information.center.videoservice.model.VideoResponse;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.ResponseEntity;
+import com.information.center.courseservice.entity.VideoEntity;
+import com.information.center.courseservice.model.VideoDto;
+import com.information.center.courseservice.model.VideoRequest;
+import com.information.center.courseservice.model.VideoResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 
 @Service
@@ -26,8 +23,6 @@ public interface VideoService {
     VideoEntity findById(String externalId);
 
     List<VideoResponse> findAllByTopicId(String topicId);
-
-    ResponseEntity<UrlResource> getFullVideo(String externalId) throws MalformedURLException;
 
     List<VideoResponse> findAllByCourseId(String courseId);
 }

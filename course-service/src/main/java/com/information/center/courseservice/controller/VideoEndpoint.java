@@ -1,19 +1,17 @@
-package com.information.center.videoservice.controller;
+package com.information.center.courseservice.controller;
 
-import com.information.center.videoservice.model.VideoDto;
-import com.information.center.videoservice.model.VideoRequest;
-import com.information.center.videoservice.model.VideoResponse;
-import org.springframework.core.io.UrlResource;
+
+import com.information.center.courseservice.model.VideoDto;
+import com.information.center.courseservice.model.VideoRequest;
+import com.information.center.courseservice.model.VideoResponse;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/video-service/video")
+@RequestMapping("/course-service/video")
 public interface VideoEndpoint {
 
     @GetMapping("/{externalId}/details")
@@ -27,9 +25,6 @@ public interface VideoEndpoint {
 
     @DeleteMapping("/{externalId}")
     void delete(@PathVariable("externalId") String externalId) throws Exception;
-
-    @GetMapping("/{externalId}")
-    ResponseEntity<UrlResource> getFullVideo(@PathVariable("externalId") String externalId) throws MalformedURLException;
 
     @GetMapping("/{topicId}/byChapter")
     List<VideoResponse> findAllByTopicId(@PathVariable("topicId") String topicId);

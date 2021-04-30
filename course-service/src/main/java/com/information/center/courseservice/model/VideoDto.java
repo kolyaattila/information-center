@@ -1,4 +1,4 @@
-package com.information.center.videoservice.model;
+package com.information.center.courseservice.model;
 
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;

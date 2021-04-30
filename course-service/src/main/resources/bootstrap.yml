@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
   application:
     name: course-service
   cloud:
@@ -7,3 +11,9 @@ spring:
       fail-fast: true
       password: ${CONFIG_SERVICE_PASSWORD}
       username: user
+amazon:
+  properties:
+    endpointUrl: ${AMAZON_ENDPOINT_URL}
+    accessKey: ${AMAZON_ACCESS_KEY}
+    secretKey: ${AMAZON_SECRET_KEY}
+    bucketName: ${AMAZON_BUCKET_NAME}

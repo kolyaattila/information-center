@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Topic")
@@ -28,4 +30,8 @@ public class TopicEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id", nullable = false, updatable = false)
     private CourseEntity course;
+
+    // TODO remove videos also form amazon s3
+    @OneToMany(mappedBy = "topic", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    private List<VideoEntity> videoEntities = new ArrayList<>();
 }

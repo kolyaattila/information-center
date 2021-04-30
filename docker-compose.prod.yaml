@@ -25,12 +25,6 @@ services:
       file: docker-compose.yaml
       service: auth-service-database
 
-  video-service-database:
-    container_name: video-service-database
-    extends:
-      file: docker-compose.yaml
-      service: video-service-database
-
   config:
     container_name: config
     extends:
@@ -114,15 +108,6 @@ services:
       file: docker-compose.yaml
       service: email-service
     container_name: email-service
-    depends_on:
-      config:
-        condition: service_healthy
-
-  video-service:
-    extends:
-      file: docker-compose.yaml
-      service: video-service
-    container_name:  video-service
     depends_on:
       config:
         condition: service_healthy

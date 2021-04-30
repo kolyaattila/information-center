@@ -32,11 +32,6 @@ zuul:
       serviceId: email-service
       stripPrefix: false
 
-    video-service:
-      path: /video-service/**
-      serviceId: video-service
-      stripPrefix: false
-
 server:
   port: 8880
 

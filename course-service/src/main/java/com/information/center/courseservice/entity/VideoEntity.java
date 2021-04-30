@@ -1,6 +1,9 @@
-package com.information.center.videoservice.entity;
+package com.information.center.courseservice.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,7 +17,8 @@ import java.util.Date;
 public class VideoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "video_generator")
+    @SequenceGenerator(name = "video_generator", sequenceName = "S_VIDEO_0", allocationSize = 1)
     private long id;
 
     @Column(name = "external_id", unique = true, nullable = false, length = 50)
@@ -29,11 +33,9 @@ public class VideoEntity {
     @Column(name = "description", nullable = false, length = 500)
     private String description;
 
-    @Column(name = "course_id", nullable = false, length = 50)
-    private String courseExternalId;
-
-    @Column(name = "topic_id", nullable = false, length = 50)
-    private String topicExternalId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "topic_id", nullable = false, updatable = false)
+    private TopicEntity topic;
 
     @Column(name = "video_duration", nullable = false, length = 10)
     private String videoDuration;
